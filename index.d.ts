@@ -1,4 +1,4 @@
-declare module 'react-chess' {
+declare module "react-shogi" {
   export interface ChessProps {
     allowMoves?: boolean;
     highlightTarget?: boolean;

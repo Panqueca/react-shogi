@@ -1,39 +1,33 @@
-const React = require('react')
-const Chess = require('../../src/react-chess')
+import { useState } from "react";
 
-require('./demo.css')
+const React = require("react");
+const Chess = require("../react-shogi");
 
-class Demo extends React.PureComponent {
-  constructor(props) {
-    super(props)
+require("./demo.css");
 
-    this.state = {pieces: Chess.getDefaultLineup()}
-    this.handleMovePiece = this.handleMovePiece.bind(this)
-  }
+const Demo = () => {
+  const [pieces, setPieces] = useState(Chess.getDefaultLineup());
 
-  handleMovePiece(piece, fromSquare, toSquare) {
-    const newPieces = this.state.pieces
+  function handleMovePiece(piece, fromSquare, toSquare) {
+    const newPieces = [...pieces]
       .map((curr, index) => {
         if (piece.index === index) {
-          return `${piece.name}@${toSquare}`
+          return `${piece.name}@${toSquare}`;
         } else if (curr.indexOf(toSquare) === 2) {
-          return false // To be removed from the board
+          return false; // To be removed from the board
         }
-        return curr
+        return curr;
       })
-      .filter(Boolean)
+      .filter(Boolean);
 
-    this.setState({pieces: newPieces})
+    setPieces(newPieces);
   }
 
-  render() {
-    const {pieces} = this.state
-    return (
-      <div className="demo">
-        <Chess pieces={pieces} onMovePiece={this.handleMovePiece} />
-      </div>
-    )
-  }
-}
+  return (
+    <div className="demo">
+      <Chess pieces={pieces} onMovePiece={handleMovePiece} />
+    </div>
+  );
+};
 
-module.exports = Demo
+export default Demo;

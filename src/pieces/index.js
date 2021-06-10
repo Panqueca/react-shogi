@@ -1,16 +1,19 @@
 /* eslint-disable id-length */
 module.exports = {
-  p: require('./BlackPawn'),
-  n: require('./BlackKnight'),
-  b: require('./BlackBishop'),
-  r: require('./BlackRook'),
-  q: require('./BlackQueen'),
-  k: require('./BlackKing'),
-
-  P: require('./WhitePawn'),
-  N: require('./WhiteKnight'),
-  B: require('./WhiteBishop'),
-  R: require('./WhiteRook'),
-  Q: require('./WhiteQueen'),
-  K: require('./WhiteKing')
-}
+  LanceA: require("./SilverGeneralA"),
+  LanceB: require("./SilverGeneralB"),
+  KnightA: require("./SilverGeneralA"),
+  KnightB: require("./SilverGeneralB"),
+  SilverGeneralA: require("./SilverGeneralA"),
+  SilverGeneralB: require("./SilverGeneralB"),
+  GoldGeneralA: require("./SilverGeneralA"),
+  GoldGeneralB: require("./SilverGeneralB"),
+  RookA: require("./SilverGeneralA"),
+  RookB: require("./SilverGeneralB"),
+  BishopA: require("./SilverGeneralA"),
+  BishopB: require("./SilverGeneralB"),
+  KingA: require("./SilverGeneralA"),
+  KingB: require("./SilverGeneralB"),
+  PawnA: require("./PawnA"),
+  PawnB: require("./PawnB")
+};

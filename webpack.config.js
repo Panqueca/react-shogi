@@ -1,35 +1,35 @@
 /* eslint-disable no-process-env */
-'use strict'
+"use strict";
 
-const path = require('path')
-const webpack = require('webpack')
+const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
-  entry: [path.join(__dirname, 'src', 'react-chess.js')],
+  entry: [path.join(__dirname, "src", "react-shogi.js")],
   output: {
-    library: 'reactChess',
-    libraryTarget: 'umd',
-    path: path.join(__dirname, 'umd'),
-    filename: 'react-chess.js'
+    library: "reactShogi",
+    libraryTarget: "umd",
+    path: path.join(__dirname, "umd"),
+    filename: "react-shogi.js"
   },
   externals: {
     react: {
-      root: 'React',
-      commonjs: 'react',
-      commonjs2: 'react',
-      amd: 'react'
+      root: "React",
+      commonjs: "react",
+      commonjs2: "react",
+      amd: "react"
     },
-    'react-dom': {
-      root: 'ReactDOM',
-      commonjs: 'react-dom',
-      commonjs2: 'react-dom',
-      amd: 'react-dom'
+    "react-dom": {
+      root: "ReactDOM",
+      commonjs: "react-dom",
+      commonjs2: "react-dom",
+      amd: "react-dom"
     },
-    'prop-types': {
-      root: 'React.PropTypes',
-      commonjs: 'prop-types',
-      commonjs2: 'prop-types',
-      amd: 'prop-types'
+    "prop-types": {
+      root: "React.PropTypes",
+      commonjs: "prop-types",
+      commonjs2: "prop-types",
+      amd: "prop-types"
     }
   },
   module: {
@@ -37,14 +37,16 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: "babel-loader"
       }
     ]
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+      "process.env.NODE_ENV": JSON.stringify(
+        process.env.NODE_ENV || "development"
+      )
     }),
     new webpack.optimize.UglifyJsPlugin()
   ]
-}
+};

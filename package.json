@@ -1,15 +1,9 @@
 {
-  "name": "react-chess",
-  "description": "Renders a chess board using React",
-  "version": "1.1.1",
-  "keywords": [
-    "chess",
-    "board",
-    "react",
-    "react-component"
-  ],
-  "main": "lib/react-chess.js",
-  "unpkg": "umd/react-chess.js",
+  "name": "react-shogi",
+  "description": "Shogi Online em React",
+  "version": "0.0.1",
+  "main": "lib/react-shogi.js",
+  "unpkg": "umd/react-shogi.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "npm run clean && npm run compile && NODE_ENV=production webpack -p && react-scripts build",
@@ -22,20 +16,7 @@
     "test": "jest --coverage",
     "watch": "babel --watch --copy-files -d lib/ src/"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:rexxars/react-chess.git"
-  },
-  "homepage": "https://rexxars.github.io/react-chess/",
-  "author": "Espen Hovlandsdal <espen@hovlandsdal.com>",
   "license": "MIT",
-  "gh-pages-deploy": {
-    "noprompt": true,
-    "prep": [
-      "build"
-    ],
-    "staticpath": "build"
-  },
   "dependencies": {
     "prop-types": "^15.6.0",
     "react-draggable": "^3.0.3",

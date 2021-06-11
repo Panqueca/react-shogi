@@ -31,7 +31,7 @@ const fixtureDefinitions = {
             id: "61",
             x: 3,
             y: 0,
-            piece: { id: 4, player_number: 2, type: "kinshou" }
+            piece: { id: 4, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "51",
@@ -43,7 +43,7 @@ const fixtureDefinitions = {
             id: "41",
             x: 5,
             y: 0,
-            piece: { id: 6, player_number: 2, type: "kinshou" }
+            piece: { id: 6, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "31",
@@ -266,7 +266,7 @@ const fixtureDefinitions = {
             id: "69",
             x: 3,
             y: 8,
-            piece: { id: 35, player_number: 1, type: "kinshou" }
+            piece: { id: 35, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "59",
@@ -278,7 +278,7 @@ const fixtureDefinitions = {
             id: "49",
             x: 5,
             y: 8,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "39",
@@ -341,7 +341,7 @@ const fixtureDefinitions = {
             id: "61",
             x: 3,
             y: 0,
-            piece: { id: 4, player_number: 2, type: "kinshou" }
+            piece: { id: 4, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "51",
@@ -353,7 +353,7 @@ const fixtureDefinitions = {
             id: "41",
             x: 5,
             y: 0,
-            piece: { id: 6, player_number: 2, type: "kinshou" }
+            piece: { id: 6, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "31",
@@ -576,7 +576,7 @@ const fixtureDefinitions = {
             id: "69",
             x: 3,
             y: 8,
-            piece: { id: 35, player_number: 1, type: "kinshou" }
+            piece: { id: 35, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "59",
@@ -588,7 +588,7 @@ const fixtureDefinitions = {
             id: "49",
             x: 5,
             y: 8,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "39",
@@ -651,7 +651,7 @@ const fixtureDefinitions = {
             id: "61",
             x: 3,
             y: 0,
-            piece: { id: 4, player_number: 2, type: "kinshou" }
+            piece: { id: 4, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "51",
@@ -663,7 +663,7 @@ const fixtureDefinitions = {
             id: "41",
             x: 5,
             y: 0,
-            piece: { id: 6, player_number: 2, type: "kinshou" }
+            piece: { id: 6, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "31",
@@ -886,7 +886,7 @@ const fixtureDefinitions = {
             id: "69",
             x: 3,
             y: 8,
-            piece: { id: 35, player_number: 1, type: "kinshou" }
+            piece: { id: 35, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "59",
@@ -898,7 +898,7 @@ const fixtureDefinitions = {
             id: "49",
             x: 5,
             y: 8,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "39",
@@ -961,7 +961,7 @@ const fixtureDefinitions = {
             id: "61",
             x: 3,
             y: 0,
-            piece: { id: 4, player_number: 2, type: "kinshou" }
+            piece: { id: 4, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "51",
@@ -973,7 +973,7 @@ const fixtureDefinitions = {
             id: "41",
             x: 5,
             y: 0,
-            piece: { id: 6, player_number: 2, type: "kinshou" }
+            piece: { id: 6, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "31",
@@ -1196,7 +1196,7 @@ const fixtureDefinitions = {
             id: "69",
             x: 3,
             y: 8,
-            piece: { id: 35, player_number: 1, type: "kinshou" }
+            piece: { id: 35, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "59",
@@ -1208,7 +1208,7 @@ const fixtureDefinitions = {
             id: "49",
             x: 5,
             y: 8,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "39",
@@ -1271,7 +1271,7 @@ const fixtureDefinitions = {
             id: "61",
             x: 3,
             y: 0,
-            piece: { id: 4, player_number: 2, type: "kinshou" }
+            piece: { id: 4, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "51",
@@ -1283,7 +1283,7 @@ const fixtureDefinitions = {
             id: "41",
             x: 5,
             y: 0,
-            piece: { id: 6, player_number: 2, type: "kinshou" }
+            piece: { id: 6, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "31",
@@ -1511,7 +1511,7 @@ const fixtureDefinitions = {
             id: "69",
             x: 3,
             y: 8,
-            piece: { id: 35, player_number: 1, type: "kinshou" }
+            piece: { id: 35, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "59",
@@ -1523,7 +1523,7 @@ const fixtureDefinitions = {
             id: "49",
             x: 5,
             y: 8,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "39",
@@ -1583,7 +1583,7 @@ const fixtureDefinitions = {
             id: "92",
             x: 0,
             y: 1,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           { id: "82", x: 1, y: 1, piece: null },
           { id: "72", x: 2, y: 1, piece: null },
@@ -1716,7 +1716,7 @@ const fixtureDefinitions = {
             id: "61",
             x: 3,
             y: 0,
-            piece: { id: 4, player_number: 2, type: "kinshou" }
+            piece: { id: 4, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "51",
@@ -1728,7 +1728,7 @@ const fixtureDefinitions = {
             id: "41",
             x: 5,
             y: 0,
-            piece: { id: 6, player_number: 2, type: "kinshou" }
+            piece: { id: 6, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "31",
@@ -1946,7 +1946,7 @@ const fixtureDefinitions = {
             id: "69",
             x: 3,
             y: 8,
-            piece: { id: 35, player_number: 1, type: "kinshou" }
+            piece: { id: 35, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "59",
@@ -1958,7 +1958,7 @@ const fixtureDefinitions = {
             id: "49",
             x: 5,
             y: 8,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "39",
@@ -2018,7 +2018,7 @@ const fixtureDefinitions = {
             id: "61",
             x: 3,
             y: 0,
-            piece: { id: 4, player_number: 2, type: "kinshou" }
+            piece: { id: 4, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "51",
@@ -2030,7 +2030,7 @@ const fixtureDefinitions = {
             id: "41",
             x: 5,
             y: 0,
-            piece: { id: 6, player_number: 2, type: "kinshou" }
+            piece: { id: 6, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "31",
@@ -2238,7 +2238,7 @@ const fixtureDefinitions = {
             id: "69",
             x: 3,
             y: 8,
-            piece: { id: 35, player_number: 1, type: "kinshou" }
+            piece: { id: 35, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "59",
@@ -2250,7 +2250,7 @@ const fixtureDefinitions = {
             id: "49",
             x: 5,
             y: 8,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "39",
@@ -2551,7 +2551,7 @@ const fixtureDefinitions = {
           {
             player_number: 1,
             pieces: [
-              { id: 5, player_number: 1, type: "kinshou", selected: true }
+              { id: 5, player_number: 1, type: "GoldGeneral", selected: true }
             ]
           },
           { player_number: 2, pieces: [] }
@@ -2589,7 +2589,7 @@ const fixtureDefinitions = {
             id: "61",
             x: 3,
             y: 0,
-            piece: { id: 4, player_number: 2, type: "kinshou" }
+            piece: { id: 4, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "51",
@@ -2601,7 +2601,7 @@ const fixtureDefinitions = {
             id: "41",
             x: 5,
             y: 0,
-            piece: { id: 6, player_number: 2, type: "kinshou" }
+            piece: { id: 6, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "31",
@@ -2814,7 +2814,7 @@ const fixtureDefinitions = {
             id: "69",
             x: 3,
             y: 8,
-            piece: { id: 35, player_number: 1, type: "kinshou" }
+            piece: { id: 35, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "59",
@@ -2826,7 +2826,7 @@ const fixtureDefinitions = {
             id: "49",
             x: 5,
             y: 8,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "39",
@@ -2895,7 +2895,7 @@ const fixtureDefinitions = {
             id: "61",
             x: 3,
             y: 0,
-            piece: { id: 4, player_number: 2, type: "kinshou" }
+            piece: { id: 4, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "51",
@@ -2907,7 +2907,7 @@ const fixtureDefinitions = {
             id: "41",
             x: 5,
             y: 0,
-            piece: { id: 6, player_number: 2, type: "kinshou" }
+            piece: { id: 6, player_number: 2, type: "GoldGeneral" }
           },
           {
             id: "31",
@@ -3125,7 +3125,7 @@ const fixtureDefinitions = {
             id: "69",
             x: 3,
             y: 8,
-            piece: { id: 35, player_number: 1, type: "kinshou" }
+            piece: { id: 35, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "59",
@@ -3137,7 +3137,7 @@ const fixtureDefinitions = {
             id: "49",
             x: 5,
             y: 8,
-            piece: { id: 37, player_number: 1, type: "kinshou" }
+            piece: { id: 37, player_number: 1, type: "GoldGeneral" }
           },
           {
             id: "39",

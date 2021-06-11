@@ -10,7 +10,7 @@ module.exports = Piece => props => {
     style,
     isMoving
   } = props;
-  const y = 7 - props.y;
+  const y = 8 - props.y;
 
   const styles = Object.assign({}, style, {
     position: "absolute",

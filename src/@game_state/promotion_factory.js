@@ -6,7 +6,7 @@ import Lance from "./Lance";
 import Knight from "./Knight";
 import SilverGeneral from "./SilverGeneral";
 
-import GoldGeneral from "./GoldGeneral";
+import PromotedPawn from "./PromotedPawn";
 import DragonHorse from "./DragonHorse";
 import DragonKing from "./DragonKing";
 import PromotedLance from "./PromotedLance";
@@ -14,7 +14,7 @@ import PromotedKnight from "./PromotedKnight";
 import PromotedSilverGeneral from "./PromotedSilverGeneral";
 
 const PROMOTIONS = [
-  { from: Pawn, to: GoldGeneral },
+  { from: Pawn, to: PromotedPawn },
   { from: Bishop, to: DragonHorse },
   { from: Rook, to: DragonKing },
   { from: Lance, to: PromotedLance },

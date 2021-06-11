@@ -5,7 +5,7 @@ import Rook from "../src/Rook";
 import Lance from "../src/Lance";
 import Knight from "../src/Knight";
 import SilverGeneral from "../src/SilverGeneral";
-import Kinshou from "../src/kinshou";
+import GoldGeneral from "../src/GoldGeneral";
 import KingSente from "../src/KingSente";
 import KingGote from "../src/KingGote";
 import GoldGeneral from "../src/GoldGeneral";
@@ -112,15 +112,15 @@ describe("PieceFactory", () => {
       });
     });
 
-    describe("with kinshou", () => {
-      it("builds a kinshou", () => {
+    describe("with GoldGeneral", () => {
+      it("builds a GoldGeneral", () => {
         let pieceFactory = new PieceFactory({
           id: 1,
           player_number: 1,
-          type: "kinshou"
+          type: "GoldGeneral"
         });
         let result = pieceFactory.build;
-        expect(result.constructor).toBe(Kinshou);
+        expect(result.constructor).toBe(GoldGeneral);
         expect(result.id).toEqual(1);
       });
     });

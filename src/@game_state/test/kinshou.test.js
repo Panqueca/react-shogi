@@ -1,9 +1,9 @@
-import Kinshou from '../src/kinshou'
-import KinBase from '../src/kin_base'
+import GoldGeneral from "../src/GoldGeneral";
+import KinBase from "../src/kin_base";
 
-describe('Kinshou', () => {
-  it('inherits from KinBase', () => {
-    let ancestor = Object.getPrototypeOf(Kinshou.prototype);
+describe("GoldGeneral", () => {
+  it("inherits from KinBase", () => {
+    let ancestor = Object.getPrototypeOf(GoldGeneral.prototype);
 
     expect(ancestor.constructor).toEqual(KinBase);
   });

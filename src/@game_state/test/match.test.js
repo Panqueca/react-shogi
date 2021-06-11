@@ -54,7 +54,7 @@ describe("Match", () => {
                 id: 4,
                 player_number: 2,
                 selected: false,
-                type: "kinshou"
+                type: "GoldGeneral"
               }
             },
             {
@@ -76,7 +76,7 @@ describe("Match", () => {
                 id: 6,
                 player_number: 2,
                 selected: false,
-                type: "kinshou"
+                type: "GoldGeneral"
               }
             },
             {
@@ -444,7 +444,7 @@ describe("Match", () => {
                 id: 35,
                 player_number: 1,
                 selected: false,
-                type: "kinshou"
+                type: "GoldGeneral"
               }
             },
             {
@@ -466,7 +466,7 @@ describe("Match", () => {
                 id: 37,
                 player_number: 1,
                 selected: false,
-                type: "kinshou"
+                type: "GoldGeneral"
               }
             },
             {

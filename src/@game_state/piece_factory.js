@@ -5,10 +5,11 @@ import Rook from "./Rook";
 import Lance from "./Lance";
 import Knight from "./Knight";
 import SilverGeneral from "./SilverGeneral";
-import Kinshou from "./kinshou";
+
+import GoldGeneral from "./GoldGeneral";
 import KingSente from "./KingSente";
 import KingGote from "./KingGote";
-import GoldGeneral from "./GoldGeneral";
+import PromotedPawn from "./PromotedPawn";
 import PromotedLance from "./PromotedLance";
 import PromotedKnight from "./PromotedKnight";
 import PromotedSilverGeneral from "./PromotedSilverGeneral";
@@ -48,14 +49,14 @@ class PieceFactory {
             return new Knight(this.args);
           case "SilverGeneral":
             return new SilverGeneral(this.args);
-          case "kinshou":
-            return new Kinshou(this.args);
+          case "GoldGeneral":
+            return new GoldGeneral(this.args);
           case "KingSente":
             return new KingSente(this.args);
           case "KingGote":
             return new KingGote(this.args);
-          case "GoldGeneral":
-            return new GoldGeneral(this.args);
+          case "PromotedPawn":
+            return new PromotedPawn(this.args);
           case "PromotedLance":
             return new PromotedLance(this.args);
           case "PromotedKnight":

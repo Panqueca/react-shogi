@@ -18,6 +18,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@mrlhumphreys/jboardgame": "^2.0.9",
     "prop-types": "^15.6.0",
     "react-draggable": "^3.0.3",
     "react-resize-aware": "^2.7.0"

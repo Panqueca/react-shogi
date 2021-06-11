@@ -11,7 +11,7 @@ const Demo = () => {
   function handleMovePiece(piece, fromSquare, toSquare) {
     const newPieces = [...pieces]
       .map((curr, index) => {
-        if (piece.index === index) {
+        if (piece && piece.index === index) {
           return `${piece.name}@${toSquare}`;
         } else if (curr.indexOf(toSquare) === 2) {
           return false; // To be removed from the board

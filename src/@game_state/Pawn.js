@@ -9,16 +9,6 @@ class Pawn extends Piece {
    * @return {SquareSet}
    */
   destinations(square, gameState) {
-    console.log({
-      square,
-      gameState,
-      a: gameState.squares
-        .inRange(square, 1)
-        .inDirection(square, this.playerNumber)
-        .orthogonal(square)
-        .unoccupiedOrOccupiedByOpponent(this.playerNumber)
-        .asJson()
-    });
     return gameState.squares
       .inRange(square, 1)
       .inDirection(square, this.playerNumber)
@@ -32,6 +22,7 @@ class Pawn extends Piece {
    * @return {boolean}
    */
   hasLegalMovesFromY(y) {
+    console.log({ y });
     if (this.playerNumber === 1) {
       return y !== 0;
     } else {

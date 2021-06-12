@@ -28,7 +28,6 @@ class Match {
     this.id = args.id;
 
     /** @member {GameState} */
-    console.log({ args });
     this.gameState = new GameState(args.game_state);
 
     /** @member {Player[]} */
@@ -67,17 +66,6 @@ class Match {
    */
   get winner() {
     return winner(this);
-  }
-
-  get match() {
-    return {
-      gameState: this.gameState.gameState,
-      players: this.players,
-      currentMove: this.currentMove,
-      promotion: this.promotion,
-      lastAction: this.lastAction,
-      notification: this.notification
-    };
   }
 
   // user actions

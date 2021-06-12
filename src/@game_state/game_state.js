@@ -179,6 +179,7 @@ class GameState {
    * @return {boolean}
    */
   KingCannotMove(playerNumber) {
+    return false;
     let kingSquare = this.squares.findKingForPlayer(playerNumber);
     let destinations = kingSquare.piece.destinations(kingSquare, this);
 

@@ -16,11 +16,11 @@ const defaultPlayers = [
 function getMissingSquares(currentSquares) {
   const all = [];
 
-  ["a", "b", "c", "d", "f", "g", "h", "i"].forEach(col => {
+  ["a", "b", "c", "d", "e", "f", "g", "h", "i"].forEach(col => {
     for (let i = 1; i <= 9; i++) {
       const squareId = `${col}${i}`;
       const { x, y } = decode.fromPieceDecl(`Pawn@${squareId}`);
-      all.push({ id: squareId, x, y, piece: null });
+      all.push({ id: squareId, x, y });
     }
   });
 
@@ -65,7 +65,6 @@ function transformGameStateToPieces(gameState) {
 }
 
 const Demo = () => {
-  const [pieces, setPieces] = useState(defaultLineUp);
   const [game, setGame] = useState({});
 
   useEffect(() => {
@@ -87,28 +86,22 @@ const Demo = () => {
   }, [game]);
 
   function handleMovePiece(piece, fromSquare, toSquare) {
-    const newPieces = [...pieces]
-      .map((curr, index) => {
-        if (piece && piece.index === index) {
-          console.log({ piece, fromSquare, toSquare });
-          return `${piece.name}@${toSquare}`;
-        } else if (curr.indexOf(toSquare) === 2) {
-          return false; // To be removed from the board
-        }
-        return curr;
-      })
-      .filter(Boolean);
-
-    setPieces(newPieces);
+    console.log({ piece, fromSquare, toSquare });
   }
 
   function move() {
     const tempMatch = new Match(game);
-    console.log({ tempMatch: tempMatch.asJson });
-    tempMatch.touchSquare("a3", 1);
-    console.log({ tempMatch: tempMatch.asJson });
-    tempMatch.touchSquare("a4", 1);
-    console.log({ tempMatch: tempMatch.asJson });
+    tempMatch.touchSquare("g7", 1);
+    tempMatch.touchSquare("f7", 1);
+    tempMatch.touchSquare("c3", 2);
+    tempMatch.touchSquare("d3", 2);
+    tempMatch.touchSquare("h8", 1);
+    console.log(tempMatch.asJson);
+    tempMatch.touchSquare("b2", 1);
+    console.log(tempMatch.asJson.promotion);
+    tempMatch.touchPromotionOption(tempMatch.asJson.promotion, 1);
+    console.log(tempMatch.asJson);
+    setGame(tempMatch.asJson);
   }
 
   return (

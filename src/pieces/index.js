@@ -12,8 +12,8 @@ module.exports = {
   RookB: require("./RookB"),
   BishopA: require("./BishopA"),
   BishopB: require("./BishopB"),
-  KingA: require("./KingA"),
-  KingB: require("./KingB"),
+  KingSenteA: require("./KingA"),
+  KingGoteB: require("./KingB"),
   PawnA: require("./PawnA"),
   PawnB: require("./PawnB")
 };

@@ -72,7 +72,7 @@ class Chess extends React.Component {
     return {
       x,
       y,
-      pos: `${String.fromCharCode(decode.charCodeOffset + x)}${9 - y}`
+      pos: `${String.fromCharCode(decode.charCodeOffset + y)}${9 - x}`
     };
   }
 
@@ -148,8 +148,8 @@ class Chess extends React.Component {
   }
 
   renderLabelText(x, y) {
-    const isLeftColumn = x === 0;
-    const isBottomRow = y === 8;
+    const isBottomRow = y === 0;
+    const isLeftColumn = x === 8;
 
     if (!this.props.drawLabels || (!isLeftColumn && !isBottomRow)) {
       return null;
@@ -158,17 +158,18 @@ class Chess extends React.Component {
     if (isLeftColumn && isBottomRow) {
       return [
         <span key="blx" style={xLabelStyles}>
-          a
+          9
         </span>,
         <span key="bly" style={yLabelStyles}>
-          1
+          i
         </span>
       ];
     }
 
     const label = isLeftColumn
-      ? 9 - y
-      : String.fromCharCode(decode.charCodeOffset + x);
+      ? String.fromCharCode(decode.charCodeOffset + Math.abs(y - 8))
+      : x + 1;
+
     return (
       <span style={isLeftColumn ? yLabelStyles : xLabelStyles}>{label}</span>
     );
@@ -178,8 +179,9 @@ class Chess extends React.Component {
     const { targetTile, draggingPiece, boardSize } = this.state;
 
     const tiles = [];
-    for (let y = 0; y < 9; y++) {
-      for (let x = 0; x < 9; x++) {
+
+    for (let y = 8; y > -1; y--) {
+      for (let x = 8; x > -1; x--) {
         const isTarget = targetTile && targetTile.x === x && targetTile.y === y;
         const background = this.getSquareColor(x, y);
         const boxShadow = isTarget
@@ -191,7 +193,7 @@ class Chess extends React.Component {
         );
 
         tiles.push(
-          <div key={`rect-${x}-${y}`} style={styles}>
+          <div key={`rect-${x}-${y}`} style={styles} title={`x: ${x}, y: ${y}`}>
             {this.renderLabelText(x, y)}
           </div>
         );
@@ -212,7 +214,7 @@ class Chess extends React.Component {
           onStop={this.handleDragStop}
           key={`${piece}-${x}-${y}`}
         >
-          <Piece isMoving={isMoving} x={x} y={y} />
+          <Piece isMoving={isMoving} x={Math.abs(x - 8)} y={Math.abs(y - 8)} />
         </Draggable>
       );
     });

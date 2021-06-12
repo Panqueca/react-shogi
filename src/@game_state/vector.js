@@ -1,4 +1,4 @@
-import Direction from './direction'
+import Direction from "./direction";
 
 /** A vector represented by two points */
 class Vector {
@@ -7,14 +7,14 @@ class Vector {
    * @param {Point} pointA - The origin point.
    * @param {Point} pointB - The destination point.
    */
-  constructor(pointA, pointB) { 
+  constructor(pointA, pointB) {
     /** @member {Point} */
     this.pointA = pointA;
 
     /** @member {Point} */
     this.pointB = pointB;
   }
-  
+
   /**
    * The x distance.
    * @return {number}
@@ -80,7 +80,7 @@ class Vector {
   }
 
   /**
-   * The magnitude of the vector. 
+   * The magnitude of the vector.
    * @return {number}
    */
   get magnitude() {
@@ -98,7 +98,7 @@ class Vector {
   }
 
   /**
-   * The y direction.. 
+   * The y direction..
    * 1 for down, -1 for up.
    * @return {number}
    */
@@ -107,7 +107,7 @@ class Vector {
   }
 
   /**
-   * The x direction.. 
+   * The x direction..
    * 1 for right, -1 for left.
    * @return {number}
    */
@@ -124,4 +124,4 @@ class Vector {
   }
 }
 
-export default Vector
+export default Vector;

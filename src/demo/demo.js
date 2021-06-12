@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import Match from "../@game_state/match";
 import decode from "../decode";
+import defaultLineup from "../defaultLineup";
+import Board from "../components/Board";
 
 const React = require("react");
-const Chess = require("../react-shogi");
 
 require("./demo.css");
 
-const defaultLineUp = Chess.getDefaultLineup();
 const defaultPlayers = [
   { player_number: 1, name: "Player 1" },
   { player_number: 2, name: "Player 2" }
@@ -61,10 +61,10 @@ function transformGameStateToPieces(gameState) {
         ({ id, piece }) =>
           `${piece.type}${piece.player_number === 1 ? "A" : "B"}@${id}`
       );
-  return Chess.getDefaultLineup();
+  return defaultLineup;
 }
 
-const Demo = () => {
+const Demo = ({ pieceComponents }) => {
   const [game, setGame] = useState({});
 
   useEffect(() => {
@@ -73,7 +73,7 @@ const Demo = () => {
         id: 1,
         game_state: {
           current_player_number: 1,
-          squares: transformLineUpToSquares(defaultLineUp),
+          squares: transformLineUpToSquares(defaultLineup),
           hands: [
             { player_number: 1, pieces: [] },
             { player_number: 2, pieces: [] }
@@ -98,18 +98,17 @@ const Demo = () => {
     tempMatch.touchSquare("h8", 1);
     console.log(tempMatch.asJson);
     tempMatch.touchSquare("b2", 1);
-    console.log(tempMatch.asJson.promotion);
-    tempMatch.touchPromotionOption(tempMatch.asJson.promotion, 1);
     console.log(tempMatch.asJson);
     setGame(tempMatch.asJson);
   }
 
   return (
     <div className="demo">
-      <Chess
+      <Board
         pieces={transformGameStateToPieces(game.game_state)}
         onMovePiece={handleMovePiece}
         currentPlayer={game.current_player_number}
+        pieceComponents={pieceComponents}
       />
       <button onClick={move}>test</button>
     </div>

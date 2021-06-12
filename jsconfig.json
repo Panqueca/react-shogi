@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "jsx": "preserve"
+  },
+  "paths": {
+    "@/src/*": ["src/*"],
+    "@/game_state/*": ["src/@game_state/*"],
+    "@/shogi-pieces/*": ["src/@shogi_pieces/*"],
+    "@/utils/*": ["src/utils/*"],
+    "@/components/*": ["src/components/*"]
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}

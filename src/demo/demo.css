@@ -15,8 +15,104 @@ body {
 }
 
 #root {
-  max-width: 90vmin;
-  margin: 1vmin auto;
+  width: 100%;
+}
+
+.board-set {
+  width: 100%;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.board-set .match-display {
+  display: flex;
+  justify-content: center;
+}
+
+.board-set .history {
+  overflow-y: scroll;
+  max-height: 300px;
+}
+
+.board-set .history-table {
+  padding: 20px;
+}
+
+.board-set .history-line {
+  display: flex;
+  align-items: center;
+}
+
+.history-table .SENTE,
+.history-table .GOTE {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  margin-right: 5px;
+}
+
+.history-table .SENTE {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  margin-right: 5px;
+  background-color: #000;
+}
+
+.board-set .player-1,
+.board-set .player-2 {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.board-set .player-2 {
+  flex-direction: column-reverse;
+}
+
+.board-set .player-1 .hand,
+.board-set .player-2 .hand {
+  width: 100%;
+  height: 260px;
+  background-color: #fcedc8;
+  position: relative;
+  display: flex;
+  padding: 20px;
+}
+
+.hand .piece-at-hand {
+  width: 25%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hand .piece-at-hand div {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  top: 0 !important;
+}
+
+.hand .piece-at-hand .count-badge {
+  position: absolute;
+  top: 55%;
+  right: 0%;
+  z-index: 100;
+}
+
+.board-set .board-table {
+  width: 100%;
+  max-width: 80vmin;
+  -webkit-box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.39);
+  -moz-box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.39);
+  box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.39);
+  position: ]relative;
+  z-index: 10;
 }
 
 .last-action-tile {

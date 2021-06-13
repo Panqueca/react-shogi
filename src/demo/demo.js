@@ -1,8 +1,11 @@
 import { useState } from "react";
 import Match from "../@game_state/match";
-import decode from "../decode";
 import defaultLineup from "../defaultLineup";
 import Board from "../components/Board";
+import {
+  transformGameStateToBoard,
+  transformLineUpToSquares
+} from "../utils/pieces/filter";
 
 const React = require("react");
 
@@ -12,68 +15,6 @@ const defaultPlayers = [
   { player_number: 1, name: "Player 1" },
   { player_number: 2, name: "Player 2" }
 ];
-
-function getMissingSquares(currentSquares) {
-  const all = [];
-
-  ["a", "b", "c", "d", "e", "f", "g", "h", "i"].forEach(col => {
-    for (let i = 1; i <= 9; i++) {
-      const squareId = `${col}${i}`;
-      const { x, y } = decode.fromPieceDecl(`Pawn@${squareId}`);
-      all.push({ id: squareId, x, y });
-    }
-  });
-
-  return all.filter(
-    square => [...currentSquares].map(({ id }) => id).indexOf(square.id) === -1
-  );
-}
-
-function transformLineUpToSquares(lineUp) {
-  const squares = [];
-
-  lineUp.forEach(info => {
-    const { x, y, piece, square } = decode.fromPieceDecl(info);
-    const side = piece.substr(piece.length - 1);
-    const player_number = side === "A" ? 1 : 2;
-    const pieceType = piece.substr(0, piece.length - 1);
-
-    squares.push({
-      id: square,
-      x,
-      y,
-      piece: {
-        id: info,
-        type: pieceType,
-        player_number
-      }
-    });
-  });
-
-  return [...squares, ...getMissingSquares(squares)];
-}
-
-function transformGameStateToPieces(gameState) {
-  if (gameState) {
-    return gameState.squares.map(({ id, piece }) => {
-      if (!piece)
-        return {
-          pieceAtLocation: `Empty@${id}`,
-          piece: null,
-          player_number: null
-        };
-      return {
-        pieceAtLocation: `${piece.type}${
-          piece.player_number === 1 ? "A" : "B"
-        }@${id}`,
-        piece,
-        player_number: piece.player_number
-      };
-    });
-  }
-
-  return [];
-}
 
 const Demo = ({ pieceComponents }) => {
   const [game, setGame] = useState({
@@ -91,8 +32,12 @@ const Demo = ({ pieceComponents }) => {
   });
   const [historyActions, setHistoryActions] = useState([]);
 
-  function addHistoryAction(newAction) {
-    if (newAction) setHistoryActions([...historyActions, newAction]);
+  function addHistoryAction(newAction, playerNumber) {
+    if (newAction)
+      setHistoryActions([
+        ...historyActions,
+        { ...newAction, playerSide: playerNumber === 2 ? "GOTE" : "SENTE" }
+      ]);
   }
 
   function getLastAction() {
@@ -106,23 +51,25 @@ const Demo = ({ pieceComponents }) => {
     const { current_player_number } = game.game_state;
 
     tempMatch.touchSquare(move, current_player_number);
-
-    addHistoryAction(tempMatch.lastAction);
+    addHistoryAction(tempMatch.lastAction, current_player_number);
 
     if (tempMatch.promotion) {
       tempMatch.touchPromotionOption(true, current_player_number);
-      addHistoryAction(tempMatch.lastAction);
+      addHistoryAction(tempMatch.lastAction, current_player_number);
     }
 
     setGame(tempMatch.asJson);
   }
 
-  console.log({ game, historyActions });
+  const GAME_STATE = transformGameStateToBoard(game.game_state);
+  console.log({ GAME_STATE });
 
   return (
     <div className="demo">
       <Board
-        pieces={transformGameStateToPieces(game.game_state)}
+        pieces={GAME_STATE.pieces}
+        hands={GAME_STATE.hands}
+        historyActions={historyActions}
         onMovePiece={handleMovePiece}
         currentPlayer={game.current_player_number}
         pieceComponents={pieceComponents}

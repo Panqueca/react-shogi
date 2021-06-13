@@ -1,5 +1,37 @@
 /* eslint-disable react/display-name, react/prop-types */
 const React = require("react");
+const PropTypes = require("prop-types");
+
+const SimpleLayer = ({ styles, onClick = () => {}, className = "" }) => {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+        ...styles
+      }}
+      onClick={onClick}
+      className={className}
+    />
+  );
+};
+
+SimpleLayer.propTypes = {
+  className: PropTypes.string,
+  styles: PropTypes.object,
+  onClick: PropTypes.func
+};
+
+SimpleLayer.defaultProps = {
+  className: "",
+  styles: {},
+  onClick: () => {}
+};
 
 module.exports = Piece => props => {
   const {
@@ -30,24 +62,10 @@ module.exports = Piece => props => {
     zIndex: isMoving ? 1000 : undefined
   });
 
-  const SimpleLayer = ({ styles, onClick = () => {}, className = "" }) => {
-    return (
-      <div
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          ...styles
-        }}
-        onClick={onClick}
-        className={className}
-      />
-    );
-  };
+  const onClickFunc =
+    typeof onClick === "function"
+      ? () => onClick({ x: props.x, y: props.y })
+      : () => {};
 
   return (
     <div
@@ -58,7 +76,7 @@ module.exports = Piece => props => {
       style={styles}
       title={`Square: ${props.squareNumber} (${props.squareName}), y: ${props.x} x: ${props.y}`}
     >
-      <SimpleLayer onClick={() => onClick({ x: props.x, y: props.y })} />
+      <SimpleLayer onClick={onClickFunc} />
       <div
         style={{
           position: "absolute",

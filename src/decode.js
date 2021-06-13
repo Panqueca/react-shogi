@@ -1,12 +1,11 @@
-const charCodeOffset = 97;
+const { getSquareByInternationalSlug } = require("./utils/board/display");
 
 module.exports = {
   fromPieceDecl: pos => {
     const [piece, square] = pos.split("@");
-    const x = Number(square[1]) - 1;
-    const y = square.toLowerCase().charCodeAt(0) - charCodeOffset;
-    return { x, y, piece, square };
-  },
+    const { indexOfRow, indexOfCol } = getSquareByInternationalSlug(square);
+    const pieceType = piece.substr(0, piece.length - 1);
 
-  charCodeOffset
+    return { y: indexOfRow, x: indexOfCol, piece, pieceType, square };
+  }
 };

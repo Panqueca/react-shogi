@@ -7,6 +7,7 @@ import {
   getSquareByInternationalSlug,
   getSquareNameByXY
 } from "../utils/board/display";
+import { Card, Button, Badge } from "react-bootstrap";
 
 const ResizeAware = resizeAware.default || resizeAware;
 const getDefaultLineup = () => defaultLineup.slice();
@@ -36,8 +37,10 @@ const defaultTargetTile = {
 };
 
 const Board = ({
-  squaresColor,
   pieces,
+  hands,
+  historyActions,
+  squaresColor,
   pieceComponents,
   drawLabels,
   handleMovePiece,
@@ -162,15 +165,127 @@ const Board = ({
     height: boardConfig.boardSize
   };
 
+  function displayHandPieces(handPieces) {
+    if (Array.isArray(handPieces)) {
+      return handPieces.map(({ pieceByPlayer, count }) => {
+        const Piece = pieceComponents[pieceByPlayer];
+        if (Piece)
+          return (
+            <div className="piece-at-hand">
+              <Piece />
+              {count > 1 && (
+                <Badge variant="light" className="count-badge">
+                  {count}
+                </Badge>
+              )}
+            </div>
+          );
+        return null;
+      });
+    }
+
+    return null;
+  }
+
+  const HistoryTable = ({ historyActions }) => {
+    const elementRef = useRef();
+
+    useEffect(() => {
+      if (elementRef && elementRef.current) elementRef.current.scrollIntoView();
+    });
+
+    return (
+      <div className="history-table">
+        {historyActions.map((history, index) => {
+          const { data, playerSide } = history;
+          const { toId = "" } = data;
+          const { squareName } = getSquareByInternationalSlug(toId);
+
+          return (
+            <div key={index} className="history-line" ref={elementRef}>
+              <div className={playerSide} />
+              {squareName}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  function displayHistoryActions() {
+    if (Array.isArray(historyActions))
+      return <HistoryTable historyActions={historyActions} />;
+
+    return null;
+  }
+
   return (
-    <ResizeAware
-      ref={boardRef}
-      onResize={handleResize}
-      style={boardStyles}
-      onlyEvent
-    >
-      {children}
-    </ResizeAware>
+    <div className="board-set">
+      <div>
+        <div className="board-head-actions">
+          <Button variant="primary">Render-se</Button>
+        </div>
+      </div>
+      <div className="match-display">
+        <div className="player-2">
+          <Card style={{ width: "100%", margin: "0px" }} className="profile">
+            <Card.Body>
+              <Card.Title>
+                <Card.Img
+                  variant="top"
+                  src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y
+
+                "
+                  style={{ width: "50px", marginRight: "15px" }}
+                />
+                Jogador 2 (Gote)
+              </Card.Title>
+              <p>10Kyu</p>
+              Especialidades:
+              <ul>
+                <li>Quick Ishida</li>
+                <li>Shikenbisha</li>
+              </ul>
+            </Card.Body>
+          </Card>
+          <div className="hand">{displayHandPieces(hands.player2)}</div>
+        </div>
+        <div className="board-table">
+          <ResizeAware
+            ref={boardRef}
+            onResize={handleResize}
+            style={boardStyles}
+            onlyEvent
+          >
+            {children}
+          </ResizeAware>
+        </div>
+        <div className="player-1">
+          <div className="history">{displayHistoryActions()}</div>
+          <Card style={{ width: "100%", margin: "0px" }} className="profile">
+            <Card.Body>
+              <Card.Title>
+                <Card.Img
+                  variant="top"
+                  src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y
+
+                "
+                  style={{ width: "50px", marginRight: "15px" }}
+                />
+                Jogador 1 (Sente)
+              </Card.Title>
+              <p>10Kyu</p>
+              Especialidades:
+              <ul>
+                <li>Quick Ishida</li>
+                <li>Shikenbisha</li>
+              </ul>
+            </Card.Body>
+          </Card>
+          <div className="hand">{displayHandPieces(hands.player1)}</div>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -178,7 +293,7 @@ Board.propTypes = {
   allowMoves: PropTypes.bool,
   drawLabels: PropTypes.bool,
   squaresColor: PropTypes.string,
-  pieces: PropTypes.arrayOf(PropTypes.string)
+  pieces: PropTypes.arrayOf(PropTypes.object)
 };
 
 Board.defaultProps = {

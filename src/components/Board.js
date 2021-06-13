@@ -67,6 +67,10 @@ const Board = ({
     setBoardConfig({ boardSize: size.width, tileSize });
   }
 
+  function selectTile({ x, y }) {
+    console.log({ x, y });
+  }
+
   function coordsToPosition(coords) {
     const x = Math.round(coords.x / boardConfig.tileSize);
     const y = Math.round(coords.y / boardConfig.tileSize);
@@ -92,7 +96,10 @@ const Board = ({
       dragging.targetTile.x !== x ||
       dragging.targetTile.y !== y
     ) {
-      setDragging({ ...dragging, targetTile: { x, y } });
+      setDragging({
+        ...dragging,
+        targetTile: { x: Math.abs(x - 8), y: Math.abs(y - 8) }
+      });
     }
   }
 
@@ -198,13 +205,21 @@ const Board = ({
         ? "inset 0px 0px 0px 0.4vmin yellow"
         : undefined;
       const styles = Object.assign(
-        { background, boxShadow, border: "1px solid #000" },
+        {
+          background,
+          boxShadow,
+          border: "1px solid #000",
+          cursor: "pointer",
+          position: "relative"
+        },
         squareStyles
       );
 
       tiles.push(
-        <div key={`rect-${x}-${y}`} style={styles} title={`x: ${x}, y: ${y}`}>
-          {renderLabelText(x, y)}
+        <div>
+          <div key={`rect-${x}-${y}`} style={styles} title={`x: ${x}, y: ${y}`}>
+            {renderLabelText(x, y)}
+          </div>
         </div>
       );
     }
@@ -214,23 +229,15 @@ const Board = ({
     ? pieces.map((decl, i) => {
         const isMoving = draggingPiece && i === draggingPiece.index;
         const { x, y, piece } = decode.fromPieceDecl(decl);
-        const Piece = pieceComponents[piece];
+        const PieceSelection = pieceComponents[piece];
 
         return (
-          <Draggable
-            bounds="parent"
-            position={{ x: 0, y: 0 }}
-            onStart={handleDragStart}
-            onDrag={handleDrag}
-            onStop={handleDragStop}
-            key={`${piece}-${x}-${y}`}
-          >
-            <Piece
-              isMoving={isMoving}
-              x={Math.abs(x - 8)}
-              y={Math.abs(y - 8)}
-            />
-          </Draggable>
+          <PieceSelection
+            isMoving={isMoving}
+            x={Math.abs(x - 8)}
+            y={Math.abs(y - 8)}
+            onClick={selectTile}
+          />
         );
       })
     : [];

@@ -15,5 +15,6 @@ module.exports = {
   LanceA: require("./0KY"),
   LanceB: require("./1KY"),
   PawnA: require("./0FU"),
-  PawnB: require("./1FU")
+  PawnB: require("./1FU"),
+  Empty: require("./Empty")
 };

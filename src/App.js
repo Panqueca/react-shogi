@@ -10,7 +10,6 @@ const App = () => {
 
   useEffect(() => {
     const newPieces = getPieceComponentsByTheme(pieceSkin);
-    console.log({ newPieces });
     setPieceComponents(newPieces);
   }, [pieceSkin]);
 

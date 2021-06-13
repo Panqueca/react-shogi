@@ -54,13 +54,13 @@ function transformLineUpToSquares(lineUp) {
 }
 
 function transformGameStateToPieces(gameState) {
-  if (gameState)
-    return gameState.squares
-      .filter(({ piece }) => piece)
-      .map(
-        ({ id, piece }) =>
-          `${piece.type}${piece.player_number === 1 ? "A" : "B"}@${id}`
-      );
+  if (gameState) {
+    return gameState.squares.map(({ id, piece }) => {
+      if (!piece) return `Empty@${id}`;
+      return `${piece.type}${piece.player_number === 1 ? "A" : "B"}@${id}`;
+    });
+  }
+
   return defaultLineup;
 }
 
@@ -110,6 +110,8 @@ const Demo = ({ pieceComponents }) => {
         currentPlayer={game.current_player_number}
         pieceComponents={pieceComponents}
       />
+      <br />
+      <br />
       <button onClick={move}>test</button>
     </div>
   );

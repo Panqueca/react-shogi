@@ -82,15 +82,20 @@ const Demo = ({ pieceComponents }) => {
   function handleMovePiece({ move }) {
     const tempMatch = new Match(game);
     const { current_player_number } = game.game_state;
-    console.log({ current_player_number });
+
     tempMatch.touchSquare(move, current_player_number);
+
     console.log({ match: tempMatch.asJson });
+
     if (tempMatch.promotion) {
       tempMatch.touchPromotionOption(true, current_player_number);
-      console.log({ match: tempMatch.asJson });
+      console.log("Promotion: ", { match: tempMatch.asJson });
     }
+
     setGame(tempMatch.asJson);
   }
+
+  console.log({ game });
 
   return (
     <div className="demo">
@@ -100,6 +105,7 @@ const Demo = ({ pieceComponents }) => {
         currentPlayer={game.current_player_number}
         pieceComponents={pieceComponents}
         handleMovePiece={handleMovePiece}
+        notification={game.notification}
       />
     </div>
   );

@@ -203,6 +203,7 @@ class Match {
         kind: "move",
         data: { fromId: fromId, toId: toId, promote: promote }
       };
+      this._teardownPromotion();
     } else {
       this.lastAction = { kind: "move", data: { fromId: fromId, toId: toId } };
     }

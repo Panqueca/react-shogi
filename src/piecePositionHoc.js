@@ -10,14 +10,16 @@ module.exports = Piece => props => {
     onTouchStart,
     style,
     isMoving,
-    isSelected
+    isSelected,
+    boardRow,
+    boardCol
   } = props;
-  const y = 8 - props.y;
+  const display_y = 8 - boardRow;
 
   const styles = Object.assign({}, style, {
     position: "absolute",
-    left: `${props.x * 11.111}%`,
-    top: `${y * 11.38}%`,
+    left: `${boardCol * 11.111}%`,
+    top: `${display_y * 11.38}%`,
     width: "11.111%",
     height: "11.111%",
     textAlign: "center",
@@ -52,7 +54,7 @@ module.exports = Piece => props => {
       onTouchEnd={onTouchEnd}
       onTouchStart={onTouchStart}
       style={styles}
-      title={`x: ${props.x}, y: ${props.y}`}
+      title={`Square: ${props.squareNumber} (${props.squareName}), y: ${props.x} x: ${props.y}`}
     >
       <SimpleLayer onClick={() => onClick({ x: props.x, y: props.y })} />
       <div

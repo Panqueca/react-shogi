@@ -1,26 +1,32 @@
-import { exists } from './utils'
+import { exists } from "./utils";
 
 const mockSquareSet = {
-  some: function() { return false; },
-  none: function() { return true; },
-  includes: function() { return false; }
+  some: function() {
+    return false;
+  },
+  none: function() {
+    return true;
+  },
+  includes: function() {
+    return false;
+  }
 };
 
 /** Abstract class representing a piece on the board. */
 class Piece {
-  /** 
+  /**
    * Create a piece.
    * @param {Object} args - The properties of a piece.
    * @param {number} args.player_number - The number of the player.
    * @param {boolean} [args.selected=false] - Is the piece selected?
-   * @param {string} args.id - The unique identifier of the piece. 
+   * @param {string} args.id - The unique identifier of the piece.
    * @param {boolean} [args.has_moved=false] - Has the piece moved?
    * @param {string} args.type - The type of the piece.
    */
   constructor(args) {
     /** @member {string} */
-    this.constructorName = 'Piece';
-    
+    this.constructorName = "Piece";
+
     /** @member {number} */
     this.playerNumber = args.player_number;
 
@@ -37,7 +43,7 @@ class Piece {
     this.type = args.type;
   }
 
-  /** 
+  /**
    * The piece serialized as a simple object.
    * @return {Object}
    */
@@ -68,11 +74,12 @@ class Piece {
    * @return {boolean}
    */
   canMove(from, to, gameState) {
+    console.log({ gameState });
     return this.destinations(from, gameState).includes(to);
   }
 
   /**
-   * All the destinations the piece can move to. 
+   * All the destinations the piece can move to.
    * Abstract method implemented in each subclass.
    * @param {Square} square - The square the piece is moving from.
    * @param {GameState} game_state - The state of the game.
@@ -83,7 +90,7 @@ class Piece {
   }
 
   /**
-   * All the destinations the piece can move to that result in capture. 
+   * All the destinations the piece can move to that result in capture.
    * Defaults to calling destinations function.
    * @param {Square} square - The square the piece is moving from.
    * @param {GameState} game_state - The state of the game.
@@ -107,7 +114,7 @@ class Piece {
    * @return {boolean}
    */
   get opponent() {
-    return (this.playerNumber === 1 ? 2 : 1);
+    return this.playerNumber === 1 ? 2 : 1;
   }
 
   /**
@@ -152,7 +159,7 @@ class Piece {
    * @return {boolean}
    */
   switchPlayer() {
-    if (this.playerNumber === 1) { 
+    if (this.playerNumber === 1) {
       this.playerNumber = 2;
     } else {
       this.playerNumber = 1;
@@ -160,4 +167,4 @@ class Piece {
   }
 }
 
-export default Piece
+export default Piece;

@@ -8,6 +8,7 @@ class DragonHorse extends Piece {
    * @param {GameState} gameState - the game state being played on.
    * @return {SquareSet}
    */
+
   destinations(square, gameState) {
     return gameState.squares
       .diagonal(square)

@@ -35,7 +35,8 @@ class GameState {
       squares: this.squares.asJson().squares,
       hands: this.hands.map(function(h) {
         return h.asJson;
-      })
+      }),
+      playersTurn: playerNumber => this.playersTurn(playerNumber)
     };
   }
 
@@ -379,11 +380,7 @@ class GameState {
    * @return {boolean}
    */
   passTurn() {
-    if (this.currentPlayerNumber == 1) {
-      this.currentPlayerNumber = 2;
-    } else {
-      this.currentPlayerNumber = 1;
-    }
+    this.currentPlayerNumber = this.currentPlayerNumber === 2 ? 1 : 2;
     return true;
   }
 }

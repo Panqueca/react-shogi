@@ -1,6 +1,6 @@
-import { exists } from './utils'
-import PieceFactory from './piece_factory'
-import PromotionFactory from './promotion_factory'
+import { exists } from "./utils";
+import PieceFactory from "./piece_factory";
+import PromotionFactory from "./promotion_factory";
 
 /** The players hand */
 class Hand {
@@ -24,7 +24,9 @@ class Hand {
   get asJson() {
     return {
       player_number: this.playerNumber,
-      pieces: this.pieces.map(function(p) { return p.asJson; }) 
+      pieces: this.pieces.map(function(p) {
+        return p ? p.asJson : null;
+      })
     };
   }
 
@@ -34,25 +36,33 @@ class Hand {
   }
 
   findById(id) {
-    return this.pieces.find(function(p) { return p.id === id; });
+    return this.pieces.find(function(p) {
+      return p.id === id;
+    });
   }
 
   get selectedPiece() {
-    return this.pieces.find(function(p) { return p.selected; });
+    return this.pieces.find(function(p) {
+      return p ? p.selected : null;
+    });
   }
 
   pushPiece(piece) {
     let factory = new PromotionFactory(piece);
-    let demotedPiece = (factory.demotable ? factory.demote() : piece);
+    let demotedPiece = factory.demotable ? factory.demote() : piece;
     demotedPiece.switchPlayer();
     this.pieces.push(demotedPiece);
   }
 
   popPiece(id) {
-    let piece = this.pieces.find(function(p) { return p.id === id; });
+    let piece = this.pieces.find(function(p) {
+      return p.id === id;
+    });
 
     if (exists(piece)) {
-      let index = this.pieces.findIndex(function(p) { return p.id === id; });
+      let index = this.pieces.findIndex(function(p) {
+        return p.id === id;
+      });
       this.pieces.splice(index, 1);
       return piece;
     } else {
@@ -79,4 +89,4 @@ class Hand {
   }
 }
 
-export default Hand
+export default Hand;

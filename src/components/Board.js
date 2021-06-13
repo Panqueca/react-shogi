@@ -4,6 +4,7 @@ import Draggable from "react-draggable";
 import resizeAware from "react-resize-aware";
 import defaultLineup from "../defaultLineup";
 import decode from "../decode";
+import { getSquareByName, getSquareNameByXY } from "../utils/board/display";
 
 const ResizeAware = resizeAware.default || resizeAware;
 const getDefaultLineup = () => defaultLineup.slice();
@@ -35,13 +36,19 @@ const Board = ({
   onMovePiece,
   pieces,
   pieceComponents,
-  drawLabels
+  drawLabels,
+  handleMovePiece
 }) => {
   const [boardConfig, setBoardConfig] = useState({ boardSize: 0, tileSize: 0 });
   const [dragging, setDragging] = useState({
     targetTile: null,
     dragFrom: null,
     draggingPiece: null
+  });
+  const [targetTile, setTargetTile] = useState({
+    square: null,
+    x: null,
+    y: null
   });
   const boardRef = useRef(null);
 
@@ -68,7 +75,10 @@ const Board = ({
   }
 
   function selectTile({ x, y }) {
-    console.log({ x, y });
+    const move = getSquareNameByXY({ x, y });
+    if (targetTile.square === "move") return;
+    handleMovePiece({ move });
+    setTargetTile({ x, y, square: move });
   }
 
   function coordsToPosition(coords) {
@@ -166,8 +176,8 @@ const Board = ({
   }
 
   function renderLabelText(x, y) {
-    const isBottomRow = y === 0;
-    const isLeftColumn = x === 8;
+    const isBottomRow = y === 8;
+    const isLeftColumn = x === 0;
 
     if (!drawLabels || (!isLeftColumn && !isBottomRow)) {
       return null;
@@ -193,13 +203,16 @@ const Board = ({
     );
   }
 
-  const { targetTile, draggingPiece } = dragging;
+  const { draggingPiece } = dragging;
 
   const tiles = [];
 
   for (let y = 8; y > -1; y--) {
     for (let x = 8; x > -1; x--) {
-      const isTarget = targetTile && targetTile.x === x && targetTile.y === y;
+      const isTarget =
+        dragging.targetTile &&
+        dragging.targetTile.x === x &&
+        dragging.targetTile.y === y;
       const background = getSquareColor(x, y);
       const boxShadow = isTarget
         ? "inset 0px 0px 0px 0.4vmin yellow"
@@ -216,7 +229,7 @@ const Board = ({
       );
 
       tiles.push(
-        <div>
+        <div key={`${x}${y}`}>
           <div key={`rect-${x}-${y}`} style={styles} title={`x: ${x}, y: ${y}`}>
             {renderLabelText(x, y)}
           </div>
@@ -228,15 +241,18 @@ const Board = ({
   const displayPieces = pieceComponents
     ? pieces.map((decl, i) => {
         const isMoving = draggingPiece && i === draggingPiece.index;
-        const { x, y, piece } = decode.fromPieceDecl(decl);
+        const { square, piece } = decode.fromPieceDecl(decl);
+        const { indexOfRow, indexOfCol } = getSquareByName(square);
         const PieceSelection = pieceComponents[piece];
 
         return (
           <PieceSelection
             isMoving={isMoving}
-            x={Math.abs(x - 8)}
-            y={Math.abs(y - 8)}
+            y={indexOfRow}
+            x={indexOfCol}
             onClick={selectTile}
+            isSelected={square === targetTile.square}
+            key={square}
           />
         );
       })
@@ -278,8 +294,8 @@ Board.defaultProps = {
   drawLabels: true,
   onMovePiece: () => {},
   onDragStart: () => {},
-  lightSquareColor: "#f0d9b5",
-  darkSquareColor: "#f0d9b5",
+  lightSquareColor: "#f4c64e",
+  darkSquareColor: "#f4c64e",
   pieces: getDefaultLineup()
 };
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Match from "../@game_state/match";
 import decode from "../decode";
 import defaultLineup from "../defaultLineup";
@@ -65,40 +65,30 @@ function transformGameStateToPieces(gameState) {
 }
 
 const Demo = ({ pieceComponents }) => {
-  const [game, setGame] = useState({});
+  const [game, setGame] = useState({
+    id: 1,
+    game_state: {
+      current_player_number: 1,
+      squares: transformLineUpToSquares(defaultLineup),
+      hands: [
+        { player_number: 1, pieces: [] },
+        { player_number: 2, pieces: [] }
+      ]
+    },
+    players: defaultPlayers,
+    winner: null
+  });
 
-  useEffect(() => {
-    if (!game.id) {
-      setGame({
-        id: 1,
-        game_state: {
-          current_player_number: 1,
-          squares: transformLineUpToSquares(defaultLineup),
-          hands: [
-            { player_number: 1, pieces: [] },
-            { player_number: 2, pieces: [] }
-          ]
-        },
-        players: defaultPlayers,
-        winner: null
-      });
-    }
-  }, [game]);
-
-  function handleMovePiece(piece, fromSquare, toSquare) {
-    console.log({ piece, fromSquare, toSquare });
-  }
-
-  function move() {
+  function handleMovePiece({ move }) {
     const tempMatch = new Match(game);
-    tempMatch.touchSquare("g7", 1);
-    tempMatch.touchSquare("f7", 1);
-    tempMatch.touchSquare("c3", 2);
-    tempMatch.touchSquare("d3", 2);
-    tempMatch.touchSquare("h8", 1);
-    console.log(tempMatch.asJson);
-    tempMatch.touchSquare("b2", 1);
-    console.log(tempMatch.asJson);
+    const { current_player_number } = game.game_state;
+    console.log({ current_player_number });
+    tempMatch.touchSquare(move, current_player_number);
+    console.log({ match: tempMatch.asJson });
+    if (tempMatch.promotion) {
+      tempMatch.touchPromotionOption(true, current_player_number);
+      console.log({ match: tempMatch.asJson });
+    }
     setGame(tempMatch.asJson);
   }
 
@@ -109,10 +99,8 @@ const Demo = ({ pieceComponents }) => {
         onMovePiece={handleMovePiece}
         currentPlayer={game.current_player_number}
         pieceComponents={pieceComponents}
+        handleMovePiece={handleMovePiece}
       />
-      <br />
-      <br />
-      <button onClick={move}>test</button>
     </div>
   );
 };

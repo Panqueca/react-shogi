@@ -133,7 +133,7 @@ class Match {
   touchPromotionOption(promoteOption, playerNumber) {
     let promote = new Promote({
       playerNumber: playerNumber,
-      match: this
+      match: this.asJson
     });
 
     let result = promote.result;
@@ -144,12 +144,12 @@ class Match {
         if (promoteOption) {
           this.gameState.promote(this.currentMove.toId);
         }
-        this.gameState.passTurn();
         this._addMoveToLastAction(
           this.currentMove.fromId,
           this.currentMove.toId,
           promoteOption
         );
+        this.gameState.passTurn();
         return true;
       default:
         this._notify(result.message);

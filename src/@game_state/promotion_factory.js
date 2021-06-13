@@ -14,12 +14,16 @@ import PromotedKnight from "./PromotedKnight";
 import PromotedSilverGeneral from "./PromotedSilverGeneral";
 
 const PROMOTIONS = [
-  { from: Pawn, to: PromotedPawn },
-  { from: Bishop, to: DragonHorse },
-  { from: Rook, to: DragonKing },
-  { from: Lance, to: PromotedLance },
-  { from: Knight, to: PromotedKnight },
-  { from: SilverGeneral, to: PromotedSilverGeneral }
+  { from: Pawn, to: PromotedPawn, type: "PromotedPawn" },
+  { from: Bishop, to: DragonHorse, type: "DragonHorse" },
+  { from: Rook, to: DragonKing, type: "DragonKing" },
+  { from: Lance, to: PromotedLance, type: "PromotedLance" },
+  { from: Knight, to: PromotedKnight, type: "PromotedKnight" },
+  {
+    from: SilverGeneral,
+    to: PromotedSilverGeneral,
+    type: "PromotedSilverGeneral"
+  }
 ];
 
 class PromotionFactory {
@@ -36,11 +40,13 @@ class PromotionFactory {
   }
 
   promote() {
+    const { type } = this._filterKlass(this.piece.constructor);
     let promotedKlass = this._promotedKlass(this.piece.constructor);
     if (exists(promotedKlass)) {
       return new promotedKlass({
         id: this.piece.id,
-        player_number: this.piece.playerNumber
+        player_number: this.piece.playerNumber,
+        type
       });
     } else {
       throw "Piece cannot be promoted";
@@ -59,26 +65,22 @@ class PromotionFactory {
     }
   }
 
-  _promotedKlass(klass) {
-    let mapping = PROMOTIONS.filter(p => {
+  _filterKlass(klass) {
+    return PROMOTIONS.filter(p => {
       return p.from === klass;
     })[0];
-    if (exists(mapping)) {
-      return mapping.to;
-    } else {
-      return null;
-    }
+  }
+
+  _promotedKlass(klass) {
+    const filtered = this._filterKlass(klass);
+    if (exists(filtered)) return filtered.to;
+    return null;
   }
 
   _demotedKlass(klass) {
-    let mapping = PROMOTIONS.filter(p => {
-      return p.to === klass;
-    })[0];
-    if (exists(mapping)) {
-      return mapping.from;
-    } else {
-      return null;
-    }
+    const filtered = this._filterKlass(klass);
+    if (exists(filtered)) return filtered.from;
+    return null;
   }
 }
 

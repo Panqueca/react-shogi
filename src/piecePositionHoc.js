@@ -9,22 +9,41 @@ module.exports = Piece => props => {
     onTouchEnd,
     onTouchStart,
     style,
-    isMoving
+    isMoving,
+    isSelected
   } = props;
   const y = 8 - props.y;
 
   const styles = Object.assign({}, style, {
     position: "absolute",
     left: `${props.x * 11.111}%`,
-    top: `${y * 11.4}%`,
+    top: `${y * 11.38}%`,
     width: "11.111%",
-    height: "12.111%",
+    height: "11.111%",
     textAlign: "center",
-    zIndex: isMoving ? 1000 : undefined,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    zIndex: isMoving ? 1000 : undefined
   });
+
+  const SimpleLayer = ({ styles, onClick = () => {} }) => {
+    return (
+      <div
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          ...styles
+        }}
+        onClick={onClick}
+      />
+    );
+  };
 
   return (
     <div
@@ -35,6 +54,7 @@ module.exports = Piece => props => {
       style={styles}
       title={`x: ${props.x}, y: ${props.y}`}
     >
+      <SimpleLayer onClick={() => onClick({ x: props.x, y: props.y })} />
       <div
         style={{
           position: "absolute",
@@ -46,7 +66,23 @@ module.exports = Piece => props => {
         }}
         onClick={() => onClick({ x: props.x, y: props.y })}
       />
-      <Piece />
+      <div
+        style={{
+          zIndex: 2,
+          width: "75%",
+          height: "75%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <Piece />
+      </div>
+      {isSelected && (
+        <SimpleLayer
+          styles={{ backgroundColor: "rgba(0,0,0,0.4)", zIndex: 1 }}
+        />
+      )}
     </div>
   );
 };

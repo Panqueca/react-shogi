@@ -1,4 +1,4 @@
-import { exists } from './utils'
+import { exists } from "./utils";
 
 /** A promote action */
 class Promote {
@@ -22,19 +22,24 @@ class Promote {
    */
   get result() {
     if (exists(this.match.winner)) {
-      return { name: 'GameOver', message: 'Game is over.' };
+      return { name: "GameOver", message: "Game is over." };
     }
 
-    if (!this.match.gameState.playersTurn(this.playerNumber)) {
-      return { name: 'NotPlayersTurn', message: 'It is not your turn.' };
+    console.log({ a: this.match });
+
+    if (!this.match.game_state.playersTurn(this.playerNumber)) {
+      return { name: "NotPlayersTurn", message: "It is not your turn." };
     }
 
     if (!this.match.promotion) {
-      return { name: 'NoPieceToPromote', message: 'There is no piece to promote.' };
+      return {
+        name: "NoPieceToPromote",
+        message: "There is no piece to promote."
+      };
     }
 
-    return { name: 'ValidPromotion', message: '' }; 
+    return { name: "ValidPromotion", message: "" };
   }
 }
 
-export default Promote
+export default Promote;

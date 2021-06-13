@@ -11,6 +11,7 @@ module.exports = Piece => props => {
     style,
     isMoving,
     isSelected,
+    lastAction,
     boardRow,
     boardCol
   } = props;
@@ -21,7 +22,7 @@ module.exports = Piece => props => {
     left: `${boardCol * 11.111}%`,
     top: `${display_y * 11.38}%`,
     width: "11.111%",
-    height: "11.111%",
+    height: "11.211%",
     textAlign: "center",
     display: "flex",
     justifyContent: "center",
@@ -29,7 +30,7 @@ module.exports = Piece => props => {
     zIndex: isMoving ? 1000 : undefined
   });
 
-  const SimpleLayer = ({ styles, onClick = () => {} }) => {
+  const SimpleLayer = ({ styles, onClick = () => {}, className = "" }) => {
     return (
       <div
         style={{
@@ -43,6 +44,7 @@ module.exports = Piece => props => {
           ...styles
         }}
         onClick={onClick}
+        className={className}
       />
     );
   };
@@ -82,8 +84,11 @@ module.exports = Piece => props => {
       </div>
       {isSelected && (
         <SimpleLayer
-          styles={{ backgroundColor: "rgba(0,0,0,0.4)", zIndex: 1 }}
+          styles={{ backgroundColor: "rgba(0,0,0,0.3)", zIndex: 1 }}
         />
+      )}
+      {lastAction && (
+        <SimpleLayer styles={{ zIndex: 1 }} className="last-action-tile" />
       )}
     </div>
   );

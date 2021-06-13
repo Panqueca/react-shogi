@@ -56,12 +56,23 @@ function transformLineUpToSquares(lineUp) {
 function transformGameStateToPieces(gameState) {
   if (gameState) {
     return gameState.squares.map(({ id, piece }) => {
-      if (!piece) return `Empty@${id}`;
-      return `${piece.type}${piece.player_number === 1 ? "A" : "B"}@${id}`;
+      if (!piece)
+        return {
+          pieceAtLocation: `Empty@${id}`,
+          piece: null,
+          player_number: null
+        };
+      return {
+        pieceAtLocation: `${piece.type}${
+          piece.player_number === 1 ? "A" : "B"
+        }@${id}`,
+        piece,
+        player_number: piece.player_number
+      };
     });
   }
 
-  return defaultLineup;
+  return [];
 }
 
 const Demo = ({ pieceComponents }) => {
@@ -78,6 +89,17 @@ const Demo = ({ pieceComponents }) => {
     players: defaultPlayers,
     winner: null
   });
+  const [historyActions, setHistoryActions] = useState([]);
+
+  function addHistoryAction(newAction) {
+    if (newAction) setHistoryActions([...historyActions, newAction]);
+  }
+
+  function getLastAction() {
+    const lastAction = historyActions[historyActions.length - 1] || {};
+    const { data = {} } = lastAction;
+    return { ...lastAction, ...data };
+  }
 
   function handleMovePiece({ move }) {
     const tempMatch = new Match(game);
@@ -85,17 +107,17 @@ const Demo = ({ pieceComponents }) => {
 
     tempMatch.touchSquare(move, current_player_number);
 
-    console.log({ match: tempMatch.asJson });
+    addHistoryAction(tempMatch.lastAction);
 
     if (tempMatch.promotion) {
       tempMatch.touchPromotionOption(true, current_player_number);
-      console.log("Promotion: ", { match: tempMatch.asJson });
+      addHistoryAction(tempMatch.lastAction);
     }
 
     setGame(tempMatch.asJson);
   }
 
-  console.log({ game });
+  console.log({ game, historyActions });
 
   return (
     <div className="demo">
@@ -106,6 +128,7 @@ const Demo = ({ pieceComponents }) => {
         pieceComponents={pieceComponents}
         handleMovePiece={handleMovePiece}
         notification={game.notification}
+        lastAction={getLastAction()}
       />
     </div>
   );

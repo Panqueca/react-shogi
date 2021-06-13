@@ -36,13 +36,13 @@ const defaultTargetTile = {
 };
 
 const Board = ({
-  lightSquareColor,
-  darkSquareColor,
+  squaresColor,
   pieces,
   pieceComponents,
   drawLabels,
   handleMovePiece,
-  notification
+  notification,
+  lastAction
 }) => {
   const [boardConfig, setBoardConfig] = useState({ boardSize: 0, tileSize: 0 });
   const [targetTile, setTargetTile] = useState(defaultTargetTile);
@@ -60,12 +60,6 @@ const Board = ({
       setTargetTile(defaultTargetTile);
     }
   }, [notification]);
-
-  function getSquareColor(x, y) {
-    const odd = x % 2;
-    if (y % 2) return odd ? lightSquareColor : darkSquareColor;
-    return odd ? darkSquareColor : lightSquareColor;
-  }
 
   function handleResize(size) {
     const tileSize = size.width / 9;
@@ -110,7 +104,7 @@ const Board = ({
 
   for (let y = 8; y > -1; y--) {
     for (let x = 8; x > -1; x--) {
-      const background = getSquareColor(x, y);
+      const background = squaresColor;
 
       const styles = Object.assign(
         {
@@ -131,10 +125,9 @@ const Board = ({
       );
     }
   }
-
   const displayPieces = pieceComponents
-    ? pieces.map((decl, i) => {
-        const { square, piece } = decode.fromPieceDecl(decl);
+    ? pieces.map(({ pieceAtLocation }, i) => {
+        const { square, piece } = decode.fromPieceDecl(pieceAtLocation);
         const {
           boardRow,
           boardCol,
@@ -153,8 +146,9 @@ const Board = ({
             squareName={squareName}
             boardRow={boardRow}
             boardCol={boardCol}
-            onClick={selectTile}
+            onClick={({ x, y }) => selectTile({ x, y })}
             isSelected={square === targetTile.square}
+            lastAction={lastAction && square === lastAction.toId}
             key={square}
           />
         );
@@ -183,17 +177,14 @@ const Board = ({
 Board.propTypes = {
   allowMoves: PropTypes.bool,
   drawLabels: PropTypes.bool,
-  lightSquareColor: PropTypes.string,
-  darkSquareColor: PropTypes.string,
+  squaresColor: PropTypes.string,
   pieces: PropTypes.arrayOf(PropTypes.string)
 };
 
 Board.defaultProps = {
   allowMoves: true,
-  highlightTarget: true,
   drawLabels: true,
-  lightSquareColor: "#f4c64e",
-  darkSquareColor: "#f4c64e",
+  squaresColor: "#f4c64e",
   pieces: getDefaultLineup()
 };
 

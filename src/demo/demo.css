@@ -19,6 +19,31 @@ body {
   margin: 1vmin auto;
 }
 
+.last-action-tile {
+  -webkit-animation: blink-tile 1.5s infinite ease-out; /* Safari 4+ */
+  -moz-animation: blink-tile 1.5s infinite ease-out; /* Fx 5+ */
+  -o-animation: blink-tile 1.5s infinite ease-out; /* Opera 12+ */
+  animation: blink-tile 1.5s infinite ease-out; /* IE 10+, Fx 29+ */
+}
+
+@-webkit-keyframes blink-tile {
+  0% {
+    background-color: rgba(255, 126, 126, 0.4);
+  }
+  25% {
+    background-color: rgba(255, 126, 126, 0.45);
+  }
+  50% {
+    background-color: rgba(255, 126, 126, 0.5);
+  }
+  75% {
+    background-color: rgba(255, 126, 126, 0.45);
+  }
+  100% {
+    background-color: rgba(255, 126, 126, 0.4);
+  }
+}
+
 @media only screen and (max-width: 768px) {
   #root {
     max-width: initial;

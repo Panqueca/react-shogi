@@ -34,8 +34,9 @@ body {
 }
 
 .board-set .history {
-  overflow-y: scroll;
-  max-height: 300px;
+  overflow-y: auto;
+  min-height: 25vh;
+  max-height: 25vh;
 }
 
 .board-set .history-table {

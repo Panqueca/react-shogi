@@ -221,7 +221,7 @@ const Board = ({
                   src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y
 
                 "
-                  style={{ width: "50px", marginRight: "15px" }}
+                  style={{ width: "35px", marginRight: "10px" }}
                 />
                 Jogador 2 (Gote)
               </Card.Title>
@@ -255,7 +255,7 @@ const Board = ({
                   src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y
 
                 "
-                  style={{ width: "50px", marginRight: "15px" }}
+                  style={{ width: "35px", marginRight: "10px" }}
                 />
                 Jogador 1 (Sente)
               </Card.Title>

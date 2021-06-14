@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import Demo from "./demo/Demo";
+import Match from "./pages/Match";
 import { getPieceComponentsByTheme } from "./utils/pieces/display";
 
 const defaultTheme = "skin_1";
 
 const App = () => {
   const [pieceSkin, setPieceSkin] = useState(defaultTheme);
-  const [pieceComponents, setPieceComponents] = useState(null);
+  const [displayPieces, setDisplayPieces] = useState(null);
 
   useEffect(() => {
-    const newPieces = getPieceComponentsByTheme(pieceSkin);
-    setPieceComponents(newPieces);
+    setDisplayPieces(getPieceComponentsByTheme("skin_1"));
   }, [pieceSkin]);
 
   const changePieceSkin = newSkin => {
@@ -18,7 +17,7 @@ const App = () => {
   };
 
   return (
-    <Demo pieceComponents={pieceComponents} changePieceSkin={changePieceSkin} />
+    <Match displayPieces={displayPieces} changePieceSkin={changePieceSkin} />
   );
 };
 

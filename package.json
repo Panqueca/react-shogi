@@ -23,7 +23,8 @@
     "prop-types": "^15.6.0",
     "react-bootstrap": "^1.6.1",
     "react-draggable": "^3.0.3",
-    "react-resize-aware": "^2.7.0"
+    "react-resize-aware": "^2.7.0",
+    "shogi.js": "^2.0.4"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

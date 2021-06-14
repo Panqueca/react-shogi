@@ -2,12 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import resizeAware from "react-resize-aware";
 import defaultLineup from "../utils/game/defaultLineup";
-import decode from "../decode";
 import {
   getSquareByInternationalSlug,
-  getSquareNameByXY
+  getSquareInfoByXY,
+  getSquareNameByXY,
+  getSquareByXYBoard
 } from "../utils/board/display";
 import { Card, Badge } from "react-bootstrap";
+import { checkIsPossibleMove } from "../utils/pieces/filter";
 
 const ResizeAware = resizeAware.default || resizeAware;
 const getDefaultLineup = () => defaultLineup.slice();
@@ -36,7 +38,10 @@ const Board = ({
   handleMovePiece,
   lastAction,
   targetTile,
-  selectHandPiece
+  selectHandPiece,
+  possibleMoves,
+  displayPieces,
+  board
 }) => {
   const [boardConfig, setBoardConfig] = useState({ boardSize: 0, tileSize: 0 });
   const boardRef = useRef(null);
@@ -59,26 +64,24 @@ const Board = ({
   }
 
   function renderLabelText(x, y) {
-    const isBottomRow = y === 8;
-    const isLeftColumn = x === 0;
+    const isBottomRow = y === 0;
+    const isLeftColumn = x === 8;
+
+    const { row, col } = getSquareInfoByXY({ x, y });
 
     if (!drawLabels || (!isLeftColumn && !isBottomRow)) return null;
 
     if (isLeftColumn && isBottomRow)
       return [
         <span key="blx" style={xLabelStyles}>
-          1
+          {col}
         </span>,
         <span key="bly" style={yLabelStyles}>
-          A
+          {row.toUpperCase()}
         </span>
       ];
 
-    const labelValue = String.fromCharCode(
-      decode.charCodeOffset + Math.abs(y - 8)
-    ).toUpperCase();
-
-    const label = isLeftColumn ? labelValue : x + 1;
+    const label = isLeftColumn ? row.toUpperCase() : col;
 
     return (
       <span style={isLeftColumn ? yLabelStyles : xLabelStyles}>{label}</span>
@@ -90,8 +93,8 @@ const Board = ({
   const finalTileSize = boardConfig.tileSize - 0.05;
   const finalTilePercent = 11.111;
 
-  for (let y = 8; y > -1; y--) {
-    for (let x = 8; x > -1; x--) {
+  for (let y = 0; y <= 8; y++) {
+    for (let x = 0; x <= 8; x++) {
       const background = squaresColor;
 
       const styles = Object.assign(
@@ -115,21 +118,36 @@ const Board = ({
       );
     }
   }
+  const renderPieces = [];
 
-  const displayPieces = pieceComponents
-    ? pieces.map(({ pieceAtLocation, piece: pieceInfo }, i) => {
-        const { square, piece } = decode.fromPieceDecl(pieceAtLocation);
+  board.forEach((col, x) => {
+    if (Array.isArray(col))
+      col.forEach((locationInfo, y) => {
+        if (!displayPieces) return;
         const {
-          boardRow,
-          boardCol,
           indexOfRow,
           indexOfCol,
           squareNumber,
-          squareName
-        } = getSquareByInternationalSlug(square);
-        const PieceSelection = pieceComponents[piece];
+          squareName,
+          boardRow,
+          boardCol,
+          squareX,
+          squareY
+        } = getSquareByXYBoard({ x, y });
+        const empty = !locationInfo || !locationInfo.kind;
 
-        return (
+        const PieceSelection = empty
+          ? displayPieces["Empty"]
+          : displayPieces[locationInfo.kind];
+
+        const isPossibleMove = checkIsPossibleMove(
+          { squareX, squareY },
+          possibleMoves
+        );
+
+        const { color } = locationInfo || {};
+
+        renderPieces.push(
           <PieceSelection
             y={indexOfRow}
             x={indexOfCol}
@@ -137,26 +155,29 @@ const Board = ({
             squareName={squareName}
             boardRow={boardRow}
             boardCol={boardCol}
-            onClick={({ x, y }) => selectTile({ x, y, pieceInfo })}
-            isSelected={square === targetTile.square}
-            lastAction={lastAction && square === lastAction.toId}
-            key={square}
+            onClick={({ x, y }) =>
+              selectTile({ x, y, pieceInfo: locationInfo })
+            }
+            isSelected={isPossibleMove || squareName === targetTile.square}
+            lastAction={lastAction && squareName === lastAction.toId}
+            key={squareName}
             boardConfig={boardConfig}
             tileSize={finalTileSize}
             tilePercent={finalTilePercent}
+            player={color === 1 ? 2 : 1}
           />
         );
-      })
-    : [];
+      });
+  });
 
-  const children = tiles.concat(displayPieces);
+  const children = tiles.concat(renderPieces);
   const boardStyles = {
     position: "relative",
     width: "100%",
     height: boardConfig.boardSize
   };
 
-  function displayHandPieces(handPieces, playerNumber) {
+  function displayHandPieces(handPieces, turn) {
     if (Array.isArray(handPieces)) {
       return handPieces.map(({ pieceByPlayer, count, pieceType, pieces }) => {
         const Piece = pieceComponents[pieceByPlayer];
@@ -166,7 +187,7 @@ const Board = ({
               <Piece
                 forceProps={{
                   title: `${pieceType}`,
-                  onClick: () => selectHandPiece({ pieces, playerNumber })
+                  onClick: () => selectHandPiece({ pieces, turn })
                 }}
               />
               {count > 1 && (

@@ -1,11 +1,12 @@
 import React from "react";
 import { useState } from "react";
-import Match from "../@game_state/match";
-import Board from "../components/Board";
-import { transformGameStateToBoard } from "../utils/pieces/filter";
+import { Shogi } from "shogi.js";
 import { Button, Modal } from "react-bootstrap";
-import { DEFAULT_GAME, getNormalizedGameData } from "../utils/game/match";
 import "./demo.css";
+import Board from "../components/Board";
+import { DEFAULT_GAME, getNormalizedGameData } from "../utils/game/match";
+import { checkIsPossibleMove } from "../utils/pieces/filter";
+import { getSquareByInternationalSlug } from "../utils/board/display";
 import { getDialogInfoByNotificationSlug } from "../utils/game/messages";
 
 const defaultTargetTile = {
@@ -23,11 +24,15 @@ const defaultDialog = {
   cancelText: ""
 };
 
-const Demo = ({ pieceComponents }) => {
-  const [game, setGame] = useState(DEFAULT_GAME);
+const shogi = new Shogi();
+
+const MatchPage = ({ displayPieces }) => {
+  shogi.initialize();
+
+  const [gameMatch, setGameMatch] = useState(shogi);
   const [historyActions, setHistoryActions] = useState([]);
   const [targetTile, setTargetTile] = useState(defaultTargetTile);
-  const [moveAction, setMoveAction] = useState({ from: null });
+  const [moveAction, setMoveAction] = useState({ from: null, moves: [] });
   const [selectedDropPiece, setSelectedDropPiece] = useState({ id: null });
   const [dialog, setDialog] = useState(defaultDialog);
 
@@ -38,12 +43,17 @@ const Demo = ({ pieceComponents }) => {
   }
 
   function resetGame() {
-    setGame(DEFAULT_GAME);
+    setGameMatch(DEFAULT_GAME);
     setHistoryActions([]);
     resetMoveData();
   }
 
-  function addHistoryAction(newAction, playerNumber) {
+  function updateGameMatch(newGame) {
+    setGameMatch(newGame);
+    resetMoveData();
+  }
+
+  function addHistoryAction(newAction, turn) {
     const { data } = newAction;
     let toId = data.toId;
 
@@ -55,7 +65,7 @@ const Demo = ({ pieceComponents }) => {
         {
           ...newAction,
           data: { ...data, toId },
-          playerSide: playerNumber === 2 ? "GOTE" : "SENTE"
+          playerSide: turn === 2 ? "GOTE" : "SENTE"
         }
       ]);
   }
@@ -83,7 +93,7 @@ const Demo = ({ pieceComponents }) => {
       }
 
       const gameData = getNormalizedGameData(tempMatch.asJson);
-      setGame(gameData);
+      setGameMatch(gameData);
     }
   };
 
@@ -115,13 +125,45 @@ const Demo = ({ pieceComponents }) => {
     return false;
   }
 
+  function touchTargetTile({ x, y, square, pieceInfo }) {
+    const tempShogi = new Shogi();
+    tempShogi.initializeFromSFENString(gameMatch.toSFENString());
+
+    const { squareX, squareY } = getSquareByInternationalSlug(square);
+
+    const { color: piecePlayer } = pieceInfo || {};
+    const samePlayerPiece = piecePlayer === "current_player_number";
+    const isOpponentPiece = piecePlayer === "current_player_number";
+
+    if (!moveAction.from || samePlayerPiece) {
+      setMoveAction({
+        from: { squareX, squareY, square },
+        moves: tempShogi.getMovesFrom(squareX, squareY)
+      });
+      setTargetTile({ x, y, square });
+      return;
+    }
+
+    if (isOpponentPiece) {
+      resetMoveData();
+      return;
+    }
+
+    if (checkIsPossibleMove({ squareX, squareY }, moveAction.moves)) {
+      tempShogi.move(
+        moveAction.from.squareX,
+        moveAction.from.squareY,
+        squareX,
+        squareY
+      );
+      console.log({ tempShogi });
+      updateGameMatch(tempShogi);
+    }
+  }
+
   function handleMovePiece({ move, y, x, square, pieceInfo }) {
-    const tempMatch = new Match(game);
-    const { current_player_number } = tempMatch.asJson.game_state;
-
-    const { player_number = null } = pieceInfo || {};
-    const samePlayerPiece = player_number === current_player_number;
-
+    return;
+    /* 
     if (selectedDropPiece.id) {
       tempMatch.touchPieceInHand(selectedDropPiece.id, current_player_number);
       if (tempMatch.notificationSlug === "PieceSelected") {
@@ -138,7 +180,7 @@ const Demo = ({ pieceComponents }) => {
 
     if (!moveAction.from || samePlayerPiece) {
       setMoveAction({ from: move });
-      setTargetTile({ x, y, square });
+      touchTargetTile({ x, y, square });
       return;
     }
 
@@ -147,10 +189,22 @@ const Demo = ({ pieceComponents }) => {
       return;
     }
 
-    setTargetTile({ x, y, square });
+    touchTargetTile({ x, y, square });
 
     tempMatch.touchSquare(moveAction.from, current_player_number);
     tempMatch.touchSquare(move, current_player_number);
+    console.log({ moveAction, move });
+    const {
+      squareX: fromSquareX,
+      squareY: fromSquareY
+    } = getSquareByInternationalSlug(moveAction.from);
+    const {
+      squareX: toSquareX,
+      squareY: toSquareY
+    } = getSquareByInternationalSlug(move);
+    console.log(fromSquareX, fromSquareY, toSquareX, toSquareY);
+    shogi.move(fromSquareX, fromSquareY, toSquareX, toSquareY);
+    console.log({ shogi });
 
     const { haveNotification } = checkAlertNotification(tempMatch);
     if (haveNotification) return;
@@ -158,27 +212,23 @@ const Demo = ({ pieceComponents }) => {
     if (tempMatch.notificationSlug === "MoveValid") {
       addHistoryAction(tempMatch.lastAction, current_player_number);
       const gameData = getNormalizedGameData(tempMatch.asJson);
-      setGame(gameData);
+      updateGameMatch(gameData);
     }
 
-    setMoveAction({ from: null });
+    setMoveAction({ from: null }); */
   }
 
-  function selectHandPiece({ pieces, playerNumber }) {
-    const { game_state } = game;
-    const { current_player_number } = game_state;
-
-    if (current_player_number === playerNumber && pieces && pieces[0]) {
+  function selectHandPiece({ pieces, turn }) {
+    if (gameMatch.turn === turn && pieces && pieces[0]) {
       const { previousId } = pieces[0];
       if (previousId) {
         setSelectedDropPiece({ id: previousId });
-        setTargetTile(defaultTargetTile);
+        touchTargetTile(defaultTargetTile);
       }
     }
   }
 
-  const GAME_STATE = transformGameStateToBoard(game.game_state);
-  console.log({ game });
+  console.log({ gameMatch, moveAction });
 
   function displayDialog() {
     return (
@@ -214,22 +264,22 @@ const Demo = ({ pieceComponents }) => {
           </Button>
         </div>
       </div>
-      {game && game.id && (
+      {gameMatch && (
         <Board
-          pieces={GAME_STATE.pieces}
-          hands={GAME_STATE.hands}
-          historyActions={historyActions}
-          currentPlayer={game.current_player_number}
-          pieceComponents={pieceComponents}
-          handleMovePiece={handleMovePiece}
-          notification={game.notification}
-          lastAction={getLastAction()}
-          targetTile={targetTile}
+          hands={gameMatch.hands}
+          board={gameMatch.board}
+          currentPlayer={gameMatch.turn}
+          displayPieces={displayPieces}
+          handleMovePiece={touchTargetTile}
+          possibleMoves={moveAction.moves}
           selectHandPiece={selectHandPiece}
+          targetTile={targetTile}
+          lastAction={getLastAction()}
+          historyActions={historyActions}
         />
       )}
     </div>
   );
 };
 
-export default Demo;
+export default MatchPage;

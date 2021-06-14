@@ -48,7 +48,8 @@ module.exports = Piece => props => {
     boardCol,
     forceProps,
     tileSize,
-    tilePercent
+    tilePercent,
+    player
   } = props;
   const display_y = 8 - boardRow;
 
@@ -69,6 +70,8 @@ module.exports = Piece => props => {
     typeof onClick === "function"
       ? () => onClick({ x: props.x, y: props.y })
       : () => {};
+
+  const rotate = player === 2 ? { transform: "rotate(180deg)" } : {};
 
   return (
     <div
@@ -99,7 +102,8 @@ module.exports = Piece => props => {
           height: "75%",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
+          ...rotate
         }}
       >
         <Piece />

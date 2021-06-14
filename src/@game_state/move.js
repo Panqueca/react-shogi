@@ -142,13 +142,17 @@ class Move {
   }
 
   get _putsTwoFuhyouInFile() {
-    return (
-      this.match.gameState.squares
-        .whereX(this._touched.x)
-        .occupiedByPiece("Pawn")
-        .occupiedByPlayer(this.playerNumber)
-        .length() > 0
-    );
+    if (this._selectedPieceInHand.type === "Pawn") {
+      return (
+        this.match.gameState.squares
+          .whereX(this._touched.x)
+          .occupiedByPiece("Pawn")
+          .occupiedByPlayer(this.playerNumber)
+          .length() > 0
+      );
+    }
+
+    return false;
   }
 
   get _fuhyouCausesCheckmate() {
@@ -156,17 +160,12 @@ class Move {
       let dup = this.match.gameState.dup;
       dup.drop(this._selectedPieceInHand.id, this.touchedId);
       return dup.inCheckmate(this._opponentNumber);
-    } else {
-      return false;
     }
+    return false;
   }
 
   get _opponentNumber() {
-    if (this.playerNumber === 1) {
-      return 2;
-    } else {
-      return 1;
-    }
+    return this.playerNumber === 2 ? 2 : 1;
   }
 }
 

@@ -225,7 +225,6 @@ class Match {
   }
 
   _notify(message) {
-    console.log({ message });
     this.notification = message;
   }
 }

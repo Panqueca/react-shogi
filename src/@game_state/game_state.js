@@ -327,11 +327,8 @@ class GameState {
       return h.hasPiece(pieceId);
     });
 
-    if (exists(hand)) {
-      return hand.selectPiece(pieceId);
-    } else {
-      return false;
-    }
+    if (exists(hand)) return hand.selectPiece(pieceId);
+    return false;
   }
 
   /**
@@ -344,11 +341,8 @@ class GameState {
       return h.hasPiece(pieceId);
     });
 
-    if (exists(hand)) {
-      return hand.deselectPiece(pieceId);
-    } else {
-      return false;
-    }
+    if (exists(hand)) return hand.deselectPiece(pieceId);
+    return false;
   }
 
   /**
@@ -359,14 +353,11 @@ class GameState {
     let square = this.findSquare(squareId);
     if (exists(square) && exists(square.piece)) {
       let promotionFactory = new PromotionFactory(square.piece);
-      if (promotionFactory.promotable) {
+      if (promotionFactory.promotable)
         return square.addPiece(promotionFactory.promote());
-      } else {
-        return false;
-      }
-    } else {
-      return false;
     }
+
+    return false;
   }
 
   /**

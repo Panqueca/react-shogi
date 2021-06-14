@@ -35,7 +35,8 @@ const Board = ({
   drawLabels,
   handleMovePiece,
   lastAction,
-  targetTile
+  targetTile,
+  selectHandPiece
 }) => {
   const [boardConfig, setBoardConfig] = useState({ boardSize: 0, tileSize: 0 });
   const boardRef = useRef(null);
@@ -155,14 +156,19 @@ const Board = ({
     height: boardConfig.boardSize
   };
 
-  function displayHandPieces(handPieces) {
+  function displayHandPieces(handPieces, playerNumber) {
     if (Array.isArray(handPieces)) {
-      return handPieces.map(({ pieceByPlayer, count, pieceType }) => {
+      return handPieces.map(({ pieceByPlayer, count, pieceType, pieces }) => {
         const Piece = pieceComponents[pieceByPlayer];
         if (Piece)
           return (
             <div className="piece-at-hand" key={pieceByPlayer}>
-              <Piece forceProps={{ title: `${pieceType}` }} />
+              <Piece
+                forceProps={{
+                  title: `${pieceType}`,
+                  onClick: () => selectHandPiece({ pieces, playerNumber })
+                }}
+              />
               {count > 1 && (
                 <Badge variant="light" className="count-badge">
                   {count}
@@ -233,7 +239,7 @@ const Board = ({
               </ul>
             </Card.Body>
           </Card>
-          <div className="hand">{displayHandPieces(hands.player2)}</div>
+          <div className="hand">{displayHandPieces(hands.player2, 2)}</div>
         </div>
         <div className="board-table" ref={boardRef}>
           <ResizeAware
@@ -267,7 +273,7 @@ const Board = ({
               </ul>
             </Card.Body>
           </Card>
-          <div className="hand">{displayHandPieces(hands.player1)}</div>
+          <div className="hand">{displayHandPieces(hands.player1, 1)}</div>
         </div>
       </div>
     </div>

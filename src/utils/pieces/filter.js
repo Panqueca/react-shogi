@@ -21,20 +21,22 @@ export function transformLineUpToSquares(lineUp) {
   const squares = [];
 
   lineUp.forEach(info => {
-    const { x, y, piece, square, pieceType } = decode.fromPieceDecl(info);
-    const side = piece.substr(piece.length - 1);
-    const player_number = side === "A" ? 1 : 2;
+    if (info) {
+      const { x, y, piece, square, pieceType } = decode.fromPieceDecl(info);
+      const side = piece.substr(piece.length - 1);
+      const player_number = side === "A" ? 1 : 2;
 
-    squares.push({
-      id: square,
-      x,
-      y,
-      piece: {
-        id: info,
-        type: pieceType,
-        player_number
-      }
-    });
+      squares.push({
+        id: square,
+        x,
+        y,
+        piece: {
+          id: info,
+          type: pieceType,
+          player_number
+        }
+      });
+    }
   });
 
   return [...squares, ...getMissingSquares(squares)];
@@ -77,7 +79,7 @@ export function getPlayerHandByGameResponse(pieces, playerNumber) {
 
   if (Array.isArray(pieces) && playerNumber)
     pieces.forEach(pieceInfo => {
-      if (!pieceInfo) return;
+      if (!pieceInfo || !pieceInfo.id) return;
 
       const { id: previousId } = pieceInfo;
       const { pieceType } = decode.fromPieceDecl(pieceInfo.id);

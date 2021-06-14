@@ -45,16 +45,19 @@ module.exports = Piece => props => {
     isSelected,
     lastAction,
     boardRow,
-    boardCol
+    boardCol,
+    forceProps,
+    tileSize,
+    tilePercent
   } = props;
   const display_y = 8 - boardRow;
 
   const styles = Object.assign({}, style, {
     position: "absolute",
-    left: `${boardCol * 11.111}%`,
-    top: `${display_y * 11.38}%`,
-    width: "11.111%",
-    height: "11.211%",
+    left: `${boardCol * tilePercent}%`,
+    top: `${display_y * tilePercent}%`,
+    width: tileSize,
+    height: tileSize,
     textAlign: "center",
     display: "flex",
     justifyContent: "center",
@@ -75,6 +78,7 @@ module.exports = Piece => props => {
       onTouchStart={onTouchStart}
       style={styles}
       title={`Square: ${props.squareNumber} (${props.squareName}), y: ${props.x} x: ${props.y}`}
+      {...forceProps}
     >
       <SimpleLayer onClick={onClickFunc} />
       <div

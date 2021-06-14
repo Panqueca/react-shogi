@@ -18,6 +18,10 @@ body {
   width: 100%;
 }
 
+.board-head-actions button {
+  margin: 15px;
+}
+
 .board-set {
   width: 100%;
   padding: 20px;
@@ -108,11 +112,16 @@ body {
 .board-set .board-table {
   width: 100%;
   max-width: 80vmin;
+  position: ]relative;
+  z-index: 10;
+}
+
+.board-set .board-table .board-resizer {
+  width: 100%;
+  max-width: 80vmin;
   -webkit-box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.39);
   -moz-box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.39);
   box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.39);
-  position: ]relative;
-  z-index: 10;
 }
 
 .last-action-tile {

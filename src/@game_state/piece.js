@@ -74,7 +74,6 @@ class Piece {
    * @return {boolean}
    */
   canMove(from, to, gameState) {
-    console.log({ gameState });
     return this.destinations(from, gameState).includes(to);
   }
 

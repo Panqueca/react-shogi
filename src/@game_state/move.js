@@ -48,15 +48,6 @@ class Move {
         this.match.gameState
       )
     ) {
-      console.log({
-        a: this._selectedSquare.piece.canMove(
-          this._selectedSquare,
-          this._touched,
-          this.match.gameState
-        ),
-        b: this._touched.piece
-      });
-
       return { name: "MoveInvalid", message: "Piece cannot move." };
     } else if (this._pieceCanPromote) {
       return {

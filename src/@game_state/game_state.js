@@ -316,7 +316,6 @@ class GameState {
    */
   deselectPiece(squareId) {
     let square = this.findSquare(squareId);
-    console.log("deselect", { square });
     if (exists(square)) {
       return square.deselect();
     } else {

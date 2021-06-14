@@ -44,6 +44,7 @@ class Match {
 
     /** @member {string} */
     this.notification = buildNotification(this, args.notification);
+    this.notificationSlug = null;
   }
 
   /**
@@ -89,6 +90,7 @@ class Match {
     });
 
     let result = move.result;
+    this.notificationSlug = result.name;
 
     switch (result.name) {
       case "MoveValid":
@@ -111,15 +113,15 @@ class Match {
         this.gameState.selectPiece(squareId);
         return true;
       case "MoveInvalid":
-        this._notify(result.message);
+        this._notify("INVALID_MOVE");
         this.gameState.deselectPiece(selectedSquare.id);
         return false;
       case "OuInCheck":
-        this._notify(result.message);
+        this._notify("IN_CHECK");
         this.gameState.deselectPiece(selectedSquare.id);
         return false;
       default:
-        this._notify(result.message);
+        this._notify(result.name);
         return false;
     }
   }
@@ -152,7 +154,8 @@ class Match {
         this.gameState.passTurn();
         return true;
       default:
-        this._notify(result.message);
+        this._notify(result.name);
+        this.notificationSlug = result.name;
         return false;
     }
   }
@@ -171,6 +174,7 @@ class Match {
     });
 
     let result = pickup.result;
+    this.notificationSlug = result.name;
 
     switch (result.name) {
       case "PieceSelected":
@@ -180,7 +184,7 @@ class Match {
         this.gameState.deselectPieceInHand(touchedId);
         return true;
       default:
-        this._notify(result.message);
+        this._notify(result.name);
         return false;
     }
   }
@@ -221,6 +225,7 @@ class Match {
   }
 
   _notify(message) {
+    console.log({ message });
     this.notification = message;
   }
 }

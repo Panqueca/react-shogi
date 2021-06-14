@@ -1,36 +1,23 @@
+import React from "react";
 import { useState } from "react";
 import Match from "../@game_state/match";
-import defaultLineup from "../defaultLineup";
 import Board from "../components/Board";
-import {
-  transformGameStateToBoard,
-  transformLineUpToSquares
-} from "../utils/pieces/filter";
+import { transformGameStateToBoard } from "../utils/pieces/filter";
+import { Button } from "react-bootstrap";
+import { DEFAULT_GAME } from "../utils/game/match";
+import "./demo.css";
 
-const React = require("react");
-
-require("./demo.css");
-
-const defaultPlayers = [
-  { player_number: 1, name: "Player 1" },
-  { player_number: 2, name: "Player 2" }
-];
+const defaultTargetTile = {
+  square: null,
+  x: null,
+  y: null
+};
 
 const Demo = ({ pieceComponents }) => {
-  const [game, setGame] = useState({
-    id: 1,
-    game_state: {
-      current_player_number: 1,
-      squares: transformLineUpToSquares(defaultLineup),
-      hands: [
-        { player_number: 1, pieces: [] },
-        { player_number: 2, pieces: [] }
-      ]
-    },
-    players: defaultPlayers,
-    winner: null
-  });
+  const [game, setGame] = useState(DEFAULT_GAME);
   const [historyActions, setHistoryActions] = useState([]);
+  const [targetTile, setTargetTile] = useState(defaultTargetTile);
+  const [moveAction, setMoveAction] = useState({ from: null });
 
   function addHistoryAction(newAction, playerNumber) {
     if (newAction)
@@ -46,37 +33,87 @@ const Demo = ({ pieceComponents }) => {
     return { ...lastAction, ...data };
   }
 
-  function handleMovePiece({ move }) {
+  function handleMovePiece({ move, y, x, square, pieceInfo }) {
     const tempMatch = new Match(game);
-    const { current_player_number } = game.game_state;
+    const { current_player_number } = tempMatch.asJson.game_state;
 
-    tempMatch.touchSquare(move, current_player_number);
-    addHistoryAction(tempMatch.lastAction, current_player_number);
-
-    if (tempMatch.promotion) {
-      tempMatch.touchPromotionOption(true, current_player_number);
-      addHistoryAction(tempMatch.lastAction, current_player_number);
+    if (move === targetTile.square) {
+      setTargetTile(defaultTargetTile);
+      setMoveAction({ from: null });
+      return;
     }
 
-    setGame(tempMatch.asJson);
+    const { player_number = null } = pieceInfo || {};
+    const samePlayerPiece = player_number === current_player_number;
+
+    if (!moveAction.from || samePlayerPiece) {
+      setMoveAction({ from: move });
+      setTargetTile({ x, y, square });
+      return;
+    }
+
+    if (move === targetTile.square || move === moveAction.from) {
+      setTargetTile(defaultTargetTile);
+      setMoveAction({ from: null });
+      return;
+    }
+
+    setTargetTile({ x, y, square });
+
+    tempMatch.touchSquare(moveAction.from, current_player_number);
+    tempMatch.touchSquare(move, current_player_number);
+    console.log({ tempMatch });
+
+    if (
+      tempMatch.notificationSlug === "MoveValid" ||
+      tempMatch.notificationSlug === "PieceMovedToPromotionZone"
+    ) {
+      addHistoryAction(tempMatch.lastAction, current_player_number);
+
+      if (tempMatch.promotion) {
+        tempMatch.touchPromotionOption(true, current_player_number);
+        console.log({ tempMatch });
+        addHistoryAction(tempMatch.lastAction, current_player_number);
+      }
+
+      setGame(tempMatch.asJson);
+    }
+
+    setMoveAction({ from: null });
+  }
+
+  function resetGame() {
+    setGame(DEFAULT_GAME);
+    setHistoryActions([]);
+    setMoveAction({ from: null });
+    setTargetTile(defaultTargetTile);
   }
 
   const GAME_STATE = transformGameStateToBoard(game.game_state);
-  console.log({ GAME_STATE });
 
   return (
     <div className="demo">
-      <Board
-        pieces={GAME_STATE.pieces}
-        hands={GAME_STATE.hands}
-        historyActions={historyActions}
-        onMovePiece={handleMovePiece}
-        currentPlayer={game.current_player_number}
-        pieceComponents={pieceComponents}
-        handleMovePiece={handleMovePiece}
-        notification={game.notification}
-        lastAction={getLastAction()}
-      />
+      <div>
+        <div className="board-head-actions">
+          <Button variant="primary">Render-se</Button>
+          <Button variant="primary" onClick={resetGame}>
+            Reset
+          </Button>
+        </div>
+      </div>
+      {game && game.id && (
+        <Board
+          pieces={GAME_STATE.pieces}
+          hands={GAME_STATE.hands}
+          historyActions={historyActions}
+          currentPlayer={game.current_player_number}
+          pieceComponents={pieceComponents}
+          handleMovePiece={handleMovePiece}
+          notification={game.notification}
+          lastAction={getLastAction()}
+          targetTile={targetTile}
+        />
+      )}
     </div>
   );
 };

@@ -67,7 +67,7 @@ body {
 
 .board-set .player-1,
 .board-set .player-2 {
-  width: 300px;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;

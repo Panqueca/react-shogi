@@ -105,11 +105,8 @@ class GameState {
    * @return {(Square|null)}
    */
   capturedSquare(from, to) {
-    if (to.occupied()) {
-      return to;
-    } else {
-      return null;
-    }
+    if (to.occupied()) return to;
+    return null;
   }
 
   /**
@@ -126,11 +123,8 @@ class GameState {
   pieceMovedToPromotionZone(from, to) {
     let piece = from.piece;
 
-    if (exists(piece)) {
-      return to.promotionZone(piece.playerNumber);
-    } else {
-      return false;
-    }
+    if (exists(piece)) return to.promotionZone(piece.playerNumber);
+    return false;
   }
 
   /**
@@ -180,7 +174,6 @@ class GameState {
    * @return {boolean}
    */
   KingCannotMove(playerNumber) {
-    return false;
     let kingSquare = this.squares.findKingForPlayer(playerNumber);
     let destinations = kingSquare.piece.destinations(kingSquare, this);
 
@@ -251,6 +244,7 @@ class GameState {
         });
         hand.pushPiece(to.piece);
         captured.removePiece();
+        console.log({ from, to, captured });
       }
       let fromPiece = from.piece;
       to.addPiece(fromPiece);

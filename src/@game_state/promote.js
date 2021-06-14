@@ -25,8 +25,6 @@ class Promote {
       return { name: "GameOver", message: "Game is over." };
     }
 
-    console.log({ a: this.match });
-
     if (!this.match.game_state.playersTurn(this.playerNumber)) {
       return { name: "NotPlayersTurn", message: "It is not your turn." };
     }

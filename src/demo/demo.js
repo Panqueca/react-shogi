@@ -72,7 +72,7 @@ const Demo = ({ pieceComponents }) => {
 
       if (tempMatch.promotion) {
         tempMatch.touchPromotionOption(true, current_player_number);
-        console.log({ tempMatch });
+        console.log("Promotion: ", { tempMatch });
         addHistoryAction(tempMatch.lastAction, current_player_number);
       }
 

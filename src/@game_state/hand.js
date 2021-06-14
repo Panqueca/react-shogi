@@ -48,10 +48,9 @@ class Hand {
   }
 
   pushPiece(piece) {
-    let factory = new PromotionFactory(piece);
-    let demotedPiece = factory.demotable ? factory.demote() : piece;
-    demotedPiece.switchPlayer();
-    this.pieces.push(demotedPiece);
+    console.log({ piece });
+    piece.switchPlayer();
+    this.pieces.push(piece);
   }
 
   popPiece(id) {

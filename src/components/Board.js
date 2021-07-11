@@ -61,7 +61,7 @@ const Board = ({
 
   function renderLabelText(x, y) {
     const isBottomRow = y === 0;
-    const isLeftColumn = x === 8;
+    const isLeftColumn = x === 0;
 
     const { row, col } = getSquareInfoByXY({ x, y });
 
@@ -90,7 +90,7 @@ const Board = ({
   const finalTilePercent = 11.111;
 
   for (let y = 0; y <= 8; y++) {
-    for (let x = 0; x <= 8; x++) {
+    for (let x = 8; x >= 0; x--) {
       const background = squaresColor;
 
       const styles = Object.assign(

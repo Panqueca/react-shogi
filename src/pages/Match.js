@@ -24,6 +24,8 @@ const defaultDialog = {
   cancelText: ""
 };
 
+const defaultMoveAction = { from: null, dropPiece: null, moves: [] };
+
 const shogi = new Shogi();
 
 const MatchPage = ({ displayPieces }) => {
@@ -32,12 +34,12 @@ const MatchPage = ({ displayPieces }) => {
   const [gameMatch, setGameMatch] = useState(shogi);
   const [historyActions, setHistoryActions] = useState([]);
   const [targetTile, setTargetTile] = useState(defaultTargetTile);
-  const [moveAction, setMoveAction] = useState({ from: null, moves: [] });
-  const [selectedDropPiece, setSelectedDropPiece] = useState({ id: null });
+  const [moveAction, setMoveAction] = useState(defaultMoveAction);
+  const [selectedDropPiece, setSelectedDropPiece] = useState({ kind: null });
   const [dialog, setDialog] = useState(defaultDialog);
 
   function resetMoveData() {
-    setMoveAction({ from: null });
+    setMoveAction(defaultMoveAction);
     setTargetTile(defaultTargetTile);
     setSelectedDropPiece({ id: null });
   }
@@ -125,9 +127,14 @@ const MatchPage = ({ displayPieces }) => {
     return false;
   }
 
-  function touchTargetTile({ x, y, square, pieceInfo }) {
+  function getTempShogi() {
     const tempShogi = new Shogi();
     tempShogi.initializeFromSFENString(gameMatch.toSFENString());
+    return tempShogi;
+  }
+
+  function touchTargetTile({ x, y, square, pieceInfo }) {
+    const tempShogi = getTempShogi();
 
     const { squareX, squareY } = getSquareByInternationalSlug(square);
 
@@ -136,19 +143,23 @@ const MatchPage = ({ displayPieces }) => {
     const samePlayerPiece = color === gameMatch.turn;
     const isOpponentPiece = hasPiece && color !== gameMatch.turn;
     const blockByOpenentPiece = isOpponentPiece && !moveAction.from;
+    const notPrevPiece = !moveAction.from;
 
-    console.log({
-      pieceInfo,
-      isOpponentPiece,
-      blockByOpenentPiece,
-      moveAction
-    });
+    const { dropPiece } = moveAction;
+    const { kind: dropKind, turn: dropTurn } = dropPiece || {};
+
+    if (dropKind && notPrevPiece) {
+      tempShogi.drop(squareX, squareY, dropKind, dropTurn);
+      updateGameMatch(tempShogi);
+      return;
+    }
+
     if (blockByOpenentPiece) {
       resetMoveData();
       return;
     }
 
-    if (!moveAction.from || samePlayerPiece) {
+    if (notPrevPiece || samePlayerPiece) {
       setMoveAction({
         from: { squareX, squareY, square },
         moves: tempShogi.getMovesFrom(squareX, squareY)
@@ -164,7 +175,6 @@ const MatchPage = ({ displayPieces }) => {
         squareX,
         squareY
       );
-      console.log({ tempShogi });
       updateGameMatch(tempShogi);
     }
   }
@@ -226,13 +236,17 @@ const MatchPage = ({ displayPieces }) => {
     setMoveAction({ from: null }); */
   }
 
-  function selectHandPiece({ pieces, turn }) {
-    if (gameMatch.turn === turn && pieces && pieces[0]) {
-      const { previousId } = pieces[0];
-      if (previousId) {
-        setSelectedDropPiece({ id: previousId });
-        touchTargetTile(defaultTargetTile);
-      }
+  function selectHandPiece({ kind, turn }) {
+    if (gameMatch.turn === turn) {
+      const tempShogi = getTempShogi();
+
+      setSelectedDropPiece({ kind });
+
+      setMoveAction({
+        from: null,
+        dropPiece: { kind, turn },
+        moves: tempShogi.getDropsBy(turn)
+      });
     }
   }
 

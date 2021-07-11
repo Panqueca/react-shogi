@@ -30,7 +30,6 @@ const Board = ({
   hands,
   historyActions,
   squaresColor,
-  pieceComponents,
   drawLabels,
   handleMovePiece,
   lastAction,
@@ -174,15 +173,26 @@ const Board = ({
 
   function displayHandPieces(handPieces, turn) {
     if (Array.isArray(handPieces)) {
-      return handPieces.map(({ pieceByPlayer, count, pieceType, pieces }) => {
-        const Piece = pieceComponents[pieceByPlayer];
+      const groupByKind = [];
+
+      handPieces.forEach(pieceInfo => {
+        const { kind } = pieceInfo;
+
+        groupByKind[kind] = groupByKind[kind] || [];
+        groupByKind[kind].push(pieceInfo);
+      });
+
+      return Object.keys(groupByKind).map(kind => {
+        const Piece = displayPieces[kind];
+        const count = groupByKind[kind].length;
+
         if (Piece)
           return (
-            <div className="piece-at-hand" key={pieceByPlayer}>
+            <div className="piece-at-hand" key={kind}>
               <Piece
                 forceProps={{
-                  title: `${pieceType}`,
-                  onClick: () => selectHandPiece({ pieces, turn })
+                  title: `${kind}`,
+                  onClick: () => selectHandPiece({ kind, turn })
                 }}
               />
               {count > 1 && (
@@ -255,7 +265,7 @@ const Board = ({
               </ul>
             </Card.Body>
           </Card>
-          <div className="hand">{displayHandPieces(hands.player2, 2)}</div>
+          <div className="hand">{displayHandPieces(hands[1], 1)}</div>
         </div>
         <div className="board-table" ref={boardRef}>
           <ResizeAware
@@ -289,7 +299,7 @@ const Board = ({
               </ul>
             </Card.Body>
           </Card>
-          <div className="hand">{displayHandPieces(hands.player1, 1)}</div>
+          <div className="hand">{displayHandPieces(hands[0], 0)}</div>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { Shogi } from "shogi.js";
 import { Button, Modal } from "react-bootstrap";
 import "./demo.css";
 import Board from "../components/Board";
-import { DEFAULT_GAME, getNormalizedGameData } from "../utils/game/match";
+import { getNormalizedGameData } from "../utils/game/match";
 import { checkIsPossibleMove } from "../utils/pieces/filter";
 import { getSquareByInternationalSlug } from "../utils/board/display";
 import { getDialogInfoByNotificationSlug } from "../utils/game/messages";
@@ -43,7 +43,7 @@ const MatchPage = ({ displayPieces }) => {
   }
 
   function resetGame() {
-    setGameMatch(DEFAULT_GAME);
+    setGameMatch(shogi);
     setHistoryActions([]);
     resetMoveData();
   }
@@ -131,9 +131,22 @@ const MatchPage = ({ displayPieces }) => {
 
     const { squareX, squareY } = getSquareByInternationalSlug(square);
 
-    const { color: piecePlayer } = pieceInfo || {};
-    const samePlayerPiece = piecePlayer === "current_player_number";
-    const isOpponentPiece = piecePlayer === "current_player_number";
+    const { color } = pieceInfo || {};
+    const hasPiece = color >= 0;
+    const samePlayerPiece = color === gameMatch.turn;
+    const isOpponentPiece = hasPiece && color !== gameMatch.turn;
+    const blockByOpenentPiece = isOpponentPiece && !moveAction.from;
+
+    console.log({
+      pieceInfo,
+      isOpponentPiece,
+      blockByOpenentPiece,
+      moveAction
+    });
+    if (blockByOpenentPiece) {
+      resetMoveData();
+      return;
+    }
 
     if (!moveAction.from || samePlayerPiece) {
       setMoveAction({
@@ -141,11 +154,6 @@ const MatchPage = ({ displayPieces }) => {
         moves: tempShogi.getMovesFrom(squareX, squareY)
       });
       setTargetTile({ x, y, square });
-      return;
-    }
-
-    if (isOpponentPiece) {
-      resetMoveData();
       return;
     }
 

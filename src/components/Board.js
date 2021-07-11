@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import resizeAware from "react-resize-aware";
-import defaultLineup from "../utils/game/defaultLineup";
 import {
   getSquareByInternationalSlug,
   getSquareInfoByXY,
@@ -12,7 +11,6 @@ import { Card, Badge } from "react-bootstrap";
 import { checkIsPossibleMove } from "../utils/pieces/filter";
 
 const ResizeAware = resizeAware.default || resizeAware;
-const getDefaultLineup = () => defaultLineup.slice();
 
 const squareStyles = {
   float: "left",
@@ -29,7 +27,6 @@ const yLabelStyles = Object.assign({ top: "5%", left: "5%" }, labelStyles);
 const xLabelStyles = Object.assign({ bottom: "5%", right: "5%" }, labelStyles);
 
 const Board = ({
-  pieces,
   hands,
   historyActions,
   squaresColor,
@@ -120,10 +117,12 @@ const Board = ({
   }
   const renderPieces = [];
 
-  board.forEach((col, x) => {
-    if (Array.isArray(col))
-      col.forEach((locationInfo, y) => {
+  board.forEach((colPieces, x) => {
+    if (Array.isArray(colPieces))
+      colPieces.forEach((locationInfo, y) => {
         if (!displayPieces) return;
+
+        const { color, kind } = locationInfo || {};
         const {
           indexOfRow,
           indexOfCol,
@@ -134,18 +133,14 @@ const Board = ({
           squareX,
           squareY
         } = getSquareByXYBoard({ x, y });
-        const empty = !locationInfo || !locationInfo.kind;
 
-        const PieceSelection = empty
-          ? displayPieces["Empty"]
-          : displayPieces[locationInfo.kind];
+        const displayKind = kind || "Empty";
+        const PieceSelection = displayPieces[displayKind];
 
         const isPossibleMove = checkIsPossibleMove(
           { squareX, squareY },
           possibleMoves
         );
-
-        const { color } = locationInfo || {};
 
         renderPieces.push(
           <PieceSelection
@@ -304,15 +299,13 @@ const Board = ({
 Board.propTypes = {
   allowMoves: PropTypes.bool,
   drawLabels: PropTypes.bool,
-  squaresColor: PropTypes.string,
-  pieces: PropTypes.arrayOf(PropTypes.object)
+  squaresColor: PropTypes.string
 };
 
 Board.defaultProps = {
   allowMoves: true,
   drawLabels: true,
-  squaresColor: "#f4c64e",
-  pieces: getDefaultLineup()
+  squaresColor: "#f4c64e"
 };
 
 export default Board;

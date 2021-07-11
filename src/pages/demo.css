@@ -68,10 +68,11 @@ body {
 
 .board-set .player-1,
 .board-set .player-2 {
-  min-width: 200px;
+  min-width: 180px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  flex: 0 0 1em;
 }
 
 .board-set .player-2 {
@@ -85,7 +86,7 @@ body {
   background-color: #fcedc8;
   position: relative;
   display: flex;
-  padding: 20px;
+  flex-flow: row wrap;
 }
 
 .hand .piece-at-hand {
@@ -94,13 +95,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 0 0 1em;
 }
 
 .hand .piece-at-hand div {
   position: relative !important;
   width: 100% !important;
-  height: auto !important;
   top: 0 !important;
+  flex: 0 0 0;
 }
 
 .hand .piece-at-hand .count-badge {

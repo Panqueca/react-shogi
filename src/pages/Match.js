@@ -4,10 +4,10 @@ import { Shogi } from "shogi.js";
 import { Button, Modal } from "react-bootstrap";
 import "./demo.css";
 import Board from "../components/Board";
-import { getNormalizedGameData } from "../utils/game/match";
 import { checkIsPossibleMove } from "../utils/pieces/filter";
 import { getSquareByInternationalSlug } from "../utils/board/display";
 import { getDialogInfoByNotificationSlug } from "../utils/game/messages";
+import { isKingInCheck } from "../utils/game/match";
 
 const defaultTargetTile = {
   square: null,
@@ -35,13 +35,17 @@ const MatchPage = ({ displayPieces }) => {
   const [historyActions, setHistoryActions] = useState([]);
   const [targetTile, setTargetTile] = useState(defaultTargetTile);
   const [moveAction, setMoveAction] = useState(defaultMoveAction);
-  const [selectedDropPiece, setSelectedDropPiece] = useState({ kind: null });
   const [dialog, setDialog] = useState(defaultDialog);
+
+  function getTempShogi() {
+    const tempShogi = new Shogi();
+    tempShogi.initializeFromSFENString(gameMatch.toSFENString());
+    return tempShogi;
+  }
 
   function resetMoveData() {
     setMoveAction(defaultMoveAction);
     setTargetTile(defaultTargetTile);
-    setSelectedDropPiece({ id: null });
   }
 
   function resetGame() {
@@ -93,9 +97,6 @@ const MatchPage = ({ displayPieces }) => {
         );
         addHistoryAction(tempMatch.lastAction, current_player_number);
       }
-
-      const gameData = getNormalizedGameData(tempMatch.asJson);
-      setGameMatch(gameData);
     }
   };
 
@@ -125,12 +126,6 @@ const MatchPage = ({ displayPieces }) => {
     }
 
     return false;
-  }
-
-  function getTempShogi() {
-    const tempShogi = new Shogi();
-    tempShogi.initializeFromSFENString(gameMatch.toSFENString());
-    return tempShogi;
   }
 
   function touchTargetTile({ x, y, square, pieceInfo }) {
@@ -175,6 +170,13 @@ const MatchPage = ({ displayPieces }) => {
         squareX,
         squareY
       );
+
+      if (isKingInCheck(tempShogi, gameMatch.turn)) {
+        resetMoveData();
+        alert("King in check");
+        return;
+      }
+
       updateGameMatch(tempShogi);
     }
   }
@@ -240,8 +242,6 @@ const MatchPage = ({ displayPieces }) => {
     if (gameMatch.turn === turn) {
       const tempShogi = getTempShogi();
 
-      setSelectedDropPiece({ kind });
-
       setMoveAction({
         from: null,
         dropPiece: { kind, turn },
@@ -250,7 +250,7 @@ const MatchPage = ({ displayPieces }) => {
     }
   }
 
-  console.log({ gameMatch, moveAction });
+  //console.log({ gameMatch, moveAction });
 
   function displayDialog() {
     return (
@@ -274,6 +274,8 @@ const MatchPage = ({ displayPieces }) => {
       </Modal>
     );
   }
+
+  console.log({ gameMatch });
 
   return (
     <div className="demo">

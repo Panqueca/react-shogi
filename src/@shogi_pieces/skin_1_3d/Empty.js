@@ -1,7 +1,7 @@
-const piecePositionHoc = require("../../piecePositionHoc");
+const piecePositionDisplay = require("../PieceDisplay");
 
 function Empty(props) {
   return null;
 }
 
-module.exports = piecePositionHoc(Empty);
+module.exports = piecePositionDisplay(Empty);

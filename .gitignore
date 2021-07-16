@@ -34,3 +34,5 @@ lib
 
 # Compiled demo
 build/
+
+yarn.lock

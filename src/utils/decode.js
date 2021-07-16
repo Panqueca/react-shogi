@@ -1,4 +1,4 @@
-const { getSquareByInternationalSlug } = require("./utils/board/display");
+const { getSquareByInternationalSlug } = require("./board/display");
 
 module.exports = {
   fromPieceDecl: pos => {

@@ -2,12 +2,12 @@ import React from "react";
 import { useState } from "react";
 import { Shogi } from "shogi.js";
 import { Button, Modal } from "react-bootstrap";
-import "./demo.css";
-import Board from "../components/Board";
-import { checkIsPossibleMove } from "../utils/pieces/filter";
-import { getSquareByInternationalSlug } from "../utils/board/display";
-import { getDialogInfoByNotificationSlug } from "../utils/game/messages";
-import { isKingInCheck } from "../utils/game/match";
+import "./style.css";
+import Board from "../../components/Board";
+import { checkIsPossibleMove } from "../../utils/pieces/filter";
+import { getSquareByInternationalSlug } from "../../utils/board/display";
+import { getDialogInfoByNotificationSlug } from "../../utils/game/messages";
+import { isKingInCheck } from "../../utils/game/match";
 
 const defaultTargetTile = {
   square: null,
@@ -275,7 +275,7 @@ const MatchPage = ({ displayPieces }) => {
     );
   }
 
-  console.log({ gameMatch });
+  console.log({ gameMatch, historyActions });
 
   return (
     <div className="demo">

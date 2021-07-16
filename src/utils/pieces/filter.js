@@ -1,4 +1,4 @@
-import decode from "../../decode";
+import decode from "../decode";
 
 export function getPlayerHandByGameResponse(pieces, turn) {
   const normalized = {};

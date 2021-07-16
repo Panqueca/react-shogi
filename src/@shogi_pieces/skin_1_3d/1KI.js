@@ -1,5 +1,5 @@
 const React = require("react");
-const piecePositionHoc = require("../../piecePositionHoc");
+const piecePositionDisplay = require("../PieceDisplay");
 
 function SvgComponent(props) {
   return (
@@ -112,4 +112,4 @@ function SvgComponent(props) {
   );
 }
 
-module.exports = piecePositionHoc(SvgComponent);
+module.exports = piecePositionDisplay(SvgComponent);

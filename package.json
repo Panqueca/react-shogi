@@ -24,7 +24,8 @@
     "react-bootstrap": "^1.6.1",
     "react-draggable": "^3.0.3",
     "react-resize-aware": "^2.7.0",
-    "shogi.js": "^2.0.4"
+    "shogi.js": "^2.0.4",
+    "styled-components": "^5.3.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

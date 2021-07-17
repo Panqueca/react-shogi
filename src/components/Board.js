@@ -88,7 +88,8 @@ const Board = ({
               <Piece
                 forceProps={{
                   title: `${kind}`,
-                  onClick: () => selectHandPiece({ kind, turn })
+                  onClick: () => selectHandPiece({ kind, turn }),
+                  "data-cy": `piece-at-hand-${turn}-${kind}`
                 }}
               />
               {count > 1 && (

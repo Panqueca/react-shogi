@@ -2,7 +2,12 @@
 const React = require("react");
 const PropTypes = require("prop-types");
 
-const SimpleLayer = ({ styles, onClick = () => {}, className = "" }) => {
+const SimpleLayer = ({
+  styles,
+  onClick = () => {},
+  className = "",
+  ...props
+}) => {
   return (
     <div
       style={{
@@ -17,6 +22,7 @@ const SimpleLayer = ({ styles, onClick = () => {}, className = "" }) => {
       }}
       onClick={onClick}
       className={className}
+      {...props}
     />
   );
 };
@@ -44,7 +50,9 @@ module.exports = Piece => props => {
     isSelected,
     lastAction,
     forceProps,
-    player
+    player,
+    squareNumber,
+    squareName
   } = props;
 
   const styles = Object.assign({}, style, {
@@ -69,10 +77,10 @@ module.exports = Piece => props => {
       onTouchEnd={onTouchEnd}
       onTouchStart={onTouchStart}
       style={styles}
-      title={`Square: ${props.squareNumber} (${props.squareName}), y: ${props.x} x: ${props.y}`}
+      title={`Square: ${squareNumber} (${squareName}), y: ${props.x} x: ${props.y}`}
       {...forceProps}
     >
-      <SimpleLayer onClick={onClickFunc} />
+      <SimpleLayer onClick={onClickFunc} data-cy={`square-${squareNumber}`} />
       <div
         style={{
           position: "absolute",
@@ -94,6 +102,7 @@ module.exports = Piece => props => {
           alignItems: "center",
           ...rotate
         }}
+        data-cy={`piece-tile-square-${squareNumber}`}
       >
         <Piece />
       </div>

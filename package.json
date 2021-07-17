@@ -8,7 +8,7 @@
     "posttest": "eslint .",
     "prepublishOnly": "npm run qa",
     "qa": "npm test && npm run build",
-    "test": "jest --coverage"
+    "test": "cypress open"
   },
   "license": "MIT",
   "dependencies": {
@@ -18,7 +18,10 @@
     "bootstrap": "^4.6.0",
     "react-bootstrap": "^1.6.1",
     "shogi.js": "^2.0.4",
-    "styled-components": "^5.3.0"
+    "styled-components": "^5.3.0",
+    "@cypress/react": "^5.9.1",
+    "@cypress/webpack-dev-server": "^1.4.0",
+    "cypress": "^7.7.0"
   },
   "devDependencies": {
     "eslint": "^4.12.0",

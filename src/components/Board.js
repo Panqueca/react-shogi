@@ -1,34 +1,42 @@
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import resizeAware from "react-resize-aware";
-import {
-  getSquareByInternationalSlug,
-  getSquareInfoByXY,
-  getSquareNameByXY,
-  getSquareByXYBoard
-} from "../utils/board/display";
+import styled from "styled-components";
+import { getSquareByXYBoard } from "../utils/board/display";
 import { Card, Badge } from "react-bootstrap";
 import { checkIsPossibleMove } from "../utils/pieces/filter";
 
-const ResizeAware = resizeAware.default || resizeAware;
+const ShogiBoard = styled.div`
+  display: flex;
+  margin: 0 auto;
+  padding: 15px;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  width: ${({ width = "100%" }) => width};
+  height: ${({ height = "100%" }) => height};
+  background-color: ${({ squaresColor }) => squaresColor};
 
-const squareStyles = {
-  float: "left",
-  position: "relative",
-  pointerEvents: "none"
-};
+  .board-square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 11.111%;
+    height: 11.111%;
+    border: 1px solid #6b5313;
 
-const labelStyles = {
-  fontSize: "calc(7px + .5vw)",
-  position: "absolute",
-  userSelect: "none"
-};
-const yLabelStyles = Object.assign({ top: "5%", left: "5%" }, labelStyles);
-const xLabelStyles = Object.assign({ bottom: "5%", right: "5%" }, labelStyles);
+    div {
+      width: 100%;
+      height: 100%;
+    }
+  }
+`;
+
+const PlayerInfo = styled.div`
+  width: ${({ width = "100%" }) => width};
+  margin: 0 auto;
+`;
 
 const Board = ({
   hands,
-  historyActions,
   squaresColor,
   drawLabels,
   handleMovePiece,
@@ -37,139 +45,28 @@ const Board = ({
   selectHandPiece,
   possibleMoves,
   displayPieces,
-  board
+  board,
+  width,
+  height
 }) => {
-  const [boardConfig, setBoardConfig] = useState({ boardSize: 0, tileSize: 0 });
-  const boardRef = useRef(null);
-
-  useEffect(() => {
-    if (boardRef.els) {
-      const boardSize = boardRef.els.board.clientWidth;
-      setBoardConfig({ boardSize, tileSize: boardSize / 9 });
-    }
-  }, [boardRef]);
-
-  function handleResize(size) {
-    const tileSize = size.width / 9;
-    setBoardConfig({ boardSize: size.width, tileSize });
+  function selectTile({ square, pieceInfo }) {
+    handleMovePiece({ square, pieceInfo });
   }
 
-  function selectTile({ x, y, pieceInfo }) {
-    const move = getSquareNameByXY({ x, y });
-    handleMovePiece({ move, x, y, square: move, pieceInfo });
-  }
+  function getBoardOrderedByRows(matchBoard) {
+    const rows = [];
 
-  function renderLabelText(x, y) {
-    const isBottomRow = y === 0;
-    const isLeftColumn = x === 0;
-
-    const { row, col } = getSquareInfoByXY({ x, y });
-
-    if (!drawLabels || (!isLeftColumn && !isBottomRow)) return null;
-
-    if (isLeftColumn && isBottomRow)
-      return [
-        <span key="blx" style={xLabelStyles}>
-          {col}
-        </span>,
-        <span key="bly" style={yLabelStyles}>
-          {row.toUpperCase()}
-        </span>
-      ];
-
-    const label = isLeftColumn ? row.toUpperCase() : col;
-
-    return (
-      <span style={isLeftColumn ? yLabelStyles : xLabelStyles}>{label}</span>
-    );
-  }
-
-  const tiles = [];
-
-  const finalTileSize = boardConfig.tileSize - 0.05;
-  const finalTilePercent = 11.111;
-
-  for (let y = 0; y <= 8; y++) {
-    for (let x = 8; x >= 0; x--) {
-      const background = squaresColor;
-
-      const styles = Object.assign(
-        {
-          background,
-          cursor: "pointer",
-          position: "relative",
-          border: "1px solid #6b5313",
-          width: finalTileSize,
-          height: finalTileSize
-        },
-        squareStyles
-      );
-
-      tiles.push(
-        <div key={`${x}${y}`}>
-          <div key={`rect-${x}-${y}`} style={styles} title={`x: ${x}, y: ${y}`}>
-            {renderLabelText(x, y)}
-          </div>
-        </div>
-      );
-    }
-  }
-  const renderPieces = [];
-
-  board.forEach((colPieces, x) => {
-    if (Array.isArray(colPieces))
-      colPieces.forEach((locationInfo, y) => {
-        if (!displayPieces) return;
-
-        const { color, kind } = locationInfo || {};
-        const {
-          indexOfRow,
-          indexOfCol,
-          squareNumber,
-          squareName,
-          boardRow,
-          boardCol,
-          squareX,
-          squareY
-        } = getSquareByXYBoard({ x, y });
-
-        const displayKind = kind || "Empty";
-        const PieceSelection = displayPieces[displayKind];
-
-        const isPossibleMove = checkIsPossibleMove(
-          { squareX, squareY },
-          possibleMoves
-        );
-
-        renderPieces.push(
-          <PieceSelection
-            y={indexOfRow}
-            x={indexOfCol}
-            squareNumber={squareNumber}
-            squareName={squareName}
-            boardRow={boardRow}
-            boardCol={boardCol}
-            onClick={({ x, y }) =>
-              selectTile({ x, y, pieceInfo: locationInfo })
-            }
-            isSelected={isPossibleMove || squareName === targetTile.square}
-            lastAction={lastAction && squareName === lastAction.toId}
-            key={squareName}
-            boardConfig={boardConfig}
-            tileSize={finalTileSize}
-            tilePercent={finalTilePercent}
-            player={color === 1 ? 2 : 1}
-          />
-        );
+    matchBoard.forEach(colTiles => {
+      colTiles.forEach((locationInfo, y) => {
+        if (!rows[y]) rows[y] = [];
+        rows[y].push(locationInfo);
       });
-  });
+    });
 
-  const children = tiles.concat(renderPieces);
-  const boardStyles = {
-    position: "relative",
-    width: "100%",
-    height: boardConfig.boardSize
-  };
+    return rows;
+  }
+
+  const orderedByRows = getBoardOrderedByRows(board);
 
   function displayHandPieces(handPieces, turn) {
     if (Array.isArray(handPieces)) {
@@ -177,7 +74,6 @@ const Board = ({
 
       handPieces.forEach(pieceInfo => {
         const { kind } = pieceInfo;
-
         groupByKind[kind] = groupByKind[kind] || [];
         groupByKind[kind].push(pieceInfo);
       });
@@ -209,42 +105,10 @@ const Board = ({
     return null;
   }
 
-  const HistoryTable = ({ historyActions }) => {
-    const elementRef = useRef();
-
-    useEffect(() => {
-      if (elementRef && elementRef.current) elementRef.current.scrollIntoView();
-    });
-
-    return (
-      <div className="history-table">
-        {historyActions.map((history, index) => {
-          const { data, playerSide } = history;
-          const { toId = "" } = data;
-          const { squareName } = getSquareByInternationalSlug(toId);
-
-          return (
-            <div key={index} className="history-line" ref={elementRef}>
-              <div className={playerSide} />
-              {squareName}
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
-  function displayHistoryActions() {
-    if (Array.isArray(historyActions))
-      return <HistoryTable historyActions={historyActions} />;
-
-    return null;
-  }
-
   return (
     <div className="board-set">
       <div className="match-display">
-        <div className="player-2">
+        <PlayerInfo width={width}>
           <Card style={{ width: "100%", margin: "0px" }} className="profile">
             <Card.Body>
               <Card.Title>
@@ -257,28 +121,59 @@ const Board = ({
                 />
                 Jogador 2 (Gote)
               </Card.Title>
-              <p>10Kyu</p>
-              Especialidades:
-              <ul>
-                <li>Quick Ishida</li>
-                <li>Shikenbisha</li>
-              </ul>
+              <div className="hand">{displayHandPieces(hands[1], 1)}</div>
             </Card.Body>
           </Card>
-          <div className="hand">{displayHandPieces(hands[1], 1)}</div>
-        </div>
-        <div className="board-table" ref={boardRef}>
-          <ResizeAware
-            className="board-resizer"
-            onResize={handleResize}
-            style={boardStyles}
-            onlyEvent
-          >
-            {children}
-          </ResizeAware>
-        </div>
-        <div className="player-1">
-          <div className="history">{displayHistoryActions()}</div>
+        </PlayerInfo>
+        <ShogiBoard width={width} height={height} squaresColor={squaresColor}>
+          {displayPieces &&
+            orderedByRows.map((rowTiles, y) => {
+              if (Array.isArray(rowTiles))
+                return rowTiles.map((locationInfo, x) => {
+                  const { color, kind } = locationInfo || {};
+                  const {
+                    squareNumber,
+                    squareName,
+                    squareX,
+                    squareY,
+                    square
+                  } = getSquareByXYBoard({ x, y });
+
+                  const displayKind = kind || "Empty";
+                  const PieceSelection = displayPieces[displayKind];
+
+                  const isPossibleMove = checkIsPossibleMove(
+                    { squareX, squareY },
+                    possibleMoves
+                  );
+
+                  return (
+                    <div className="board-square" key={squareNumber}>
+                      <PieceSelection
+                        y={squareX}
+                        x={squareY}
+                        squareNumber={squareNumber}
+                        squareName={squareName}
+                        onClick={() =>
+                          selectTile({
+                            square,
+                            pieceInfo: locationInfo
+                          })
+                        }
+                        isSelected={
+                          isPossibleMove || squareName === targetTile.square
+                        }
+                        lastAction={
+                          lastAction && squareName === lastAction.toId
+                        }
+                        player={color === 1 ? 2 : 1}
+                      />
+                    </div>
+                  );
+                });
+            })}
+        </ShogiBoard>
+        <PlayerInfo width={width}>
           <Card style={{ width: "100%", margin: "0px" }} className="profile">
             <Card.Body>
               <Card.Title>
@@ -291,16 +186,10 @@ const Board = ({
                 />
                 Jogador 1 (Sente)
               </Card.Title>
-              <p>10Kyu</p>
-              Especialidades:
-              <ul>
-                <li>Quick Ishida</li>
-                <li>Shikenbisha</li>
-              </ul>
+              <div className="hand">{displayHandPieces(hands[0], 0)}</div>
             </Card.Body>
           </Card>
-          <div className="hand">{displayHandPieces(hands[0], 0)}</div>
-        </div>
+        </PlayerInfo>
       </div>
     </div>
   );

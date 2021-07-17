@@ -41,29 +41,18 @@ module.exports = Piece => props => {
     onTouchEnd,
     onTouchStart,
     style,
-    isMoving,
     isSelected,
     lastAction,
-    boardRow,
-    boardCol,
     forceProps,
-    tileSize,
-    tilePercent,
     player
   } = props;
-  const display_y = 8 - boardRow;
 
   const styles = Object.assign({}, style, {
-    position: "absolute",
-    left: `${boardCol * tilePercent}%`,
-    top: `${display_y * tilePercent}%`,
-    width: tileSize,
-    height: tileSize,
     textAlign: "center",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: isMoving ? 1000 : undefined
+    position: "relative"
   });
 
   const onClickFunc =

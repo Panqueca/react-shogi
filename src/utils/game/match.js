@@ -1,4 +1,8 @@
-import { getSquareByXYBoard } from "../board/display";
+import {
+  getSquareByInternationalSlug,
+  getSquareByXYBoard
+} from "../board/display";
+import { checkIsPossibleMove } from "../pieces/filter";
 
 export function eachPiece(board, callback) {
   board.forEach((col, x) => {
@@ -41,4 +45,66 @@ export function isKingInCheck(game, kingColor) {
   });
 
   return attacked.filter(({ to }) => sameSquare(kingSquare, to)).length > 0;
+}
+
+export function getMoveResponse({ moveAction, turn, color }) {
+  const { from: isActionMove, dropPiece } = moveAction;
+  const { kind: dropKind, turn: dropTurn } = dropPiece || {};
+
+  const hasPieceOnSquare = color >= 0;
+
+  const isPlayerPiece = hasPieceOnSquare && color === turn;
+  const isOpponentPiece = hasPieceOnSquare && color !== turn;
+  const isDropAction = dropKind && dropTurn === turn;
+  const isEmptySelection = !isActionMove && !hasPieceOnSquare && !isDropAction;
+
+  const invalidOpponentPiece = isOpponentPiece && !isActionMove;
+  const invalidOwnPiece = isPlayerPiece && isActionMove;
+
+  const invalidDrop = isDropAction && hasPieceOnSquare;
+  const invalidMove =
+    invalidOpponentPiece || invalidOwnPiece || invalidDrop || isEmptySelection;
+
+  return {
+    hasPieceOnSquare,
+    isPlayerPiece,
+    isOpponentPiece,
+    isActionMove,
+    isDropAction,
+    invalidOpponentPiece,
+    invalidOwnPiece,
+    invalidDrop,
+    invalidMove
+  };
+}
+
+export function getMoveAction({ square, moveAction, turn, color }) {
+  const {
+    invalidOwnPiece,
+    invalidDrop,
+    invalidOpponentPiece,
+    invalidMove,
+    isDropAction,
+    isOpponentPiece,
+    isActionMove
+  } = getMoveResponse({
+    moveAction,
+    turn,
+    color
+  });
+
+  const { squareX, squareY } = getSquareByInternationalSlug(square);
+  const canPieceMoveToSquare = checkIsPossibleMove(
+    { squareX, squareY },
+    moveAction.moves
+  );
+
+  if (invalidOwnPiece) return "invalid:ownPiece";
+  if (invalidDrop) return "invalid:drop";
+  if (invalidOpponentPiece) return "invalid:opponentPiece";
+  if (invalidMove) return "invalid:move";
+  if (isDropAction) return "valid:drop";
+  if (isOpponentPiece) return "valid:capture";
+  if (canPieceMoveToSquare && isActionMove) return "valid:move";
+  return "valid:selection";
 }

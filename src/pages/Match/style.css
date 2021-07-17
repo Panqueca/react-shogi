@@ -29,68 +29,29 @@ body {
 }
 
 .board-set .match-display {
+  display: block;
+}
+
+.board-set .profile {
+  height: 70px;
+}
+
+.board-set .profile .card-body {
   display: flex;
-  justify-content: center;
 }
 
-.board-set .history {
-  overflow-y: auto;
-  min-height: 25vh;
-  max-height: 25vh;
+.board-set .profile .card-title {
+  width: 200px;
+  font-size: 14px;
 }
 
-.board-set .history-table {
-  padding: 20px;
-}
-
-.board-set .history-line {
-  display: flex;
-  align-items: center;
-}
-
-.history-table .SENTE,
-.history-table .GOTE {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  border: 1px solid #000;
-  margin-right: 5px;
-}
-
-.history-table .SENTE {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  border: 1px solid #000;
-  margin-right: 5px;
-  background-color: #000;
-}
-
-.board-set .player-1,
-.board-set .player-2 {
-  min-width: 180px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  flex: 0 0 1em;
-}
-
-.board-set .player-2 {
-  flex-direction: column-reverse;
-}
-
-.board-set .player-1 .hand,
-.board-set .player-2 .hand {
-  width: 100%;
-  height: 260px;
-  background-color: #fcedc8;
+.board-set .hand {
   position: relative;
   display: flex;
-  flex-flow: row wrap;
 }
 
 .hand .piece-at-hand {
-  width: 25%;
+  width: 50px;
   position: relative;
   display: flex;
   justify-content: center;

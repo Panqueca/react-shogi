@@ -4,10 +4,10 @@ import { Shogi } from "shogi.js";
 import { Button, Modal } from "react-bootstrap";
 import "./style.css";
 import Board from "../../components/Board";
-import { checkIsPossibleMove } from "../../utils/pieces/filter";
 import { getSquareByInternationalSlug } from "../../utils/board/display";
 import { getDialogInfoByNotificationSlug } from "../../utils/game/messages";
-import { isKingInCheck } from "../../utils/game/match";
+import { getMoveAction, isKingInCheck } from "../../utils/game/match";
+import { useWindowSize } from "../../utils/hooks/window";
 
 const defaultTargetTile = {
   square: null,
@@ -59,46 +59,17 @@ const MatchPage = ({ displayPieces }) => {
     resetMoveData();
   }
 
-  function addHistoryAction(newAction, turn) {
-    const { data } = newAction;
-    let toId = data.toId;
-
-    if (newAction.kind === "drop") toId === data.squareId;
-
-    if (toId)
+  function addHistoryAction({ kind, turn, to }) {
+    if (to)
       setHistoryActions([
         ...historyActions,
         {
-          ...newAction,
-          data: { ...data, toId },
-          playerSide: turn === 2 ? "GOTE" : "SENTE"
+          kind,
+          turn,
+          to
         }
       ]);
   }
-
-  function getLastAction() {
-    const lastAction = historyActions[historyActions.length - 1] || {};
-    const { data = {} } = lastAction;
-    return { ...lastAction, ...data };
-  }
-
-  function resetDialog() {
-    setDialog(defaultDialog);
-  }
-
-  const dialogActionCallback = (tempMatch, response) => {
-    const { current_player_number } = tempMatch.asJson.game_state;
-
-    if (response === "PROMOTE" || response === "DONT_PROMOTE") {
-      if (tempMatch.promotion) {
-        tempMatch.touchPromotionOption(
-          response === "PROMOTE",
-          current_player_number
-        );
-        addHistoryAction(tempMatch.lastAction, current_player_number);
-      }
-    }
-  };
 
   function checkAlertNotification(tempMatch) {
     const { notificationSlug } = tempMatch;
@@ -128,120 +99,117 @@ const MatchPage = ({ displayPieces }) => {
     return false;
   }
 
-  function touchTargetTile({ x, y, square, pieceInfo }) {
+  function getLastAction() {
+    const lastAction = historyActions[historyActions.length - 1] || {};
+    const { data = {} } = lastAction;
+    return { ...lastAction, ...data };
+  }
+
+  function resetDialog() {
+    setDialog(defaultDialog);
+  }
+
+  const dialogActionCallback = response => {
+    const { turn } = gameMatch;
+
+    if (response === "PROMOTE" || response === "DONT_PROMOTE") {
+      console.log("Promote", { turn });
+    }
+  };
+
+  function createMoveAction({ square }) {
     const tempShogi = getTempShogi();
-
     const { squareX, squareY } = getSquareByInternationalSlug(square);
+    console.log({ square, squareX, squareY }, "A");
 
-    const { color } = pieceInfo || {};
-    const hasPiece = color >= 0;
-    const samePlayerPiece = color === gameMatch.turn;
-    const isOpponentPiece = hasPiece && color !== gameMatch.turn;
-    const blockByOpenentPiece = isOpponentPiece && !moveAction.from;
-    const notPrevPiece = !moveAction.from;
+    setMoveAction({
+      from: { squareX, squareY, square },
+      moves: tempShogi.getMovesFrom(squareX, squareY)
+    });
+    setTargetTile({ squareX, squareY, square });
+  }
+
+  function dropsThePiece({ square, moveAction }) {
+    const tempShogi = getTempShogi();
+    const { squareX, squareY } = getSquareByInternationalSlug(square);
+    const { turn } = gameMatch;
 
     const { dropPiece } = moveAction;
     const { kind: dropKind, turn: dropTurn } = dropPiece || {};
 
-    if (dropKind && notPrevPiece) {
-      tempShogi.drop(squareX, squareY, dropKind, dropTurn);
-      updateGameMatch(tempShogi);
-      return;
-    }
-
-    if (blockByOpenentPiece) {
-      resetMoveData();
-      return;
-    }
-
-    if (notPrevPiece || samePlayerPiece) {
-      setMoveAction({
-        from: { squareX, squareY, square },
-        moves: tempShogi.getMovesFrom(squareX, squareY)
-      });
-      setTargetTile({ x, y, square });
-      return;
-    }
-
-    if (checkIsPossibleMove({ squareX, squareY }, moveAction.moves)) {
-      tempShogi.move(
-        moveAction.from.squareX,
-        moveAction.from.squareY,
-        squareX,
-        squareY
-      );
-
-      if (isKingInCheck(tempShogi, gameMatch.turn)) {
-        resetMoveData();
-        alert("King in check");
-        return;
-      }
-
-      updateGameMatch(tempShogi);
-    }
+    tempShogi.drop(squareX, squareY, dropKind, dropTurn);
+    updateGameMatch(tempShogi);
+    addHistoryAction({ kind: "drop", turn, to: { squareX, squareY } });
   }
 
-  function handleMovePiece({ move, y, x, square, pieceInfo }) {
-    return;
-    /* 
-    if (selectedDropPiece.id) {
-      tempMatch.touchPieceInHand(selectedDropPiece.id, current_player_number);
-      if (tempMatch.notificationSlug === "PieceSelected") {
-        tempMatch.touchSquare(move, current_player_number);
-        if (tempMatch.notificationSlug === "DropValid") {
-          addHistoryAction(tempMatch.lastAction);
-          setGame(tempMatch.asJson);
-        }
+  function movesThePiece({ moveAction, square, kind }) {
+    const tempShogi = getTempShogi();
+    const { squareX, squareY } = getSquareByInternationalSlug(square);
+    const { turn } = gameMatch;
 
-        resetMoveData();
-      }
-      return;
-    }
+    console.log({ moveAction });
 
-    if (!moveAction.from || samePlayerPiece) {
-      setMoveAction({ from: move });
-      touchTargetTile({ x, y, square });
-      return;
-    }
+    tempShogi.move(
+      moveAction.from.squareX,
+      moveAction.from.squareY,
+      squareX,
+      squareY
+    );
 
-    if (move === targetTile.square || move === moveAction.from) {
+    if (isKingInCheck(tempShogi, gameMatch.turn)) {
       resetMoveData();
+      alert("King in check");
       return;
     }
 
-    touchTargetTile({ x, y, square });
+    updateGameMatch(tempShogi);
+    addHistoryAction({ kind, turn, to: { squareX, squareY } });
+  }
 
-    tempMatch.touchSquare(moveAction.from, current_player_number);
-    tempMatch.touchSquare(move, current_player_number);
-    console.log({ moveAction, move });
-    const {
-      squareX: fromSquareX,
-      squareY: fromSquareY
-    } = getSquareByInternationalSlug(moveAction.from);
-    const {
-      squareX: toSquareX,
-      squareY: toSquareY
-    } = getSquareByInternationalSlug(move);
-    console.log(fromSquareX, fromSquareY, toSquareX, toSquareY);
-    shogi.move(fromSquareX, fromSquareY, toSquareX, toSquareY);
-    console.log({ shogi });
+  function touchTargetTile({ square, pieceInfo }) {
+    console.log({ square });
 
-    const { haveNotification } = checkAlertNotification(tempMatch);
-    if (haveNotification) return;
+    const { turn } = gameMatch;
+    const { color } = pieceInfo || {};
 
-    if (tempMatch.notificationSlug === "MoveValid") {
-      addHistoryAction(tempMatch.lastAction, current_player_number);
-      const gameData = getNormalizedGameData(tempMatch.asJson);
-      updateGameMatch(gameData);
+    const [status, kind] = getMoveAction({
+      square,
+      moveAction,
+      turn,
+      color
+    }).split(":");
+    console.log({ status, kind });
+
+    if (status === "invalid") {
+      switch (kind) {
+        case "ownPiece":
+          createMoveAction({ square });
+          return;
+        default:
+          resetMoveData();
+      }
     }
 
-    setMoveAction({ from: null }); */
+    if (status === "valid") {
+      switch (kind) {
+        case "drop":
+          dropsThePiece({ square, moveAction });
+          return;
+        case "move":
+        case "capture":
+          movesThePiece({ square, moveAction, kind });
+          return;
+        default:
+          createMoveAction({ square });
+      }
+    }
   }
 
   function selectHandPiece({ kind, turn }) {
     if (gameMatch.turn === turn) {
       const tempShogi = getTempShogi();
 
+      console.log({ kind });
       setMoveAction({
         from: null,
         dropPiece: { kind, turn },
@@ -277,6 +245,8 @@ const MatchPage = ({ displayPieces }) => {
 
   console.log({ gameMatch, historyActions });
 
+  const { vh } = useWindowSize();
+
   return (
     <div className="demo">
       <div>
@@ -300,6 +270,8 @@ const MatchPage = ({ displayPieces }) => {
           targetTile={targetTile}
           lastAction={getLastAction()}
           historyActions={historyActions}
+          width={`${vh * 0.8}px`}
+          height={`${vh * 0.8}px`}
         />
       )}
     </div>

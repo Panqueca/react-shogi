@@ -91,8 +91,23 @@ const MatchPage = ({ displayPieces }) => {
     touchTargetTile,
     moveAction,
     selectHandPiece,
-    getLastAction
+    getLastAction,
+    resetGame
   } = useShogiEngine({ listenNotification });
+
+  function callSurrender() {
+    setDialog({
+      open: true,
+      title: "Are you shure you want to resign?",
+      onConfirm: () => {
+        resetGame();
+        resetDialog();
+      },
+      onCancel: resetDialog,
+      confirmText: "Resign",
+      cancelText: "Cancel"
+    });
+  }
 
   //console.log({ gameMatch, moveAction });
 
@@ -141,6 +156,7 @@ const MatchPage = ({ displayPieces }) => {
           width={`${vh * 0.8}px`}
           height={`${vh * 0.8}px`}
           effectDialog={effectDialog}
+          callSurrender={callSurrender}
         />
       )}
     </MatchDisplay>

@@ -17,6 +17,35 @@ const PlayerInfo = styled.div`
     font-size: 16px;
     font-weight: bold;
   }
+
+  .hand {
+    height: 50px;
+    width: auto;
+    display: flex;
+
+    .piece-at-hand {
+      width: 50px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 0 0 1em;
+
+      div {
+        position: relative !important;
+        width: 100% !important;
+        top: 0 !important;
+        flex: 0 0 0;
+      }
+
+      .count-badge {
+        position: absolute;
+        top: 55%;
+        right: 0%;
+        z-index: 100;
+      }
+    }
+  }
 `;
 
 const ActionButton = styled.button`
@@ -40,7 +69,8 @@ const MatchPlayer = ({
   playerColorTurn,
   displayPieces,
   hands,
-  selectHandPiece
+  selectHandPiece,
+  callSurrender
 }) => {
   function displayHandPieces(handPieces, turn) {
     if (Array.isArray(handPieces)) {
@@ -97,7 +127,7 @@ const MatchPlayer = ({
           <ActionButton disabled>
             <MessageCircle />
           </ActionButton>
-          <ActionButton disabled>
+          <ActionButton onClick={callSurrender}>
             <Flag />
           </ActionButton>
           <ActionButton onClick={toggleSettings}>

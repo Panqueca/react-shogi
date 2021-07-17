@@ -139,7 +139,8 @@ const Board = ({
   board,
   width,
   height,
-  effectDialog
+  effectDialog,
+  callSurrender
 }) => {
   const [settings, setSettings] = useState({
     open: false,
@@ -284,6 +285,7 @@ const Board = ({
         playerColorTurn={0}
         toggleSettings={toggleSettings}
         selectHandPiece={selectHandPiece}
+        callSurrender={callSurrender}
         width={width}
       />
     </MatchDisplay>

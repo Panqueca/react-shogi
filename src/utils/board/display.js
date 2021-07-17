@@ -1,4 +1,4 @@
-export const Y_SERIES = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
+export const Y_SERIES = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
 export const X_SERIES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export const getInternationalSlugByXY = ({ x, y }) => {

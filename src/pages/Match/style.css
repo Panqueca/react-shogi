@@ -7,85 +7,14 @@ body {
   margin: 0;
 }
 
-.page-header {
-  color: #fff;
-  background: #191818;
-  margin: 0;
-  padding: 10px 20px;
-}
-
 #root {
   width: 100%;
-}
-
-.board-head-actions button {
-  margin: 15px;
 }
 
 .board-set {
   width: 100%;
   padding: 20px;
   margin: 0 auto;
-}
-
-.board-set .match-display {
-  display: block;
-}
-
-.board-set .profile {
-  height: 70px;
-}
-
-.board-set .profile .card-body {
-  display: flex;
-}
-
-.board-set .profile .card-title {
-  width: 200px;
-  font-size: 14px;
-}
-
-.board-set .hand {
-  position: relative;
-  display: flex;
-}
-
-.hand .piece-at-hand {
-  width: 50px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 0 0 1em;
-}
-
-.hand .piece-at-hand div {
-  position: relative !important;
-  width: 100% !important;
-  top: 0 !important;
-  flex: 0 0 0;
-}
-
-.hand .piece-at-hand .count-badge {
-  position: absolute;
-  top: 55%;
-  right: 0%;
-  z-index: 100;
-}
-
-.board-set .board-table {
-  width: 100%;
-  max-width: 80vmin;
-  position: relative;
-  z-index: 10;
-}
-
-.board-set .board-table .board-resizer {
-  width: 100%;
-  max-width: 80vmin;
-  -webkit-box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.39);
-  -moz-box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.39);
-  box-shadow: 1px 1px 11px 0px rgba(0, 0, 0, 0.39);
 }
 
 .last-action-tile {

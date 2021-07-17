@@ -12,16 +12,18 @@
   },
   "license": "MIT",
   "dependencies": {
-    "react": "^17.0.0",
-    "react-dom": "^16.1.0",
-    "react-scripts": "^1.0.17",
-    "bootstrap": "^4.6.0",
-    "react-bootstrap": "^1.6.1",
-    "shogi.js": "^2.0.4",
-    "styled-components": "^5.3.0",
     "@cypress/react": "^5.9.1",
     "@cypress/webpack-dev-server": "^1.4.0",
-    "cypress": "^7.7.0"
+    "bootstrap": "^4.6.0",
+    "cypress": "^7.7.0",
+    "feather-icons": "^4.28.0",
+    "react": "^17.0.0",
+    "react-bootstrap": "^1.6.1",
+    "react-dom": "^16.1.0",
+    "react-feather": "^2.0.9",
+    "react-scripts": "^1.0.17",
+    "shogi.js": "^2.0.4",
+    "styled-components": "^5.3.0"
   },
   "devDependencies": {
     "eslint": "^4.12.0",

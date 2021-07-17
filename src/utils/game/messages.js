@@ -1,6 +1,10 @@
+import React from "react";
+import CheckEffect from "../../components/CheckEffect";
+
 export const getDialogInfoByNotificationSlug = (notificationSlug, callback) => {
   if (notificationSlug === "PieceMovedToPromotionZone")
     return {
+      type: "dialog",
       title: "Promover?",
       confirmText: "Sim",
       cancelText: "Não",
@@ -8,5 +12,19 @@ export const getDialogInfoByNotificationSlug = (notificationSlug, callback) => {
       onCancel: () => callback("DONT_PROMOTE")
     };
 
-  return { title: null };
+  if (notificationSlug === "KingInCheck")
+    return {
+      type: "effect",
+      display: <CheckEffect text="Your King is In Check" />,
+      delay: 500
+    };
+
+  if (notificationSlug === "OpponentKingInCheck")
+    return {
+      type: "effect",
+      display: <CheckEffect text="CHECK" />,
+      delay: 500
+    };
+
+  return { type: null };
 };

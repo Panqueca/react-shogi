@@ -1,19 +1,12 @@
 import React from "react";
 import { useState } from "react";
-import { Shogi } from "shogi.js";
 import { Button, Modal } from "react-bootstrap";
+import styled from "styled-components";
 import "./style.css";
 import Board from "../../components/Board";
-import { getSquareByInternationalSlug } from "../../utils/board/display";
-import { getDialogInfoByNotificationSlug } from "../../utils/game/messages";
-import { getMoveAction, isKingInCheck } from "../../utils/game/match";
 import { useWindowSize } from "../../utils/hooks/window";
-
-const defaultTargetTile = {
-  square: null,
-  x: null,
-  y: null
-};
+import { useShogiEngine } from "../../utils/game/hooks";
+import { getDialogInfoByNotificationSlug } from "../../utils/game/messages";
 
 const defaultDialog = {
   open: false,
@@ -24,63 +17,38 @@ const defaultDialog = {
   cancelText: ""
 };
 
-const defaultMoveAction = { from: null, dropPiece: null, moves: [] };
-
-const shogi = new Shogi();
+const MatchDisplay = styled.div``;
 
 const MatchPage = ({ displayPieces }) => {
-  shogi.initialize();
-
-  const [gameMatch, setGameMatch] = useState(shogi);
-  const [historyActions, setHistoryActions] = useState([]);
-  const [targetTile, setTargetTile] = useState(defaultTargetTile);
-  const [moveAction, setMoveAction] = useState(defaultMoveAction);
   const [dialog, setDialog] = useState(defaultDialog);
+  const [effectDialog, setEffectDialog] = useState({
+    open: false,
+    display: null
+  });
 
-  function getTempShogi() {
-    const tempShogi = new Shogi();
-    tempShogi.initializeFromSFENString(gameMatch.toSFENString());
-    return tempShogi;
+  function resetDialog() {
+    setDialog(defaultDialog);
   }
 
-  function resetMoveData() {
-    setMoveAction(defaultMoveAction);
-    setTargetTile(defaultTargetTile);
-  }
+  const dialogActionCallback = response => {
+    const { turn } = gameMatch;
 
-  function resetGame() {
-    setGameMatch(shogi);
-    setHistoryActions([]);
-    resetMoveData();
-  }
+    if (response === "PROMOTE" || response === "DONT_PROMOTE") {
+      console.log("Promote", { turn });
+    }
 
-  function updateGameMatch(newGame) {
-    setGameMatch(newGame);
-    resetMoveData();
-  }
+    resetDialog();
+  };
 
-  function addHistoryAction({ kind, turn, to }) {
-    if (to)
-      setHistoryActions([
-        ...historyActions,
-        {
-          kind,
-          turn,
-          to
-        }
-      ]);
-  }
-
-  function checkAlertNotification(tempMatch) {
-    const { notificationSlug } = tempMatch;
-
+  function listenNotification(notificationSlug, turn) {
     const dialogInfo = getDialogInfoByNotificationSlug(
       notificationSlug,
-      response => dialogActionCallback(tempMatch, response)
+      response => dialogActionCallback({ response, turn })
     );
-    const { onConfirm, onCancel } = dialogInfo;
 
-    if (dialogInfo.title) {
+    const { type, onConfirm, onCancel } = dialogInfo;
+
+    if (type === "dialog") {
       setDialog({
         ...dialogInfo,
         open: true,
@@ -93,130 +61,38 @@ const MatchPage = ({ displayPieces }) => {
           resetDialog();
         }
       });
-      return true;
     }
+
+    const { display, delay = 500 } = dialogInfo;
+
+    if (type === "effect") {
+      setEffectDialog({ open: true, display });
+      setTimeout(() => {
+        setEffectDialog({ open: false, display: null });
+      }, delay);
+    }
+  }
+
+  function checkAlertNotification(tempMatch) {
+    const { notificationSlug } = tempMatch;
+
+    const dialogInfo = getDialogInfoByNotificationSlug(
+      notificationSlug,
+      response => dialogActionCallback(tempMatch, response)
+    );
 
     return false;
   }
 
-  function getLastAction() {
-    const lastAction = historyActions[historyActions.length - 1] || {};
-    const { data = {} } = lastAction;
-    return { ...lastAction, ...data };
-  }
-
-  function resetDialog() {
-    setDialog(defaultDialog);
-  }
-
-  const dialogActionCallback = response => {
-    const { turn } = gameMatch;
-
-    if (response === "PROMOTE" || response === "DONT_PROMOTE") {
-      console.log("Promote", { turn });
-    }
-  };
-
-  function createMoveAction({ square }) {
-    const tempShogi = getTempShogi();
-    const { squareX, squareY } = getSquareByInternationalSlug(square);
-    console.log({ square, squareX, squareY }, "A");
-
-    setMoveAction({
-      from: { squareX, squareY, square },
-      moves: tempShogi.getMovesFrom(squareX, squareY)
-    });
-    setTargetTile({ squareX, squareY, square });
-  }
-
-  function dropsThePiece({ square, moveAction }) {
-    const tempShogi = getTempShogi();
-    const { squareX, squareY } = getSquareByInternationalSlug(square);
-    const { turn } = gameMatch;
-
-    const { dropPiece } = moveAction;
-    const { kind: dropKind, turn: dropTurn } = dropPiece || {};
-
-    tempShogi.drop(squareX, squareY, dropKind, dropTurn);
-    updateGameMatch(tempShogi);
-    addHistoryAction({ kind: "drop", turn, to: { squareX, squareY } });
-  }
-
-  function movesThePiece({ moveAction, square, kind }) {
-    const tempShogi = getTempShogi();
-    const { squareX, squareY } = getSquareByInternationalSlug(square);
-    const { turn } = gameMatch;
-
-    console.log({ moveAction });
-
-    tempShogi.move(
-      moveAction.from.squareX,
-      moveAction.from.squareY,
-      squareX,
-      squareY
-    );
-
-    if (isKingInCheck(tempShogi, gameMatch.turn)) {
-      resetMoveData();
-      alert("King in check");
-      return;
-    }
-
-    updateGameMatch(tempShogi);
-    addHistoryAction({ kind, turn, to: { squareX, squareY } });
-  }
-
-  function touchTargetTile({ square, pieceInfo }) {
-    console.log({ square });
-
-    const { turn } = gameMatch;
-    const { color } = pieceInfo || {};
-
-    const [status, kind] = getMoveAction({
-      square,
-      moveAction,
-      turn,
-      color
-    }).split(":");
-    console.log({ status, kind });
-
-    if (status === "invalid") {
-      switch (kind) {
-        case "ownPiece":
-          createMoveAction({ square });
-          return;
-        default:
-          resetMoveData();
-      }
-    }
-
-    if (status === "valid") {
-      switch (kind) {
-        case "drop":
-          dropsThePiece({ square, moveAction });
-          return;
-        case "move":
-        case "capture":
-          movesThePiece({ square, moveAction, kind });
-          return;
-        default:
-          createMoveAction({ square });
-      }
-    }
-  }
-
-  function selectHandPiece({ kind, turn }) {
-    if (gameMatch.turn === turn) {
-      const tempShogi = getTempShogi();
-
-      console.log({ kind });
-      setMoveAction({
-        from: null,
-        dropPiece: { kind, turn },
-        moves: tempShogi.getDropsBy(turn)
-      });
-    }
-  }
+  const {
+    gameMatch,
+    historyActions,
+    targetTile,
+    touchTargetTile,
+    moveAction,
+    selectHandPiece,
+    getLastAction
+  } = useShogiEngine({ listenNotification });
 
   //console.log({ gameMatch, moveAction });
 
@@ -248,16 +124,8 @@ const MatchPage = ({ displayPieces }) => {
   const { vh } = useWindowSize();
 
   return (
-    <div className="demo">
-      <div>
-        {displayDialog()}
-        <div className="board-head-actions">
-          <Button variant="primary">Render-se</Button>
-          <Button variant="primary" onClick={resetGame}>
-            Reset
-          </Button>
-        </div>
-      </div>
+    <MatchDisplay>
+      {displayDialog()}
       {gameMatch && (
         <Board
           hands={gameMatch.hands}
@@ -272,9 +140,10 @@ const MatchPage = ({ displayPieces }) => {
           historyActions={historyActions}
           width={`${vh * 0.8}px`}
           height={`${vh * 0.8}px`}
+          effectDialog={effectDialog}
         />
       )}
-    </div>
+    </MatchDisplay>
   );
 };
 

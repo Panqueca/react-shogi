@@ -108,3 +108,24 @@ export function getMoveAction({ square, moveAction, turn, color }) {
   if (canPieceMoveToSquare && isActionMove) return "valid:move";
   return "valid:selection";
 }
+
+export function getEnemyCampRowData({ turn }) {
+  if (turn === 0)
+    return {
+      startRow: 7,
+      endRow: 9
+    };
+
+  return {
+    startRow: 3,
+    endRow: 1
+  };
+}
+
+export function isPieceOnEnemyCamp({ turn, square }) {
+  const { squareX, squareY } = getSquareByInternationalSlug(square);
+
+  const { startRow, endRow } = getEnemyCampRowData({ turn });
+
+  if (squareX >= startRow && squareX <= endRow) return true;
+}

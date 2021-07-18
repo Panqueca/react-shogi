@@ -5,6 +5,7 @@ import { ToggleLeft, ToggleRight } from "react-feather";
 import { getSquareByXYBoard } from "../utils/board/display";
 import { checkIsPossibleMove } from "../utils/pieces/filter";
 import MatchPlayer from "./MatchPlayer";
+import { useLocalState } from "../store/local/state";
 
 const MatchDisplay = styled.div`
   padding: 20px;
@@ -102,6 +103,8 @@ const EffectDialog = styled.div`
   bottom: 0;
 `;
 
+const Select = styled.select``;
+
 const SettingsMenu = styled.div`
   display: block;
   width: 300px;
@@ -118,8 +121,8 @@ const SettingsMenu = styled.div`
     font-weight: bold;
   }
 
-  .option-group {
-    padding: 15px 5px;
+  .group {
+    padding: 10px 5px;
     .option {
       display: flex;
       justify-content: space-between;
@@ -142,6 +145,8 @@ const Board = ({
   effectDialog,
   callSurrender
 }) => {
+  const { skin, changeSkin } = useLocalState();
+
   const [settings, setSettings] = useState({
     open: false,
     showSquareNumbers: true
@@ -163,6 +168,10 @@ const Board = ({
     handleMovePiece({ square, pieceInfo });
   }
 
+  function updateSkin(e) {
+    changeSkin(e.target.value);
+  }
+
   function getBoardOrderedByRows(matchBoard) {
     const rows = [];
 
@@ -175,8 +184,6 @@ const Board = ({
 
     return rows;
   }
-
-  const orderedByRows = getBoardOrderedByRows(board);
 
   const getToogle = (on, toggle) => {
     if (on)
@@ -225,11 +232,22 @@ const Board = ({
                   )}
                 </div>
               </div>
+              <div className="group">
+                <div className="option">
+                  <div>Skin Options</div>{" "}
+                  <Select onChange={updateSkin} value={skin}>
+                    <option value="skin_1" selec>
+                      3D Light Skin
+                    </option>
+                    <option value="skin_2">Red Kanji Wood</option>
+                  </Select>
+                </div>
+              </div>
             </div>
           </SettingsMenu>
         )}
         {displayPieces &&
-          orderedByRows.map((rowTiles, y) => {
+          getBoardOrderedByRows(board).map((rowTiles, y) => {
             if (Array.isArray(rowTiles))
               return rowTiles.map((locationInfo, x) => {
                 const { color, kind } = locationInfo || {};

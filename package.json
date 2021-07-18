@@ -14,6 +14,8 @@
   "dependencies": {
     "@cypress/react": "^5.9.1",
     "@cypress/webpack-dev-server": "^1.4.0",
+    "@hookstate/core": "^3.0.8",
+    "@hookstate/persistence": "^3.0.0",
     "bootstrap": "^4.6.0",
     "cypress": "^7.7.0",
     "feather-icons": "^4.28.0",

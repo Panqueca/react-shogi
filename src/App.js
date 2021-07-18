@@ -1,24 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Match from "./pages/Match";
+import { useLocalState } from "./store/local/state";
 import { getPieceComponentsByTheme } from "./utils/pieces/display";
 
-const defaultTheme = "skin_1";
-
 const App = () => {
-  const [pieceSkin, setPieceSkin] = useState(defaultTheme);
+  const { skin } = useLocalState();
   const [displayPieces, setDisplayPieces] = useState(null);
 
   useEffect(() => {
-    setDisplayPieces(getPieceComponentsByTheme("skin_1"));
-  }, [pieceSkin]);
+    setDisplayPieces(getPieceComponentsByTheme(skin));
+  }, [skin]);
 
-  const changePieceSkin = newSkin => {
-    setPieceSkin(newSkin);
-  };
-
-  return (
-    <Match displayPieces={displayPieces} changePieceSkin={changePieceSkin} />
-  );
+  return <Match displayPieces={displayPieces} />;
 };
 
 export default App;

@@ -26,5 +26,12 @@ export const getDialogInfoByNotificationSlug = (notificationSlug, callback) => {
       delay: 500
     };
 
+  if (notificationSlug === "GAME_FOUND")
+    return {
+      type: "effect",
+      display: <CheckEffect text="Opponent Found, the game will start..." />,
+      delay: 1500
+    };
+
   return { type: null };
 };

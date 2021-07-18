@@ -2,12 +2,13 @@ import React from "react";
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import styled from "styled-components";
+import axios from "axios";
+import socketClient from "socket.io-client";
 import { useHistory, useParams } from "react-router-dom";
 import Board from "../../components/Board";
 import { useWindowSize } from "../../utils/hooks/window";
 import { useShogiEngine } from "../../utils/game/hooks";
 import { getDialogInfoByNotificationSlug } from "../../utils/game/messages";
-import axios from "axios";
 
 const defaultDialog = {
   open: false,
@@ -29,20 +30,26 @@ const MatchPage = () => {
 
   const history = useHistory();
   const { id: GAME_ID } = useParams();
-  console.log({ GAME_ID });
 
   function resetDialog() {
     setDialog(defaultDialog);
   }
 
-  const dialogActionCallback = (response, params) => {
+  function callEffect({ display, delay }) {
+    setEffectDialog({ open: true, display });
+    setTimeout(() => {
+      setEffectDialog({ open: false, display: null });
+    }, delay);
+  }
+
+  function dialogActionCallback(response, params) {
     if (response === "PROMOTE" || response === "DONT_PROMOTE") {
       const { promote } = params;
       promote(response === "PROMOTE");
     }
 
     resetDialog();
-  };
+  }
 
   function listenNotification(notificationSlug, params) {
     const dialogInfo = getDialogInfoByNotificationSlug(
@@ -70,10 +77,7 @@ const MatchPage = () => {
     const { display, delay = 500 } = dialogInfo;
 
     if (type === "effect") {
-      setEffectDialog({ open: true, display });
-      setTimeout(() => {
-        setEffectDialog({ open: false, display: null });
-      }, delay);
+      callEffect({ display, delay });
     }
   }
 
@@ -140,6 +144,13 @@ const MatchPage = () => {
   }
 
   const { vh } = useWindowSize();
+
+  socketClient("http://localhost:9000").on("GAME_FOUND", ({ _id }) => {
+    if (GAME_ID === _id) {
+      const dialogInfo = getDialogInfoByNotificationSlug("GAME_FOUND");
+      if (dialogInfo.type) callEffect({ ...dialogInfo });
+    }
+  });
 
   return (
     <MatchDisplay>

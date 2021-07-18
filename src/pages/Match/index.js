@@ -30,20 +30,19 @@ const MatchPage = ({ displayPieces }) => {
     setDialog(defaultDialog);
   }
 
-  const dialogActionCallback = response => {
-    const { turn } = gameMatch;
-
+  const dialogActionCallback = (response, params) => {
     if (response === "PROMOTE" || response === "DONT_PROMOTE") {
-      console.log("Promote", { turn });
+      const { promote } = params;
+      promote(response === "PROMOTE");
     }
 
     resetDialog();
   };
 
-  function listenNotification(notificationSlug, turn) {
+  function listenNotification(notificationSlug, params) {
     const dialogInfo = getDialogInfoByNotificationSlug(
       notificationSlug,
-      response => dialogActionCallback({ response, turn })
+      response => dialogActionCallback(response, params)
     );
 
     const { type, onConfirm, onCancel } = dialogInfo;
@@ -73,17 +72,6 @@ const MatchPage = ({ displayPieces }) => {
     }
   }
 
-  function checkAlertNotification(tempMatch) {
-    const { notificationSlug } = tempMatch;
-
-    const dialogInfo = getDialogInfoByNotificationSlug(
-      notificationSlug,
-      response => dialogActionCallback(tempMatch, response)
-    );
-
-    return false;
-  }
-
   const {
     gameMatch,
     historyActions,
@@ -109,8 +97,6 @@ const MatchPage = ({ displayPieces }) => {
     });
   }
 
-  //console.log({ gameMatch, moveAction });
-
   function displayDialog() {
     return (
       <Modal show={dialog.open} onHide={() => {}} size="sm" centered>
@@ -133,8 +119,6 @@ const MatchPage = ({ displayPieces }) => {
       </Modal>
     );
   }
-
-  console.log({ gameMatch, historyActions });
 
   const { vh } = useWindowSize();
 

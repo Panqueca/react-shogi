@@ -250,7 +250,6 @@ const Board = ({
                 );
 
                 const isLastAction = lastAction && square === lastAction.square;
-                if (isLastAction) console.log({ lastAction, square });
 
                 return (
                   <BoardSquare key={squareNumber} blink={isLastAction}>
@@ -276,6 +275,8 @@ const Board = ({
                   </BoardSquare>
                 );
               });
+
+            return null;
           })}
       </ShogiBoard>
       <MatchPlayer

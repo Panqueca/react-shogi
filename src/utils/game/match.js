@@ -112,20 +112,17 @@ export function getMoveAction({ square, moveAction, turn, color }) {
 export function getEnemyCampRowData({ turn }) {
   if (turn === 0)
     return {
-      startRow: 7,
-      endRow: 9
+      startRow: 1,
+      endRow: 3
     };
 
   return {
-    startRow: 3,
-    endRow: 1
+    startRow: 7,
+    endRow: 9
   };
 }
 
-export function isPieceOnEnemyCamp({ turn, square }) {
-  const { squareX, squareY } = getSquareByInternationalSlug(square);
-
+export function isPieceOnEnemyCamp({ turn, squareY }) {
   const { startRow, endRow } = getEnemyCampRowData({ turn });
-
-  if (squareX >= startRow && squareX <= endRow) return true;
+  if (squareY >= startRow && squareY <= endRow) return true;
 }

@@ -18,7 +18,7 @@ export const getSquareByInternationalSlug = name => {
     col,
     indexOfRow,
     indexOfCol,
-    squareNumber: Number(`${squareY}${squareX}`),
+    squareNumber: Number(`${squareX}${squareY}`),
     squareY,
     squareX,
     squareName: `${col}${row}`,

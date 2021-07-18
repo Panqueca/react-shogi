@@ -71,7 +71,8 @@ const MatchPlayer = ({
   displayPieces,
   hands,
   selectHandPiece,
-  callSurrender
+  callSurrender,
+  viewBox
 }) => {
   function displayHandPieces(handPieces, turn) {
     if (Array.isArray(handPieces)) {
@@ -95,6 +96,11 @@ const MatchPlayer = ({
                   title: `${kind}`,
                   onClick: () => selectHandPiece({ kind, turn }),
                   "data-cy": `piece-at-hand-${turn}-${kind}`
+                }}
+                svgProps={{
+                  viewBox,
+                  width: "50px",
+                  height: "50px"
                 }}
               />
               {count > 1 && (

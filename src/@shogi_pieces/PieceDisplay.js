@@ -52,7 +52,8 @@ module.exports = Piece => props => {
     forceProps,
     player,
     squareNumber,
-    squareName
+    squareName,
+    svgProps = {}
   } = props;
 
   const styles = Object.assign({}, style, {
@@ -104,7 +105,7 @@ module.exports = Piece => props => {
         }}
         data-cy={`piece-tile-square-${squareNumber}`}
       >
-        <Piece />
+        <Piece {...svgProps} />
       </div>
       {isSelected && (
         <SimpleLayer

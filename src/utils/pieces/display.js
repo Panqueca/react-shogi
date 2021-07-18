@@ -10,9 +10,12 @@ export const getPieceComponentsByTheme = skinTheme => {
 export const getBoardConfigByTheme = skinTheme => {
   if (skinTheme === "skin_2")
     return {
-      squaresColor: "#cba84b"
+      squaresColor: "#cba84b",
+      pieceViewBox: "0 0 50 50"
     };
+
   return {
-    squaresColor: "#f4c64e"
+    squaresColor: "#f4c64e",
+    pieceViewBox: "0 0 32 32"
   };
 };

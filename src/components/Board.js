@@ -13,19 +13,19 @@ const MatchDisplay = styled.div`
 
 const blinkTile = keyframes`
 0% {
-  background-color: rgba(255, 126, 126, 0.4);
+  background-color: rgba(255, 126, 126, 0.3);
 }
 25% {
-  background-color: rgba(255, 126, 126, 0.45);
+  background-color: rgba(255, 126, 126, 0.4);
 }
 50% {
   background-color: rgba(255, 126, 126, 0.5);
 }
 75% {
-  background-color: rgba(255, 126, 126, 0.45);
+  background-color: rgba(255, 126, 126, 0.4);
 }
 100% {
-  background-color: rgba(255, 126, 126, 0.4);
+  background-color: rgba(255, 126, 126, 0.3);
 }
 `;
 
@@ -146,7 +146,7 @@ const Board = ({
   callSurrender
 }) => {
   const { skin, displayPieces, changeSkin, boardConfig } = useSkinState();
-  const { squaresColor } = boardConfig;
+  const { squaresColor, pieceViewBox } = boardConfig;
 
   const [settings, setSettings] = useState({
     open: false,
@@ -210,6 +210,7 @@ const Board = ({
         playerColorTurn={1}
         selectHandPiece={selectHandPiece}
         width={width}
+        viewBox={pieceViewBox}
       />
       <ShogiBoard
         width={width}
@@ -237,9 +238,7 @@ const Board = ({
                 <div className="option">
                   <div>Skin Options</div>{" "}
                   <Select onChange={updateSkin} value={skin}>
-                    <option value="skin_1" selec>
-                      3D Light Skin
-                    </option>
+                    <option value="skin_1">3D Light Skin</option>
                     <option value="skin_2">Red Kanji Wood</option>
                   </Select>
                 </div>
@@ -307,6 +306,7 @@ const Board = ({
         selectHandPiece={selectHandPiece}
         callSurrender={callSurrender}
         width={width}
+        viewBox={pieceViewBox}
       />
     </MatchDisplay>
   );

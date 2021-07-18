@@ -106,12 +106,20 @@ const MatchPage = ({ displayPieces }) => {
         <Modal.Body>{dialog.body && dialog.body}</Modal.Body>
         <Modal.Footer>
           {dialog.cancelText && (
-            <Button variant="secondary" onClick={dialog.onCancel}>
+            <Button
+              variant="secondary"
+              onClick={dialog.onCancel}
+              data-cy="match-cancel-dialog-btn"
+            >
               {dialog.cancelText}
             </Button>
           )}
           {dialog.confirmText && (
-            <Button variant="primary" onClick={dialog.onConfirm}>
+            <Button
+              variant="primary"
+              onClick={dialog.onConfirm}
+              data-cy="match-confirm-dialog-btn"
+            >
               {dialog.confirmText}
             </Button>
           )}

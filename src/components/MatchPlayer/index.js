@@ -24,7 +24,8 @@ const PlayerInfo = styled.div`
     display: flex;
 
     .piece-at-hand {
-      width: 50px;
+      width: 40px;
+      margin: 5px;
       position: relative;
       display: flex;
       justify-content: center;

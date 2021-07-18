@@ -115,6 +115,15 @@ export function useShogiEngine({ listenNotification }) {
 
     const opponnetColor = turn === 0 ? 1 : 0;
 
+    if (isKingInCheck(tempShogi, turn)) {
+      resetMoveData();
+      listenNotification("KingInCheck");
+      return;
+    }
+
+    if (isKingInCheck(tempShogi, opponnetColor))
+      listenNotification("OpponentKingInCheck");
+
     if (canPromote) {
       listenNotification("PieceMovedToPromotionZone", {
         promote: promoteOption =>
@@ -125,16 +134,6 @@ export function useShogiEngine({ listenNotification }) {
           })
       });
       return;
-    }
-
-    if (isKingInCheck(tempShogi, turn)) {
-      resetMoveData();
-      listenNotification("KingInCheck");
-      return;
-    }
-
-    if (isKingInCheck(tempShogi, opponnetColor)) {
-      listenNotification("OpponentKingInCheck");
     }
 
     updateGameMatch(tempShogi);
@@ -180,6 +179,14 @@ export function useShogiEngine({ listenNotification }) {
   function selectHandPiece({ kind, turn }) {
     if (gameMatch.turn === turn) {
       const tempShogi = getTempShogi();
+
+      const toggleClick =
+        moveAction.dropPiece && moveAction.dropPiece.kind === kind;
+
+      if (toggleClick) {
+        resetMoveData();
+        return;
+      }
 
       setMoveAction({
         from: null,

@@ -19,7 +19,7 @@ const defaultDialog = {
 
 const MatchDisplay = styled.div``;
 
-const MatchPage = ({ displayPieces }) => {
+const MatchPage = () => {
   const [dialog, setDialog] = useState(defaultDialog);
   const [effectDialog, setEffectDialog] = useState({
     open: false,
@@ -138,7 +138,6 @@ const MatchPage = ({ displayPieces }) => {
           hands={gameMatch.hands}
           board={gameMatch.board}
           currentPlayer={gameMatch.turn}
-          displayPieces={displayPieces}
           handleMovePiece={touchTargetTile}
           possibleMoves={moveAction.moves}
           selectHandPiece={selectHandPiece}

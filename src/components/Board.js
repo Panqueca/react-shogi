@@ -5,7 +5,7 @@ import { ToggleLeft, ToggleRight } from "react-feather";
 import { getSquareByXYBoard } from "../utils/board/display";
 import { checkIsPossibleMove } from "../utils/pieces/filter";
 import MatchPlayer from "./MatchPlayer";
-import { useLocalState } from "../store/local/state";
+import { useSkinState } from "../store/skin/state";
 
 const MatchDisplay = styled.div`
   padding: 20px;
@@ -103,7 +103,9 @@ const EffectDialog = styled.div`
   bottom: 0;
 `;
 
-const Select = styled.select``;
+const Select = styled.select`
+  font-size: 11px;
+`;
 
 const SettingsMenu = styled.div`
   display: block;
@@ -132,20 +134,19 @@ const SettingsMenu = styled.div`
 
 const Board = ({
   hands,
-  squaresColor,
   handleMovePiece,
   lastAction,
   targetTile,
   selectHandPiece,
   possibleMoves,
-  displayPieces,
   board,
   width,
   height,
   effectDialog,
   callSurrender
 }) => {
-  const { skin, changeSkin } = useLocalState();
+  const { skin, displayPieces, changeSkin, boardConfig } = useSkinState();
+  const { squaresColor } = boardConfig;
 
   const [settings, setSettings] = useState({
     open: false,
@@ -313,14 +314,12 @@ const Board = ({
 
 Board.propTypes = {
   allowMoves: PropTypes.bool,
-  drawLabels: PropTypes.bool,
-  squaresColor: PropTypes.string
+  drawLabels: PropTypes.bool
 };
 
 Board.defaultProps = {
   allowMoves: true,
-  drawLabels: true,
-  squaresColor: "#f4c64e"
+  drawLabels: true
 };
 
 export default Board;

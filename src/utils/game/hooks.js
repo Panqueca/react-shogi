@@ -6,6 +6,7 @@ import {
   getSquareByInternationalSlug,
   getSquareInfoByXY
 } from "../board/display";
+import { canPromoteByKind } from "../pieces/constants";
 
 const shogi = new Shogi();
 
@@ -34,7 +35,16 @@ export function useShogiEngine({ listenNotification }) {
     resetMoveData();
   }
 
+  function checkOpponentCheck(tempShogi, turn) {
+    const opponnetColor = turn === 0 ? 1 : 0;
+
+    if (isKingInCheck(tempShogi, opponnetColor))
+      listenNotification("OpponentKingInCheck");
+  }
+
   function updateGameMatch(newGame) {
+    const { turn } = gameMatch;
+    checkOpponentCheck(newGame, turn);
     setGameMatch(newGame);
     resetMoveData();
   }
@@ -57,11 +67,12 @@ export function useShogiEngine({ listenNotification }) {
     return lastAction;
   }
 
-  function createMoveAction({ square }) {
+  function createMoveAction({ square, pieceInfo }) {
     const tempShogi = getTempShogi();
     const { squareX, squareY } = getSquareByInternationalSlug(square);
 
     setMoveAction({
+      pieceInfo,
       from: { squareX, squareY, square },
       moves: tempShogi.getMovesFrom(squareX, squareY)
     });
@@ -94,26 +105,30 @@ export function useShogiEngine({ listenNotification }) {
     });
   }
 
-  function movesThePiece({ moveAction, square, kind }) {
+  function checkCanPromote({ turn, fromSquareY, toSquareY, kind }) {
+    const onEnemyCamp = isPieceOnEnemyCamp({
+      turn,
+      squareY: fromSquareY
+    });
+    const movedToEnemyCamp = isPieceOnEnemyCamp({ turn, squareY: toSquareY });
+
+    return (onEnemyCamp || movedToEnemyCamp) && canPromoteByKind(kind);
+  }
+
+  function movesThePiece({ moveAction, square, action }) {
     const tempShogi = getTempShogi();
     const { squareX, squareY } = getSquareByInternationalSlug(square);
     const { turn } = gameMatch;
+    const { from, pieceInfo } = moveAction;
 
-    tempShogi.move(
-      moveAction.from.squareX,
-      moveAction.from.squareY,
-      squareX,
-      squareY
-    );
+    tempShogi.move(from.squareX, from.squareY, squareX, squareY);
 
-    const onEnemyCamp = isPieceOnEnemyCamp({
+    const canPromote = checkCanPromote({
       turn,
-      squareY: moveAction.from.squareY
+      fromSquareY: from.squareY,
+      toSquareY: squareY,
+      kind: pieceInfo.kind
     });
-    const movedToEnemyCamp = isPieceOnEnemyCamp({ turn, squareY });
-    const canPromote = onEnemyCamp || movedToEnemyCamp;
-
-    const opponnetColor = turn === 0 ? 1 : 0;
 
     if (isKingInCheck(tempShogi, turn)) {
       resetMoveData();
@@ -121,14 +136,11 @@ export function useShogiEngine({ listenNotification }) {
       return;
     }
 
-    if (isKingInCheck(tempShogi, opponnetColor))
-      listenNotification("OpponentKingInCheck");
-
     if (canPromote) {
       listenNotification("PieceMovedToPromotionZone", {
         promote: promoteOption =>
           promoteCallback({
-            from: moveAction.from,
+            from,
             to: { squareX, squareY },
             promote: promoteOption
           })
@@ -137,14 +149,14 @@ export function useShogiEngine({ listenNotification }) {
     }
 
     updateGameMatch(tempShogi);
-    addHistoryAction({ kind, turn, to: { squareX, squareY } });
+    addHistoryAction({ action, turn, to: { squareX, squareY } });
   }
 
   function touchTargetTile({ square, pieceInfo }) {
     const { turn } = gameMatch;
     const { color } = pieceInfo || {};
 
-    const [status, kind] = getMoveAction({
+    const [status, action] = getMoveAction({
       square,
       moveAction,
       turn,
@@ -152,9 +164,9 @@ export function useShogiEngine({ listenNotification }) {
     }).split(":");
 
     if (status === "invalid") {
-      switch (kind) {
+      switch (action) {
         case "ownPiece":
-          createMoveAction({ square });
+          createMoveAction({ square, pieceInfo });
           return;
         default:
           resetMoveData();
@@ -162,16 +174,16 @@ export function useShogiEngine({ listenNotification }) {
     }
 
     if (status === "valid") {
-      switch (kind) {
+      switch (action) {
         case "drop":
           dropsThePiece({ square, moveAction });
           return;
         case "move":
         case "capture":
-          movesThePiece({ square, moveAction, kind });
+          movesThePiece({ square, moveAction, action });
           return;
         default:
-          createMoveAction({ square });
+          createMoveAction({ square, pieceInfo });
       }
     }
   }

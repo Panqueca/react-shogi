@@ -2,11 +2,12 @@ import React from "react";
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import styled from "styled-components";
-import "./style.css";
+import { useHistory, useParams } from "react-router-dom";
 import Board from "../../components/Board";
 import { useWindowSize } from "../../utils/hooks/window";
 import { useShogiEngine } from "../../utils/game/hooks";
 import { getDialogInfoByNotificationSlug } from "../../utils/game/messages";
+import axios from "axios";
 
 const defaultDialog = {
   open: false,
@@ -25,6 +26,10 @@ const MatchPage = () => {
     open: false,
     display: null
   });
+
+  const history = useHistory();
+  const { id: GAME_ID } = useParams();
+  console.log({ GAME_ID });
 
   function resetDialog() {
     setDialog(defaultDialog);
@@ -87,9 +92,15 @@ const MatchPage = () => {
     setDialog({
       open: true,
       title: "Are you shure you want to resign?",
-      onConfirm: () => {
+      onConfirm: async () => {
         resetGame();
         resetDialog();
+        await axios.post("http://localhost:9000/games/resign", {
+          GAME_ID,
+          resignSide: "SENTE"
+        });
+
+        history.push(`/game/history/${GAME_ID}`);
       },
       onCancel: resetDialog,
       confirmText: "Resign",

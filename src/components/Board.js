@@ -314,12 +314,18 @@ const Board = ({
 
 Board.propTypes = {
   allowMoves: PropTypes.bool,
-  drawLabels: PropTypes.bool
+  drawLabels: PropTypes.bool,
+  effectDialog: PropTypes.object,
+  targetTile: PropTypes.object,
+  handleMovePiece: PropTypes.func
 };
 
 Board.defaultProps = {
   allowMoves: true,
-  drawLabels: true
+  drawLabels: true,
+  effectDialog: { open: false },
+  targetTile: {},
+  handleMovePiece: () => {}
 };
 
 export default Board;

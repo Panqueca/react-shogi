@@ -52,7 +52,7 @@ module.exports = Piece => props => {
     forceProps,
     player,
     squareNumber,
-    squareName,
+    // squareName,
     svgProps = {}
   } = props;
 
@@ -78,7 +78,7 @@ module.exports = Piece => props => {
       onTouchEnd={onTouchEnd}
       onTouchStart={onTouchStart}
       style={styles}
-      title={`Square: ${squareNumber} (${squareName}), y: ${props.x} x: ${props.y}`}
+      // title={`Square: ${squareNumber} (${squareName}), y: ${props.x} x: ${props.y}`}
       {...forceProps}
     >
       <SimpleLayer onClick={onClickFunc} data-cy={`square-${squareNumber}`} />

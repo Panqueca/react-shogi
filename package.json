@@ -16,6 +16,7 @@
     "@cypress/webpack-dev-server": "^1.4.0",
     "@hookstate/core": "^3.0.8",
     "@hookstate/persistence": "^3.0.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "cypress": "^7.7.0",
     "feather-icons": "^4.28.0",
@@ -23,6 +24,7 @@
     "react-bootstrap": "^1.6.1",
     "react-dom": "^16.1.0",
     "react-feather": "^2.0.9",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "^1.0.17",
     "shogi.js": "^2.0.4",
     "styled-components": "^5.3.0"

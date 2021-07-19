@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Shogi } from "shogi.js";
 import { getMoveAction, isKingInCheck, isPieceOnEnemyCamp } from "./match";
 import { defaultTargetTile, defaultMoveAction } from "./defaults";
@@ -10,7 +10,11 @@ import { canPromoteByKind } from "../pieces/constants";
 
 const shogi = new Shogi();
 
-export function useShogiEngine({ listenNotification }) {
+export function useShogiEngine({
+  listenNotification,
+  saveGameMove,
+  sfenPosition
+}) {
   shogi.initialize();
 
   const [gameMatch, setGameMatch] = useState(shogi);
@@ -18,11 +22,21 @@ export function useShogiEngine({ listenNotification }) {
   const [targetTile, setTargetTile] = useState(defaultTargetTile);
   const [moveAction, setMoveAction] = useState(defaultMoveAction);
 
-  function getTempShogi() {
+  function getFromSfen(sfen) {
     const tempShogi = new Shogi();
-    tempShogi.initializeFromSFENString(gameMatch.toSFENString());
+    tempShogi.initializeFromSFENString(sfen);
     return tempShogi;
   }
+
+  function getTempShogi() {
+    return getFromSfen(gameMatch.toSFENString());
+  }
+
+  useEffect(() => {
+    const currentSfen = getTempShogi().toSFENString();
+    if (sfenPosition && sfenPosition !== currentSfen)
+      setGameMatch(getFromSfen(sfenPosition));
+  }, [sfenPosition]);
 
   function resetMoveData() {
     setMoveAction(defaultMoveAction);
@@ -46,6 +60,7 @@ export function useShogiEngine({ listenNotification }) {
     const { turn } = gameMatch;
     checkOpponentCheck(newGame, turn);
     setGameMatch(newGame);
+    if (saveGameMove) saveGameMove(newGame.toSFENString());
     resetMoveData();
   }
 

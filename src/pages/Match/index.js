@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import styled from "styled-components";
@@ -21,7 +21,35 @@ const defaultDialog = {
 
 const MatchDisplay = styled.div``;
 
+const WaitDialog = styled.div`
+  position: fixed;
+  width: ${({ width }) => width};
+  padding: 20px;
+  background-color: #fff;
+  font-size: 22px;
+  top: 0px;
+  left: 0;
+  right: 0;
+  margin: auto auto;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const defaultSfen =
+  "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1";
+
+const io = socketClient("http://localhost:9000");
+
 const MatchPage = () => {
+  const [gameData, setGameData] = useState({
+    _id: null,
+    winner: null,
+    moves: [],
+    status: "LOADING",
+    increment: 0,
+    type: "BLITZ"
+  });
   const [dialog, setDialog] = useState(defaultDialog);
   const [effectDialog, setEffectDialog] = useState({
     open: false,
@@ -30,6 +58,27 @@ const MatchPage = () => {
 
   const history = useHistory();
   const { id: GAME_ID } = useParams();
+
+  function getLastSfen() {
+    const { moves } = gameData;
+    if (moves.length > 0) return moves[moves.length - 1].sfen;
+    return defaultSfen;
+  }
+
+  async function fetchSetGameData() {
+    const { data: response } = await axios.get(
+      `http://localhost:9000/games/find?_id=${GAME_ID}`
+    );
+    const { _id } = response;
+
+    if (_id) {
+      setGameData(response);
+    }
+  }
+
+  useEffect(() => {
+    fetchSetGameData();
+  }, []);
 
   function resetDialog() {
     setDialog(defaultDialog);
@@ -81,6 +130,16 @@ const MatchPage = () => {
     }
   }
 
+  async function saveGameMove(sfen) {
+    console.log("saveGameMove", { sfen });
+    if (gameData.status === "STARTED") {
+      await axios.post("http://localhost:9000/games/saveMove", {
+        _id: GAME_ID,
+        sfen
+      });
+    }
+  }
+
   const {
     gameMatch,
     historyActions,
@@ -90,7 +149,11 @@ const MatchPage = () => {
     selectHandPiece,
     getLastAction,
     resetGame
-  } = useShogiEngine({ listenNotification });
+  } = useShogiEngine({
+    listenNotification,
+    saveGameMove,
+    sfenPosition: getLastSfen()
+  });
 
   function callSurrender() {
     setDialog({
@@ -100,7 +163,7 @@ const MatchPage = () => {
         resetGame();
         resetDialog();
         await axios.post("http://localhost:9000/games/resign", {
-          GAME_ID,
+          _id: GAME_ID,
           resignSide: "SENTE"
         });
 
@@ -144,18 +207,43 @@ const MatchPage = () => {
   }
 
   const { vh } = useWindowSize();
+  const size = `${vh * 0.8}px`;
 
-  socketClient("http://localhost:9000").on("GAME_FOUND", ({ _id }) => {
-    if (GAME_ID === _id) {
-      const dialogInfo = getDialogInfoByNotificationSlug("GAME_FOUND");
-      if (dialogInfo.type) callEffect({ ...dialogInfo });
-    }
-  });
+  useEffect(() => {
+    io.on("GAME_FOUND", ({ _id }) => {
+      if (GAME_ID === _id) {
+        const dialogInfo = getDialogInfoByNotificationSlug("GAME_FOUND");
+        if (dialogInfo.type) callEffect({ ...dialogInfo });
+        fetchSetGameData();
+        resetGame();
+      }
+    });
+
+    io.on("GAME_UPDATE", ({ _id }) => {
+      console.log("GAME_UPDATE");
+      if (GAME_ID === _id) fetchSetGameData();
+    });
+
+    io.on("GAME_FINISHED", ({ _id }) => {
+      if (GAME_ID === _id) {
+        fetchSetGameData();
+      }
+    });
+  }, []);
 
   return (
     <MatchDisplay>
       {displayDialog()}
-      {gameMatch && (
+      {gameData.status === "FINISHED" && (
+        <WaitDialog width={size}>
+          Match Finished! {gameData.winner} won.{" "}
+          <Button onClick={() => history.push("/waitGame")}>New Game</Button>
+        </WaitDialog>
+      )}
+      {gameData.status === "SEARCHING" && (
+        <WaitDialog width={size}>You are waiting for an opponent</WaitDialog>
+      )}
+      {gameData.status !== "LOADING" && gameMatch && (
         <Board
           hands={gameMatch.hands}
           board={gameMatch.board}
@@ -166,8 +254,8 @@ const MatchPage = () => {
           targetTile={targetTile}
           lastAction={getLastAction()}
           historyActions={historyActions}
-          width={`${vh * 0.8}px`}
-          height={`${vh * 0.8}px`}
+          width={size}
+          height={size}
           effectDialog={effectDialog}
           callSurrender={callSurrender}
         />

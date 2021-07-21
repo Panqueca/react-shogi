@@ -35,7 +35,7 @@ const WaitGame = () => {
       const { message, _id: GAME_ID } = waitResponse;
 
       if (
-        (message === "WAITING_PLAYER" || message === "GAME_FOUND") &&
+        (message === "WAITING_PLAYER" || message === "GAME_FOUND" || message === "ALREADY_PLAYING") &&
         GAME_ID
       ) {
         history.push(`/live-match/${GAME_ID}`);

@@ -193,16 +193,15 @@ const LiveMatch = () => {
         resetDialog();
 
         const header = await getAuthHeader();
-        await axios.post(
+        const {data: response} = await axios.post(
           "http://localhost:6060/games/resign",
           {
             _id: GAME_ID,
-            resignSide: "SENTE",
           },
           header
         );
 
-        history.push(`/game/history/${GAME_ID}`);
+        if(response.message === "GAME_FINISHED") history.push(`/game/history/${GAME_ID}`);
       },
       onCancel: resetDialog,
       confirmText: "Resign",

@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled, { keyframes, css } from "styled-components";
 import { ToggleLeft, ToggleRight } from "react-feather";
-import { getSquareByXYBoard } from "../utils/board/display";
-import { checkIsPossibleMove } from "../utils/pieces/filter";
-import MatchPlayer from "./MatchPlayer";
-import { useSkinState } from "../store/skin/state";
+import { getSquareByXYBoard } from "../../utils/board/display";
+import { checkIsPossibleMove } from "../../utils/pieces/filter";
+import MatchPlayer from "../MatchPlayer";
+import { useSkinState } from "../../store/skin/state";
 
 const MatchDisplay = styled.div`
   padding: 20px;
@@ -143,14 +143,16 @@ const Board = ({
   width,
   height,
   effectDialog,
-  callSurrender
+  callSurrender,
+  player1,
+  player2,
 }) => {
   const { skin, displayPieces, changeSkin, boardConfig } = useSkinState();
   const { squaresColor, pieceViewBox } = boardConfig;
 
   const [settings, setSettings] = useState({
     open: false,
-    showSquareNumbers: true
+    showSquareNumbers: true,
   });
 
   function closeDialogs() {
@@ -176,7 +178,7 @@ const Board = ({
   function getBoardOrderedByRows(matchBoard) {
     const rows = [];
 
-    matchBoard.forEach(colTiles => {
+    matchBoard.forEach((colTiles) => {
       colTiles.forEach((locationInfo, y) => {
         if (!rows[y]) rows[y] = [];
         rows[y].push(locationInfo);
@@ -211,6 +213,7 @@ const Board = ({
         selectHandPiece={selectHandPiece}
         width={width}
         viewBox={pieceViewBox}
+        hide={!player2}
       />
       <ShogiBoard
         width={width}
@@ -251,13 +254,8 @@ const Board = ({
             if (Array.isArray(rowTiles))
               return rowTiles.map((locationInfo, x) => {
                 const { color, kind } = locationInfo || {};
-                const {
-                  squareNumber,
-                  squareName,
-                  squareX,
-                  squareY,
-                  square
-                } = getSquareByXYBoard({ x, y });
+                const { squareNumber, squareName, squareX, squareY, square } =
+                  getSquareByXYBoard({ x, y });
 
                 const displayKind = kind || "Empty";
                 const PieceSelection = displayPieces[displayKind];
@@ -279,7 +277,7 @@ const Board = ({
                       onClick={() =>
                         selectTile({
                           square,
-                          pieceInfo: locationInfo
+                          pieceInfo: locationInfo,
                         })
                       }
                       isSelected={
@@ -298,7 +296,7 @@ const Board = ({
           })}
       </ShogiBoard>
       <MatchPlayer
-        name="Player 1 (Sente)"
+        name="Rogerio Mendes"
         hands={hands}
         displayPieces={displayPieces}
         playerColorTurn={0}
@@ -317,7 +315,7 @@ Board.propTypes = {
   drawLabels: PropTypes.bool,
   effectDialog: PropTypes.object,
   targetTile: PropTypes.object,
-  handleMovePiece: PropTypes.func
+  handleMovePiece: PropTypes.func,
 };
 
 Board.defaultProps = {
@@ -325,7 +323,7 @@ Board.defaultProps = {
   drawLabels: true,
   effectDialog: { open: false },
   targetTile: {},
-  handleMovePiece: () => {}
+  handleMovePiece: () => {},
 };
 
 export default Board;

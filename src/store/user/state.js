@@ -1,21 +1,17 @@
 import { createState, useState } from "@hookstate/core";
-import { Persistence } from "@hookstate/persistence";
-import Cookies from "js-cookie";
 
-const authState = createState({ sessionId: null });
+const authState = createState({ jwtToken: null });
 
 export function useAuthState() {
   const state = useState(authState);
-  state.attach(Persistence("authState"));
 
   return {
-    get sessionId() {
-      return state.sessionId.get();
+    get token() {
+      return state.jwtToken.get();
     },
 
-    updateSession() {
-      const newSessionId = Cookies.get("connect.sid");
-      state.sessionId.set(newSessionId);
-    }
+    setToken(token) {
+      state.jwtToken.set(token);
+    },
   };
 }

@@ -3,12 +3,14 @@ import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import styled from "styled-components";
 import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
 import socketClient from "socket.io-client";
 import { useHistory, useParams } from "react-router-dom";
-import Board from "../../components/Board";
-import { useWindowSize } from "../../utils/hooks/window";
-import { useShogiEngine } from "../../utils/game/hooks";
-import { getDialogInfoByNotificationSlug } from "../../utils/game/messages";
+import Board from "../components/Board";
+import { useWindowSize } from "../utils/hooks/window";
+import { useShogiEngine } from "../utils/game/hooks";
+import { getDialogInfoByNotificationSlug } from "../utils/game/messages";
+import ElapsedTime from "../components/ElapsedTime";
 
 const defaultDialog = {
   open: false,
@@ -16,48 +18,67 @@ const defaultDialog = {
   onConfirm: () => {},
   onCancel: () => {},
   confirmText: "",
-  cancelText: ""
+  cancelText: "",
 };
 
 const MatchDisplay = styled.div``;
 
 const WaitDialog = styled.div`
-  position: fixed;
+  position: absolute;
   width: ${({ width }) => width};
-  padding: 20px;
-  background-color: #fff;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
   font-size: 22px;
-  top: 0px;
   left: 0;
   right: 0;
-  margin: auto auto;
+  margin: 0 auto;
   z-index: 100;
-  display: flex;
-  justify-content: space-between;
+  height: 100px;
+  top: 125px;
+  border: 2px solid #000;
 `;
 
 const defaultSfen =
   "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1";
 
-const io = socketClient("http://localhost:9000");
+const io = socketClient("http://localhost:6060", {
+  reconnectionDelay: 1000,
+  reconnection: true,
+  reconnectionAttempts: 10,
+  transports: ["websocket"],
+  agent: false, // [2] Please don't set this to true
+  upgrade: false,
+  rejectUnauthorized: false,
+});
 
-const MatchPage = () => {
+const LiveMatch = () => {
   const [gameData, setGameData] = useState({
     _id: null,
     winner: null,
     moves: [],
     status: "LOADING",
     increment: 0,
-    type: "BLITZ"
+    type: "BLITZ",
   });
   const [dialog, setDialog] = useState(defaultDialog);
   const [effectDialog, setEffectDialog] = useState({
     open: false,
-    display: null
+    display: null,
   });
 
   const history = useHistory();
   const { id: GAME_ID } = useParams();
+  const { getAccessTokenSilently } = useAuth0();
+
+  const getAuthHeader = async () => {
+    const token = await getAccessTokenSilently();
+
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  };
 
   function getLastSfen() {
     const { moves } = gameData;
@@ -66,8 +87,10 @@ const MatchPage = () => {
   }
 
   async function fetchSetGameData() {
+    const header = await getAuthHeader();
     const { data: response } = await axios.get(
-      `http://localhost:9000/games/find?_id=${GAME_ID}`
+      `http://localhost:6060/games/find?_id=${GAME_ID}`,
+      header
     );
     const { _id } = response;
 
@@ -103,7 +126,7 @@ const MatchPage = () => {
   function listenNotification(notificationSlug, params) {
     const dialogInfo = getDialogInfoByNotificationSlug(
       notificationSlug,
-      response => dialogActionCallback(response, params)
+      (response) => dialogActionCallback(response, params)
     );
 
     const { type, onConfirm, onCancel } = dialogInfo;
@@ -119,7 +142,7 @@ const MatchPage = () => {
         onCancel: () => {
           onCancel();
           resetDialog();
-        }
+        },
       });
     }
 
@@ -133,10 +156,16 @@ const MatchPage = () => {
   async function saveGameMove(sfen) {
     console.log("saveGameMove", { sfen });
     if (gameData.status === "STARTED") {
-      await axios.post("http://localhost:9000/games/saveMove", {
-        _id: GAME_ID,
-        sfen
-      });
+      const header = await getAuthHeader();
+
+      await axios.post(
+        "http://localhost:6060/games/saveMove",
+        {
+          _id: GAME_ID,
+          sfen,
+        },
+        header
+      );
     }
   }
 
@@ -148,11 +177,11 @@ const MatchPage = () => {
     moveAction,
     selectHandPiece,
     getLastAction,
-    resetGame
+    resetGame,
   } = useShogiEngine({
     listenNotification,
     saveGameMove,
-    sfenPosition: getLastSfen()
+    sfenPosition: getLastSfen(),
   });
 
   function callSurrender() {
@@ -162,16 +191,22 @@ const MatchPage = () => {
       onConfirm: async () => {
         resetGame();
         resetDialog();
-        await axios.post("http://localhost:9000/games/resign", {
-          _id: GAME_ID,
-          resignSide: "SENTE"
-        });
+
+        const header = await getAuthHeader();
+        await axios.post(
+          "http://localhost:6060/games/resign",
+          {
+            _id: GAME_ID,
+            resignSide: "SENTE",
+          },
+          header
+        );
 
         history.push(`/game/history/${GAME_ID}`);
       },
       onCancel: resetDialog,
       confirmText: "Resign",
-      cancelText: "Cancel"
+      cancelText: "Cancel",
     });
   }
 
@@ -207,10 +242,11 @@ const MatchPage = () => {
   }
 
   const { vh } = useWindowSize();
-  const size = `${vh * 0.8}px`;
+  const size = `${vh * 0.8 - 150}px`;
 
   useEffect(() => {
     io.on("GAME_FOUND", ({ _id }) => {
+      console.log("GAME_FOUND");
       if (GAME_ID === _id) {
         const dialogInfo = getDialogInfoByNotificationSlug("GAME_FOUND");
         if (dialogInfo.type) callEffect({ ...dialogInfo });
@@ -219,12 +255,17 @@ const MatchPage = () => {
       }
     });
 
+    io.on("connect_error", (err) => {
+      console.log("connect_error", { err });
+    });
+
     io.on("GAME_UPDATE", ({ _id }) => {
       console.log("GAME_UPDATE");
       if (GAME_ID === _id) fetchSetGameData();
     });
 
     io.on("GAME_FINISHED", ({ _id }) => {
+      console.log("GAME_UPDATE");
       if (GAME_ID === _id) {
         fetchSetGameData();
       }
@@ -237,11 +278,15 @@ const MatchPage = () => {
       {gameData.status === "FINISHED" && (
         <WaitDialog width={size}>
           Match Finished! {gameData.winner} won.{" "}
-          <Button onClick={() => history.push("/waitGame")}>New Game</Button>
+          <Button onClick={() => history.push("/wait-game")}>New Game</Button>
         </WaitDialog>
       )}
       {gameData.status === "SEARCHING" && (
-        <WaitDialog width={size}>You are waiting for an opponent</WaitDialog>
+        <WaitDialog width={size}>
+          ...You are waiting for an opponent
+          <br />
+          <ElapsedTime />
+        </WaitDialog>
       )}
       {gameData.status !== "LOADING" && gameMatch && (
         <Board
@@ -264,4 +309,4 @@ const MatchPage = () => {
   );
 };
 
-export default MatchPage;
+export default LiveMatch;

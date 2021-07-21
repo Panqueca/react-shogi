@@ -12,6 +12,8 @@ const PlayerInfo = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 15px 0px;
+  transition: 0.3s;
+  opacity: ${({ hide }) => (hide ? "0" : "1")};
 
   .title {
     font-size: 16px;
@@ -72,19 +74,20 @@ const MatchPlayer = ({
   hands,
   selectHandPiece,
   callSurrender,
-  viewBox
+  viewBox,
+  hide,
 }) => {
   function displayHandPieces(handPieces, turn) {
     if (Array.isArray(handPieces)) {
       const groupByKind = [];
 
-      handPieces.forEach(pieceInfo => {
+      handPieces.forEach((pieceInfo) => {
         const { kind } = pieceInfo;
         groupByKind[kind] = groupByKind[kind] || [];
         groupByKind[kind].push(pieceInfo);
       });
 
-      return Object.keys(groupByKind).map(kind => {
+      return Object.keys(groupByKind).map((kind) => {
         const Piece = displayPieces[kind];
         const count = groupByKind[kind].length;
 
@@ -95,12 +98,12 @@ const MatchPlayer = ({
                 forceProps={{
                   title: `${kind}`,
                   onClick: () => selectHandPiece({ kind, turn }),
-                  "data-cy": `piece-at-hand-${turn}-${kind}`
+                  "data-cy": `piece-at-hand-${turn}-${kind}`,
                 }}
                 svgProps={{
                   viewBox,
                   width: "50px",
-                  height: "50px"
+                  height: "50px",
                 }}
               />
               {count > 1 && (
@@ -118,7 +121,7 @@ const MatchPlayer = ({
   }
 
   return (
-    <PlayerInfo width={width}>
+    <PlayerInfo width={width} hide={hide}>
       <div className="title">
         <img
           src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y"

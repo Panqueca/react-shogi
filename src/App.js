@@ -1,48 +1,34 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import MatchPage from "./pages/Match";
-import WaitGame from "./pages/WaitGame";
-import GameHistory from "./pages/GameHistory";
-import "./style.css";
-import Login from "./pages/Login";
-import { useAuthState } from "./store/user/state";
+import { Route, Switch } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+
+import { NavBar, Footer, Loading } from "./components";
+import { Home, Profile, WaitGame, LiveMatch, ExternalApi } from "./views";
+import ProtectedRoute from "./auth/protected-route";
+
+import "./app.css";
 
 const App = () => {
-  const { sessionId } = useAuthState();
+  const { isLoading } = useAuth0();
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
-    <Router>
-      <div className="app-body">
+    <div id="app" className="d-flex flex-column h-100">
+      <NavBar />
+      <div className="container flex-grow-1">
         <Switch>
-          {!sessionId && (
-            <React.Fragment>
-              <Route path="/">
-                <Login />
-              </Route>
-            </React.Fragment>
-          )}
-          {sessionId && (
-            <React.Fragment>
-              <Route exact path="/">
-                <WaitGame />
-              </Route>
-              <Route exact path="/home">
-                <WaitGame />
-              </Route>
-              <Route path="/waitGame">
-                <WaitGame />
-              </Route>
-              <Route path="/game/:id" exact>
-                <MatchPage />
-              </Route>
-              <Route path="/game/history/:id" exact>
-                <GameHistory />
-              </Route>
-            </React.Fragment>
-          )}
+          <Route path="/" exact component={Home} />
+          <ProtectedRoute path="/profile" component={Profile} />
+          <ProtectedRoute path="/wait-game" component={WaitGame} />
+          <ProtectedRoute path="/live-match/:id" component={LiveMatch} />
+          <ProtectedRoute path="/external-api" component={ExternalApi} />
         </Switch>
       </div>
-    </Router>
+      <Footer />
+    </div>
   );
 };
 

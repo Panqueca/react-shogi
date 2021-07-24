@@ -1,6 +1,6 @@
 import {
   getSquareByInternationalSlug,
-  getSquareByXYBoard
+  getSquareByXYBoard,
 } from "../board/display";
 import { checkIsPossibleMove } from "../pieces/filter";
 
@@ -21,7 +21,7 @@ export function getAttackedSquares(game, kingColor) {
 
     const pieceAttacks = game.getMovesFrom(squareX, squareY);
     if (pieceAttacks.length > 0)
-      pieceAttacks.forEach(square => {
+      pieceAttacks.forEach((square) => {
         attackedSquares.push({ kind: piece.kind, ...square });
       });
   });
@@ -74,7 +74,7 @@ export function getMoveResponse({ moveAction, turn, color }) {
     invalidOpponentPiece,
     invalidOwnPiece,
     invalidDrop,
-    invalidMove
+    invalidMove,
   };
 }
 
@@ -86,11 +86,11 @@ export function getMoveAction({ square, moveAction, turn, color }) {
     invalidMove,
     isDropAction,
     isOpponentPiece,
-    isActionMove
+    isActionMove,
   } = getMoveResponse({
     moveAction,
     turn,
-    color
+    color,
   });
 
   const { squareX, squareY } = getSquareByInternationalSlug(square);
@@ -113,12 +113,12 @@ export function getEnemyCampRowData({ turn }) {
   if (turn === 0)
     return {
       startRow: 1,
-      endRow: 3
+      endRow: 3,
     };
 
   return {
     startRow: 7,
-    endRow: 9
+    endRow: 9,
   };
 }
 

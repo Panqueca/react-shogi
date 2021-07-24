@@ -144,8 +144,10 @@ const Board = ({
   height,
   effectDialog,
   callSurrender,
-  player1,
-  player2,
+  currentPlayerSide,
+  currentPlayer,
+  opponentPlayer,
+  currentTurnPlayer,
 }) => {
   const { skin, displayPieces, changeSkin, boardConfig } = useSkinState();
   const { squaresColor, pieceViewBox } = boardConfig;
@@ -168,24 +170,46 @@ const Board = ({
   }
 
   function selectTile({ square, pieceInfo }) {
-    handleMovePiece({ square, pieceInfo });
+    if (currentTurnPlayer === currentPlayerSide)
+      handleMovePiece({ square, pieceInfo });
   }
 
   function updateSkin(e) {
     changeSkin(e.target.value);
   }
 
-  function getBoardOrderedByRows(matchBoard) {
-    const rows = [];
+  function getOrderedColTiles(colTiles) {
+    return colTiles.map((pieceInfo, y) => {
+      return { pieceInfo, y };
+    });
+  }
 
-    matchBoard.forEach((colTiles) => {
-      colTiles.forEach((locationInfo, y) => {
-        if (!rows[y]) rows[y] = [];
-        rows[y].push(locationInfo);
+  function getBoardOrderedByRows(matchBoard) {
+    const isGote = currentPlayerSide === "GOTE";
+
+    const orderedBoardPositions = matchBoard
+      .map((colTiles, x) => {
+        return {
+          colTiles: getOrderedColTiles(colTiles),
+          x,
+        };
+      })
+      .reverse();
+
+    const byCols = isGote
+      ? orderedBoardPositions
+      : orderedBoardPositions.reverse();
+
+    const rows = [];
+    byCols.forEach(({ colTiles, x }) => {
+      colTiles.forEach(({ pieceInfo, y }) => {
+        rows[y] = rows[y] || [];
+        rows[y].push({ pieceInfo, y, x });
       });
     });
 
-    return rows;
+    const byRows = isGote ? rows.reverse() : rows;
+    return byRows;
   }
 
   const getToogle = (on, toggle) => {
@@ -202,18 +226,20 @@ const Board = ({
     );
   };
 
+  const orderedByRows = getBoardOrderedByRows(board);
+
   return (
     <MatchDisplay>
       <MatchPlayer
-        name="Player 2 (Gote)"
+        name={opponentPlayer && opponentPlayer.name}
         hands={hands}
         displayPieces={displayPieces}
         showSettings={false}
-        playerColorTurn={1}
+        playerColorTurn={currentPlayerSide === "SENTE" ? 1 : 0}
         selectHandPiece={selectHandPiece}
         width={width}
         viewBox={pieceViewBox}
-        hide={!player2}
+        hide={!opponentPlayer}
       />
       <ShogiBoard
         width={width}
@@ -250,10 +276,10 @@ const Board = ({
           </SettingsMenu>
         )}
         {displayPieces &&
-          getBoardOrderedByRows(board).map((rowTiles, y) => {
-            if (Array.isArray(rowTiles))
-              return rowTiles.map((locationInfo, x) => {
-                const { color, kind } = locationInfo || {};
+          orderedByRows.map((rowTiles) => {
+            if (Array.isArray(rowTiles)) {
+              return rowTiles.map(({ pieceInfo, x, y }) => {
+                const { color, kind } = pieceInfo || {};
                 const { squareNumber, squareName, squareX, squareY, square } =
                   getSquareByXYBoard({ x, y });
 
@@ -277,13 +303,23 @@ const Board = ({
                       onClick={() =>
                         selectTile({
                           square,
-                          pieceInfo: locationInfo,
+                          pieceInfo,
                         })
                       }
                       isSelected={
                         isPossibleMove || squareName === targetTile.square
                       }
                       player={color === 1 ? 2 : 1}
+                      transform={
+                        currentPlayerSide === "SENTE"
+                          ? "rotate(0deg)"
+                          : "rotate(180deg)"
+                      }
+                      isOponnent={
+                        currentPlayerSide === "SENTE"
+                          ? color === 1
+                          : color === 0
+                      }
                     />
                     {settings.showSquareNumbers && (
                       <div className="square-number">{squareNumber}</div>
@@ -291,15 +327,16 @@ const Board = ({
                   </BoardSquare>
                 );
               });
+            }
 
             return null;
           })}
       </ShogiBoard>
       <MatchPlayer
-        name="Rogerio Mendes"
+        name={currentPlayer && currentPlayer.name}
         hands={hands}
         displayPieces={displayPieces}
-        playerColorTurn={0}
+        playerColorTurn={currentPlayerSide === "SENTE" ? 0 : 1}
         toggleSettings={toggleSettings}
         selectHandPiece={selectHandPiece}
         callSurrender={callSurrender}

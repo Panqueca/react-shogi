@@ -68,7 +68,9 @@ const LiveMatch = () => {
 
   const history = useHistory();
   const { id: GAME_ID } = useParams();
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, user } = useAuth0();
+
+  const { player1, player2 } = gameData;
 
   const getAuthHeader = async () => {
     const token = await getAccessTokenSilently();
@@ -102,6 +104,11 @@ const LiveMatch = () => {
   useEffect(() => {
     fetchSetGameData();
   }, []);
+
+  function getPlayerTurnSide() {
+    const { turn } = gameData;
+    return turn === 0 ? "SENTE" : "GOTE";
+  }
 
   function resetDialog() {
     setDialog(defaultDialog);
@@ -193,15 +200,13 @@ const LiveMatch = () => {
         resetDialog();
 
         const header = await getAuthHeader();
-        const {data: response} = await axios.post(
+        await axios.post(
           "http://localhost:6060/games/resign",
           {
             _id: GAME_ID,
           },
           header
         );
-
-        if(response.message === "GAME_FINISHED") history.push(`/game/history/${GAME_ID}`);
       },
       onCancel: resetDialog,
       confirmText: "Resign",
@@ -271,13 +276,30 @@ const LiveMatch = () => {
     });
   }, []);
 
+  function getClientPlayerSide() {
+    if (gameData.status !== "STARTED") return null;
+    if (player1.sub === user.sub) return "SENTE";
+    if (player2.sub === user.sub) return "GOTE";
+    return null;
+  }
+
+  function getOpponent() {
+    if (player1 && player1.sub === user.sub) return player2;
+    if (player2 && player2.sub === user.sub) return player1;
+    return null;
+  }
+
+  const currentPlayerSide = getClientPlayerSide();
+  const opponentPlayer = getOpponent();
+
   return (
     <MatchDisplay>
       {displayDialog()}
-      {gameData.status === "FINISHED" && (
+      {gameData.status === "STARTED" && (
         <WaitDialog width={size}>
-          Match Finished! {gameData.winner} won.{" "}
-          <Button onClick={() => history.push("/wait-game")}>New Game</Button>
+          {`Turn: ${
+            gameData.turn === 0 ? "SENTE" : "GOTE"
+          }, Client: ${currentPlayerSide}`}
         </WaitDialog>
       )}
       {gameData.status === "SEARCHING" && (
@@ -287,11 +309,16 @@ const LiveMatch = () => {
           <ElapsedTime />
         </WaitDialog>
       )}
+      {gameData.status === "FINISHED" && (
+        <WaitDialog width={size}>
+          Match Finished! {gameData.winner} won.{" "}
+          <Button onClick={() => history.push("/wait-game")}>New Game</Button>
+        </WaitDialog>
+      )}
       {gameData.status !== "LOADING" && gameMatch && (
         <Board
           hands={gameMatch.hands}
           board={gameMatch.board}
-          currentPlayer={gameMatch.turn}
           handleMovePiece={touchTargetTile}
           possibleMoves={moveAction.moves}
           selectHandPiece={selectHandPiece}
@@ -302,6 +329,10 @@ const LiveMatch = () => {
           height={size}
           effectDialog={effectDialog}
           callSurrender={callSurrender}
+          currentPlayer={user}
+          currentPlayerSide={currentPlayerSide}
+          currentTurnPlayer={getPlayerTurnSide()}
+          opponentPlayer={opponentPlayer}
         />
       )}
     </MatchDisplay>

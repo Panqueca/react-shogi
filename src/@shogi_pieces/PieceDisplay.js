@@ -18,7 +18,7 @@ const SimpleLayer = ({
         left: 0,
         right: 0,
         zIndex: 100,
-        ...styles
+        ...styles,
       }}
       onClick={onClick}
       className={className}
@@ -30,16 +30,16 @@ const SimpleLayer = ({
 SimpleLayer.propTypes = {
   className: PropTypes.string,
   styles: PropTypes.object,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 };
 
 SimpleLayer.defaultProps = {
   className: "",
   styles: {},
-  onClick: () => {}
+  onClick: () => {},
 };
 
-module.exports = Piece => props => {
+module.exports = (Piece) => (props) => {
   const {
     onClick,
     onMouseDown,
@@ -53,7 +53,8 @@ module.exports = Piece => props => {
     player,
     squareNumber,
     // squareName,
-    svgProps = {}
+    svgProps = {},
+    isOponnent,
   } = props;
 
   const styles = Object.assign({}, style, {
@@ -61,7 +62,7 @@ module.exports = Piece => props => {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    position: "relative"
+    position: "relative",
   });
 
   const onClickFunc =
@@ -69,7 +70,7 @@ module.exports = Piece => props => {
       ? () => onClick({ x: props.x, y: props.y })
       : () => {};
 
-  const rotate = player === 2 ? { transform: "rotate(180deg)" } : {};
+  const rotate = isOponnent ? { transform: "rotate(180deg)" } : {};
 
   return (
     <div
@@ -89,7 +90,7 @@ module.exports = Piece => props => {
           height: "100%",
           top: 0,
           left: 0,
-          right: 0
+          right: 0,
         }}
         onClick={() => onClick({ x: props.x, y: props.y })}
       />
@@ -101,7 +102,7 @@ module.exports = Piece => props => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          ...rotate
+          ...rotate,
         }}
         data-cy={`piece-tile-square-${squareNumber}`}
       >

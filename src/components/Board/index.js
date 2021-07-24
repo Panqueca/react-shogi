@@ -233,10 +233,13 @@ const Board = ({
 
   const orderedByRows = getBoardOrderedByRows(board);
 
+  console.log({ opponentPlayer });
+
   return (
     <MatchDisplay>
       <MatchPlayer
-        name={opponentPlayer && opponentPlayer.sub}
+        name={opponentPlayer && opponentPlayer.nickname}
+        picture={opponentPlayer && opponentPlayer.picture}
         hands={hands}
         displayPieces={displayPieces}
         showSettings={false}
@@ -342,8 +345,8 @@ const Board = ({
           })}
       </ShogiBoard>
       <MatchPlayer
-        name={currentPlayer && currentPlayer.name}
-        gravatar={currentPlayer && currentPlayer.gravatar}
+        name={currentPlayer && currentPlayer.nickname}
+        picture={currentPlayer && currentPlayer.picture}
         hands={hands}
         displayPieces={displayPieces}
         playerColorTurn={currentPlayerSide === "SENTE" ? 0 : 1}

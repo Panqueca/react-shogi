@@ -93,7 +93,7 @@ const Notification = styled.div`
 
 const MatchPlayer = ({
   name,
-  gravatar = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y",
+  picture = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y",
   showSettings = true,
   toggleSettings,
   width,
@@ -162,7 +162,7 @@ const MatchPlayer = ({
       <PlayerInfo width={width} hide={hide}>
         <div className="title">
           <img
-            src={gravatar}
+            src={picture}
             style={{ width: "35px", marginRight: "10px" }}
             alt=""
           />

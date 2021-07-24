@@ -1,7 +1,8 @@
-import skin_1 from "../../@shogi_pieces/skin_1_3d";
-import skin_2 from "../../@shogi_pieces/skin_2_red_kanji_bold";
+import * as skin_1 from "../../@shogi_pieces/skin_1_3d";
+import * as skin_2 from "../../@shogi_pieces/skin_2_red_kanji_bold";
 
 const skins = { skin_1, skin_2 };
+console.log({ skins });
 
 export const getPieceComponentsByTheme = (skinTheme) => {
   return skins[skinTheme];

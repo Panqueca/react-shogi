@@ -58,7 +58,7 @@ const LiveMatch = () => {
     moves: [],
     status: "LOADING",
     increment: 0,
-    type: "BLITZ",
+    type: "BLITZ_10",
   });
   const [dialog, setDialog] = useState(defaultDialog);
   const [effectDialog, setEffectDialog] = useState({
@@ -108,11 +108,10 @@ const LiveMatch = () => {
   }
 
   function getClientSideByGame(game) {
-    const { status, player1, player2 } = game;
+    const { player1, player2 } = game;
 
-    if (status !== "STARTED") return "SENTE";
-    if (player1.sub === user.sub) return "SENTE";
-    if (player2.sub === user.sub) return "GOTE";
+    if (player1 && player1.sub === user.sub) return "SENTE";
+    if (player2 && player2.sub === user.sub) return "GOTE";
     return null;
   }
 
@@ -154,7 +153,7 @@ const LiveMatch = () => {
     const header = await getAuthHeader();
     const { data: response } = await axios.get(
       `http://localhost:6060/games/find?_id=${GAME_ID}`,
-      header
+      header,
     );
     const { game, senteRemainingSeconds, goteRemainingSeconds } = response;
     const { _id } = game;
@@ -206,7 +205,7 @@ const LiveMatch = () => {
   function listenNotification(notificationSlug, params) {
     const dialogInfo = getDialogInfoByNotificationSlug(
       notificationSlug,
-      (response) => dialogActionCallback(response, params)
+      (response) => dialogActionCallback(response, params),
     );
 
     const { type, onConfirm, onCancel } = dialogInfo;
@@ -246,7 +245,7 @@ const LiveMatch = () => {
           squareY,
           kind,
         },
-        header
+        header,
       );
     }
   }
@@ -278,7 +277,7 @@ const LiveMatch = () => {
           {
             _id: GAME_ID,
           },
-          header
+          header,
         );
       },
       onCancel: resetDialog,
@@ -324,7 +323,7 @@ const LiveMatch = () => {
   useEffect(() => {
     if (gameData.status === "STARTED") {
       const dialogInfo = getDialogInfoByNotificationSlug(
-        checkIsMyTurn() ? "YOUR_TURN" : "OPPONENT_TURN"
+        checkIsMyTurn() ? "YOUR_TURN" : "OPPONENT_TURN",
       );
       if (dialogInfo.type) callEffect({ ...dialogInfo });
     }

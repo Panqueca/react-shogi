@@ -270,7 +270,7 @@ const Board = ({
                 <div className="option">
                   <div>Show Square Numbers</div>{" "}
                   {getToogle(settings.showSquareNumbers, () =>
-                    toggleSettingOption("showSquareNumbers")
+                    toggleSettingOption("showSquareNumbers"),
                   )}
                 </div>
               </div>
@@ -299,7 +299,7 @@ const Board = ({
 
                 const isPossibleMove = checkIsPossibleMove(
                   { squareX, squareY },
-                  possibleMoves
+                  possibleMoves,
                 );
 
                 const isPreviousMove =

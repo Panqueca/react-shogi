@@ -1,7 +1,7 @@
 export const defaultTargetTile = {
   square: null,
   x: null,
-  y: null
+  y: null,
 };
 
 export const defaultDialog = {
@@ -10,7 +10,7 @@ export const defaultDialog = {
   onConfirm: () => {},
   onCancel: () => {},
   confirmText: "",
-  cancelText: ""
+  cancelText: "",
 };
 
 export const defaultMoveAction = { from: null, dropPiece: null, moves: [] };

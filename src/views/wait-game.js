@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Board from "../components/Board";
 import { useWindowSize } from "../utils/hooks/window";
 import { useShogiEngine } from "../utils/game/hooks";
@@ -13,6 +13,7 @@ const WaitGame = () => {
   const { gameMatch } = useShogiEngine({});
   const { getAccessTokenSilently, user } = useAuth0();
   const history = useHistory();
+  const { type: GAME_TYPE } = useParams();
 
   const getAuthHeader = async () => {
     const token = await getAccessTokenSilently();
@@ -29,8 +30,8 @@ const WaitGame = () => {
       const headers = await getAuthHeader();
       const { data: waitResponse } = await axios.post(
         "http://localhost:6060/games/wait",
-        { user },
-        headers
+        { user, gameType: GAME_TYPE },
+        headers,
       );
 
       const { message, _id: GAME_ID } = waitResponse;

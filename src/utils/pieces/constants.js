@@ -6,7 +6,7 @@ export function canPromoteByKind(kind) {
       KE: "NK",
       GI: "NG",
       KA: "UM",
-      HI: "RY"
+      HI: "RY",
     }[kind] || kind;
 
   return promotedKind !== kind;

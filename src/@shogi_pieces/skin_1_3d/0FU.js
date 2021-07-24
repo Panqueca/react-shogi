@@ -1,7 +1,8 @@
-const React = require("react");
-const piecePositionDisplay = require("../PieceDisplay");
+import React from "react";
+import PieceDisplay from "../PieceDisplay";
 
 function SvgComponent(props) {
+  console.log("svg", { props });
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -93,4 +94,9 @@ function SvgComponent(props) {
   );
 }
 
-module.exports = piecePositionDisplay(SvgComponent);
+const Piece = (props) => {
+  console.log({ props });
+  return <PieceDisplay Piece={SvgComponent} {...props} />;
+};
+
+export default Piece;

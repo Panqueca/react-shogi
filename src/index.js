@@ -1,16 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './app';
-import { BrowserRouter as Router } from 'react-router-dom';
-import Auth0ProviderWithHistory from './auth/auth0-provider-with-history';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./app";
+import { BrowserRouter as Router } from "react-router-dom";
+import Auth0ProviderWithHistory from "./auth/Auth0ProviderWithHistory";
 
-import './index.css';
+import "./index.css";
+import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from "./theme";
 
 ReactDOM.render(
-    <Router>
-        <Auth0ProviderWithHistory>
-            <App />
-        </Auth0ProviderWithHistory>
-    </Router>,
-    document.getElementById('root')
+  <Router>
+    <Auth0ProviderWithHistory>
+      <FixedGlobalStyle />
+      <ThemeProvider darkMode={false}>
+        <ThemedGlobalStyle />
+        <App />
+      </ThemeProvider>
+    </Auth0ProviderWithHistory>
+  </Router>,
+  document.getElementById("root"),
 );

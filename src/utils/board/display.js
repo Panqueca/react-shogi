@@ -5,7 +5,7 @@ export const getInternationalSlugByXY = ({ x, y }) => {
   return `${Y_SERIES[y]}${X_SERIES[x]}`;
 };
 
-export const getSquareByInternationalSlug = name => {
+export const getSquareByInternationalSlug = (name) => {
   const [row, col] = name;
   const indexOfRow = Y_SERIES.indexOf(row);
   const indexOfCol = X_SERIES.indexOf(parseInt(col, 10));
@@ -22,7 +22,7 @@ export const getSquareByInternationalSlug = name => {
     squareY,
     squareX,
     squareName: `${col}${row}`,
-    square: name
+    square: name,
   };
 };
 
@@ -33,7 +33,7 @@ export const getSquareInfoByXY = ({ x, y }) => {
   return {
     name: `${row}${col}`,
     row,
-    col
+    col,
   };
 };
 

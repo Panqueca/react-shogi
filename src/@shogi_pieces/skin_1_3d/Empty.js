@@ -1,7 +1,12 @@
-const piecePositionDisplay = require("../PieceDisplay");
+import React from "react";
+import PieceDisplay from "../PieceDisplay";
 
-function Empty(props) {
+function Empty() {
   return null;
 }
 
-module.exports = piecePositionDisplay(Empty);
+const Piece = (props) => {
+  return <PieceDisplay Piece={Empty} {...props} />;
+};
+
+export default Piece;

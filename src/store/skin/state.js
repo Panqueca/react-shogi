@@ -1,13 +1,13 @@
 import { createState, useState } from "@hookstate/core";
 import {
   getPieceComponentsByTheme,
-  getBoardConfigByTheme
+  getBoardConfigByTheme,
 } from "../../utils/pieces/display";
 
 const skinState = createState({
   skin: "skin_1",
   displayPieces: getPieceComponentsByTheme("skin_1"),
-  boardConfig: getBoardConfigByTheme("skin_1")
+  boardConfig: getBoardConfigByTheme("skin_1"),
 });
 
 export function useSkinState() {
@@ -27,6 +27,6 @@ export function useSkinState() {
       state.skin.set(newSkin);
       state.displayPieces.set(getPieceComponentsByTheme(newSkin));
       state.boardConfig.set(getBoardConfigByTheme(newSkin));
-    }
+    },
   };
 }

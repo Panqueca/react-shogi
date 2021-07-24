@@ -96,7 +96,7 @@ export function getMoveAction({ square, moveAction, turn, color }) {
   const { squareX, squareY } = getSquareByInternationalSlug(square);
   const canPieceMoveToSquare = checkIsPossibleMove(
     { squareX, squareY },
-    moveAction.moves
+    moveAction.moves,
   );
 
   if (invalidOwnPiece) return "invalid:ownPiece";

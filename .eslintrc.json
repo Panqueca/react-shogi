@@ -13,15 +13,24 @@
     "SharedArrayBuffer": "readonly"
   },
   "parserOptions": {
+    "ecmaVersion": 6,
+
+    "sourceType": "module",
     "ecmaFeatures": {
+      "modules": true,
       "jsx": true
-    },
-    "ecmaVersion": "latest",
-    "sourceType": "module"
+    }
   },
   "plugins": ["prettier", "react"],
   "rules": {
-    "prettier/prettier": "error",
-    "jsx-a11y/alt-text": "off"
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "react/display-name": "off",
+    "jsx-a11y/alt-text": "off",
+    "react/prop-types": 0
   }
 }

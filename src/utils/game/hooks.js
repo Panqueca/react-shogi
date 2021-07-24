@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 import { Shogi } from "shogi.js";
 import { getMoveAction, isKingInCheck, isPieceOnEnemyCamp } from "./match";
 import { defaultTargetTile, defaultMoveAction } from "./defaults";
-import {
-  getSquareByInternationalSlug,
-  getSquareInfoByXY,
-} from "../board/display";
+import { getSquareByInternationalSlug } from "../board/display";
 import { canPromoteByKind } from "../pieces/constants";
 
 const shogi = new Shogi();
@@ -112,7 +109,7 @@ export function useShogiEngine({
     return (onEnemyCamp || movedToEnemyCamp) && canPromoteByKind(kind);
   }
 
-  function movesThePiece({ moveAction, square, action }) {
+  function movesThePiece({ moveAction, square }) {
     const tempShogi = getTempShogi();
     const { squareX, squareY } = getSquareByInternationalSlug(square);
     const { turn } = gameMatch;

@@ -1,6 +1,4 @@
-/* eslint-disable react/display-name, react/prop-types */
-const React = require("react");
-const PropTypes = require("prop-types");
+import React from "react";
 
 const SimpleLayer = ({
   styles,
@@ -27,19 +25,7 @@ const SimpleLayer = ({
   );
 };
 
-SimpleLayer.propTypes = {
-  className: PropTypes.string,
-  styles: PropTypes.object,
-  onClick: PropTypes.func,
-};
-
-SimpleLayer.defaultProps = {
-  className: "",
-  styles: {},
-  onClick: () => {},
-};
-
-module.exports = (Piece) => (props) => {
+const PieceDisplay = (props) => {
   const {
     onClick,
     onMouseDown,
@@ -50,11 +36,11 @@ module.exports = (Piece) => (props) => {
     isSelected,
     lastAction,
     forceProps,
-    player,
     squareNumber,
     // squareName,
     svgProps = {},
     isOponnent,
+    Piece,
   } = props;
 
   const styles = Object.assign({}, style, {
@@ -119,3 +105,5 @@ module.exports = (Piece) => (props) => {
     </div>
   );
 };
+
+export default PieceDisplay;

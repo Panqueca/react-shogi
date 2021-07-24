@@ -1,9 +1,9 @@
 import React from "react";
-
-import MainNav from "./main-nav";
-import AuthNav from "./auth-nav";
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.png";
+
+import MainNav from "../MainNav";
+import AuthNav from "../AuthNav";
+import logo from "../../assets/logo.png";
 
 const NavBar = () => {
   return (

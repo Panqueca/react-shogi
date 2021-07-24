@@ -1,5 +1,5 @@
-const React = require("react");
-const piecePositionDisplay = require("../PieceDisplay");
+import React from "react";
+import PieceDisplay from "../PieceDisplay";
 
 function SvgComponent(props) {
   return (
@@ -89,4 +89,8 @@ function SvgComponent(props) {
   );
 }
 
-module.exports = piecePositionDisplay(SvgComponent);
+const Piece = (props) => {
+  return <PieceDisplay Piece={SvgComponent} {...props} />;
+};
+
+export default Piece;

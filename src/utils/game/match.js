@@ -59,7 +59,6 @@ export function getMoveResponse({ moveAction, turn, color }) {
   const isEmptySelection = !isActionMove && !hasPieceOnSquare && !isDropAction;
 
   const invalidOpponentPiece = isOpponentPiece && !isActionMove;
-  console.log({ invalidOpponentPiece, isActionMove });
   const invalidOwnPiece = isPlayerPiece && isActionMove;
 
   const invalidDrop = isDropAction && hasPieceOnSquare;

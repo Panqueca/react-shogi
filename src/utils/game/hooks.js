@@ -118,8 +118,6 @@ export function useShogiEngine({
     const { turn } = gameMatch;
     const { from, pieceInfo } = moveAction;
 
-    console.log({ from, moveAction, squareX, squareY });
-
     tempShogi.move(from.squareX, from.squareY, squareX, squareY);
 
     const canPromote = checkCanPromote({
@@ -160,8 +158,6 @@ export function useShogiEngine({
       turn,
       color,
     }).split(":");
-
-    console.log({ status, action });
 
     if (status === "invalid") {
       switch (action) {

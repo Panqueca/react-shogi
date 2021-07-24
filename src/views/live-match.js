@@ -165,7 +165,6 @@ const LiveMatch = () => {
   }
 
   async function saveGameMove({ sfen, squareX, squareY, kind }) {
-    console.log("saveGameMove", { sfen });
     if (gameData.status === "STARTED") {
       const header = await getAuthHeader();
 
@@ -297,7 +296,6 @@ const LiveMatch = () => {
   const currentPlayerSide = getClientPlayerSide();
   const opponentPlayer = getOpponent();
   const lastMove = getLastMove();
-  console.log({ lastMove });
 
   return (
     <MatchDisplay>

@@ -11,7 +11,7 @@ const MatchDisplay = styled.div``;
 
 const WaitGame = () => {
   const { gameMatch } = useShogiEngine({});
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, user } = useAuth0();
   const history = useHistory();
 
   const getAuthHeader = async () => {
@@ -27,15 +27,18 @@ const WaitGame = () => {
   useEffect(() => {
     async function wait() {
       const headers = await getAuthHeader();
-      const { data: waitResponse } = await axios.get(
+      const { data: waitResponse } = await axios.post(
         "http://localhost:6060/games/wait",
+        { user },
         headers
       );
 
       const { message, _id: GAME_ID } = waitResponse;
 
       if (
-        (message === "WAITING_PLAYER" || message === "GAME_FOUND" || message === "ALREADY_PLAYING") &&
+        (message === "WAITING_PLAYER" ||
+          message === "GAME_FOUND" ||
+          message === "ALREADY_PLAYING") &&
         GAME_ID
       ) {
         history.push(`/live-match/${GAME_ID}`);

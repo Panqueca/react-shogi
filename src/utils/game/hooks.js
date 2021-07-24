@@ -4,7 +4,7 @@ import { getMoveAction, isKingInCheck, isPieceOnEnemyCamp } from "./match";
 import { defaultTargetTile, defaultMoveAction } from "./defaults";
 import {
   getSquareByInternationalSlug,
-  getSquareInfoByXY
+  getSquareInfoByXY,
 } from "../board/display";
 import { canPromoteByKind } from "../pieces/constants";
 
@@ -13,12 +13,11 @@ const shogi = new Shogi();
 export function useShogiEngine({
   listenNotification,
   saveGameMove,
-  sfenPosition
+  sfenPosition,
 }) {
   shogi.initialize();
 
   const [gameMatch, setGameMatch] = useState(shogi);
-  const [historyActions, setHistoryActions] = useState([]);
   const [targetTile, setTargetTile] = useState(defaultTargetTile);
   const [moveAction, setMoveAction] = useState(defaultMoveAction);
 
@@ -32,9 +31,12 @@ export function useShogiEngine({
     return getFromSfen(gameMatch.toSFENString());
   }
 
+  function getCurrentSfen() {
+    return getTempShogi().toSFENString();
+  }
+
   useEffect(() => {
-    const currentSfen = getTempShogi().toSFENString();
-    if (sfenPosition && sfenPosition !== currentSfen)
+    if (sfenPosition && sfenPosition !== getCurrentSfen())
       setGameMatch(getFromSfen(sfenPosition));
   }, [sfenPosition]);
 
@@ -45,7 +47,6 @@ export function useShogiEngine({
 
   function resetGame() {
     setGameMatch(shogi);
-    setHistoryActions([]);
     resetMoveData();
   }
 
@@ -56,30 +57,13 @@ export function useShogiEngine({
       listenNotification("OpponentKingInCheck");
   }
 
-  function updateGameMatch(newGame) {
+  function updateGameMatch(newGame, { squareX, squareY, kind }) {
     const { turn } = gameMatch;
     checkOpponentCheck(newGame, turn);
     setGameMatch(newGame);
-    if (saveGameMove) saveGameMove(newGame.toSFENString());
+    if (saveGameMove)
+      saveGameMove({ sfen: newGame.toSFENString(), squareX, squareY, kind });
     resetMoveData();
-  }
-
-  function addHistoryAction({ kind, turn, to }) {
-    if (to)
-      setHistoryActions([
-        ...historyActions,
-        {
-          kind,
-          turn,
-          to,
-          square: getSquareInfoByXY({ x: to.squareX, y: to.squareY }).name
-        }
-      ]);
-  }
-
-  function getLastAction() {
-    const lastAction = historyActions[historyActions.length - 1] || {};
-    return lastAction;
   }
 
   function createMoveAction({ square, pieceInfo }) {
@@ -89,7 +73,7 @@ export function useShogiEngine({
     setMoveAction({
       pieceInfo,
       from: { squareX, squareY, square },
-      moves: tempShogi.getMovesFrom(squareX, squareY)
+      moves: tempShogi.getMovesFrom(squareX, squareY),
     });
     setTargetTile({ squareX, squareY, square });
   }
@@ -97,33 +81,31 @@ export function useShogiEngine({
   function dropsThePiece({ square, moveAction }) {
     const tempShogi = getTempShogi();
     const { squareX, squareY } = getSquareByInternationalSlug(square);
-    const { turn } = gameMatch;
 
     const { dropPiece } = moveAction;
     const { kind: dropKind, turn: dropTurn } = dropPiece || {};
 
     tempShogi.drop(squareX, squareY, dropKind, dropTurn);
-    updateGameMatch(tempShogi);
-    addHistoryAction({ kind: "drop", turn, to: { squareX, squareY } });
+    updateGameMatch(tempShogi, { squareX, squareY, kind: "drop" });
   }
 
   function promoteCallback({ from, to, promote }) {
     const tempShogi = getTempShogi();
-    const { turn } = gameMatch;
 
     tempShogi.move(from.squareX, from.squareY, to.squareX, to.squareY, promote);
-    updateGameMatch(tempShogi);
-    addHistoryAction({
-      kind: promote ? "promote" : "move",
-      turn,
-      to
+    const kind = promote ? "promote" : "move";
+
+    updateGameMatch(tempShogi, {
+      sqaureX: to.sqaureX,
+      squareY: to.squareY,
+      kind,
     });
   }
 
   function checkCanPromote({ turn, fromSquareY, toSquareY, kind }) {
     const onEnemyCamp = isPieceOnEnemyCamp({
       turn,
-      squareY: fromSquareY
+      squareY: fromSquareY,
     });
     const movedToEnemyCamp = isPieceOnEnemyCamp({ turn, squareY: toSquareY });
 
@@ -136,13 +118,15 @@ export function useShogiEngine({
     const { turn } = gameMatch;
     const { from, pieceInfo } = moveAction;
 
+    console.log({ from, moveAction, squareX, squareY });
+
     tempShogi.move(from.squareX, from.squareY, squareX, squareY);
 
     const canPromote = checkCanPromote({
       turn,
       fromSquareY: from.squareY,
       toSquareY: squareY,
-      kind: pieceInfo.kind
+      kind: pieceInfo.kind,
     });
 
     if (isKingInCheck(tempShogi, turn)) {
@@ -153,18 +137,17 @@ export function useShogiEngine({
 
     if (canPromote) {
       listenNotification("PieceMovedToPromotionZone", {
-        promote: promoteOption =>
+        promote: (promoteOption) =>
           promoteCallback({
             from,
             to: { squareX, squareY },
-            promote: promoteOption
-          })
+            promote: promoteOption,
+          }),
       });
       return;
     }
 
-    updateGameMatch(tempShogi);
-    addHistoryAction({ action, turn, to: { squareX, squareY } });
+    updateGameMatch(tempShogi, { squareX, squareY, kind: "move" });
   }
 
   function touchTargetTile({ square, pieceInfo }) {
@@ -175,8 +158,10 @@ export function useShogiEngine({
       square,
       moveAction,
       turn,
-      color
+      color,
     }).split(":");
+
+    console.log({ status, action });
 
     if (status === "invalid") {
       switch (action) {
@@ -218,20 +203,18 @@ export function useShogiEngine({
       setMoveAction({
         from: null,
         dropPiece: { kind, turn },
-        moves: tempShogi.getDropsBy(turn)
+        moves: tempShogi.getDropsBy(turn),
       });
     }
   }
 
   return {
     gameMatch,
-    historyActions,
     touchTargetTile,
     targetTile,
     moveAction,
     promoteCallback,
-    getLastAction,
     selectHandPiece,
-    resetGame
+    resetGame,
   };
 }

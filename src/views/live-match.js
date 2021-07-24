@@ -82,10 +82,14 @@ const LiveMatch = () => {
     };
   };
 
-  function getLastSfen() {
+  function getLastMove() {
     const { moves } = gameData;
-    if (moves.length > 0) return moves[moves.length - 1].sfen;
-    return defaultSfen;
+    if (moves.length > 0) return moves[moves.length - 1];
+    return { sfen: defaultSfen, square: null };
+  }
+
+  function getLastSfen() {
+    return getLastMove().sfen;
   }
 
   async function fetchSetGameData() {
@@ -160,7 +164,7 @@ const LiveMatch = () => {
     }
   }
 
-  async function saveGameMove(sfen) {
+  async function saveGameMove({ sfen, squareX, squareY, kind }) {
     console.log("saveGameMove", { sfen });
     if (gameData.status === "STARTED") {
       const header = await getAuthHeader();
@@ -170,6 +174,9 @@ const LiveMatch = () => {
         {
           _id: GAME_ID,
           sfen,
+          squareX,
+          squareY,
+          kind,
         },
         header
       );
@@ -178,12 +185,10 @@ const LiveMatch = () => {
 
   const {
     gameMatch,
-    historyActions,
     targetTile,
     touchTargetTile,
     moveAction,
     selectHandPiece,
-    getLastAction,
     resetGame,
   } = useShogiEngine({
     listenNotification,
@@ -291,6 +296,8 @@ const LiveMatch = () => {
 
   const currentPlayerSide = getClientPlayerSide();
   const opponentPlayer = getOpponent();
+  const lastMove = getLastMove();
+  console.log({ lastMove });
 
   return (
     <MatchDisplay>
@@ -323,8 +330,7 @@ const LiveMatch = () => {
           possibleMoves={moveAction.moves}
           selectHandPiece={selectHandPiece}
           targetTile={targetTile}
-          lastAction={getLastAction()}
-          historyActions={historyActions}
+          lastMove={lastMove}
           width={size}
           height={size}
           effectDialog={effectDialog}

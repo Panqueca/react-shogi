@@ -135,7 +135,7 @@ const SettingsMenu = styled.div`
 const Board = ({
   hands,
   handleMovePiece,
-  lastAction,
+  lastMove,
   targetTile,
   selectHandPiece,
   possibleMoves,
@@ -291,10 +291,13 @@ const Board = ({
                   possibleMoves
                 );
 
-                const isLastAction = lastAction && square === lastAction.square;
+                const isPreviousMove =
+                  lastMove &&
+                  lastMove.squareX === squareX &&
+                  lastMove.squareY === squareY;
 
                 return (
-                  <BoardSquare key={squareNumber} blink={isLastAction}>
+                  <BoardSquare key={squareNumber} blink={isPreviousMove}>
                     <PieceSelection
                       y={squareX}
                       x={squareY}

@@ -59,6 +59,7 @@ export function getMoveResponse({ moveAction, turn, color }) {
   const isEmptySelection = !isActionMove && !hasPieceOnSquare && !isDropAction;
 
   const invalidOpponentPiece = isOpponentPiece && !isActionMove;
+  console.log({ invalidOpponentPiece, isActionMove });
   const invalidOwnPiece = isPlayerPiece && isActionMove;
 
   const invalidDrop = isDropAction && hasPieceOnSquare;
@@ -104,8 +105,9 @@ export function getMoveAction({ square, moveAction, turn, color }) {
   if (invalidOpponentPiece) return "invalid:opponentPiece";
   if (invalidMove) return "invalid:move";
   if (isDropAction) return "valid:drop";
-  if (isOpponentPiece) return "valid:capture";
+  if (canPieceMoveToSquare && isOpponentPiece) return "valid:capture";
   if (canPieceMoveToSquare && isActionMove) return "valid:move";
+  if (isOpponentPiece) return "invalid:opponentPiece";
   return "valid:selection";
 }
 

@@ -65,6 +65,16 @@ const LiveMatch = () => {
     open: false,
     display: null,
   });
+  const [clocks, setClocks] = useState({
+    player1: {
+      isRunning: false,
+      expireSeconds: null,
+    },
+    player2: {
+      isRunning: false,
+      expireSeconds: null,
+    },
+  });
 
   const history = useHistory();
   const { id: GAME_ID } = useParams();
@@ -92,16 +102,65 @@ const LiveMatch = () => {
     return getLastMove().sfen;
   }
 
+  function converteTurnToSide(turn) {
+    if (turn === 0) return "SENTE";
+    return "GOTE";
+  }
+
+  function getClientSideByGame(game) {
+    const { status, player1, player2 } = game;
+
+    if (status !== "STARTED") return "SENTE";
+    if (player1.sub === user.sub) return "SENTE";
+    if (player2.sub === user.sub) return "GOTE";
+    return null;
+  }
+
+  function getClientPlayerSide() {
+    return getClientSideByGame(gameData);
+  }
+
+  function handleGameUpdate({
+    game,
+    senteRemainingSeconds,
+    goteRemainingSeconds,
+  }) {
+    const { status, turn } = game;
+    const clientSide = getClientSideByGame(game);
+
+    if (status === "STARTED" && clientSide) {
+      setClocks({
+        currentPlayer: {
+          isRunning: converteTurnToSide(turn) === clientSide,
+          expireSeconds:
+            clientSide === "SENTE"
+              ? senteRemainingSeconds
+              : goteRemainingSeconds,
+        },
+        opponentPlayer: {
+          isRunning: converteTurnToSide(turn) !== clientSide,
+          expireSeconds:
+            clientSide === "SENTE"
+              ? goteRemainingSeconds
+              : senteRemainingSeconds,
+        },
+      });
+    }
+
+    setGameData(game);
+  }
+
   async function fetchSetGameData() {
     const header = await getAuthHeader();
     const { data: response } = await axios.get(
       `http://localhost:6060/games/find?_id=${GAME_ID}`,
       header
     );
-    const { _id } = response;
+    const { game, senteRemainingSeconds, goteRemainingSeconds } = response;
+    const { _id } = game;
 
     if (_id) {
-      setGameData(response);
+      handleGameUpdate({ game, senteRemainingSeconds, goteRemainingSeconds });
     }
   }
 
@@ -112,13 +171,6 @@ const LiveMatch = () => {
   function getPlayerTurnSide() {
     const { turn } = gameData;
     return turn === 0 ? "SENTE" : "GOTE";
-  }
-
-  function getClientPlayerSide() {
-    if (gameData.status !== "STARTED") return "SENTE";
-    if (player1.sub === user.sub) return "SENTE";
-    if (player2.sub === user.sub) return "GOTE";
-    return null;
   }
 
   function getOpponent() {
@@ -345,6 +397,8 @@ const LiveMatch = () => {
           opponentPlayer={opponentPlayer}
           isMyTurn={isMyTurn}
           isGameRunning={gameData.status === "STARTED"}
+          clocks={clocks}
+          fetchSetGameData={fetchSetGameData}
         />
       )}
     </MatchDisplay>

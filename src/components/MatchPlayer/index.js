@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Badge } from "react-bootstrap";
 import { Settings, Flag, MessageCircle } from "react-feather";
 import styled, { keyframes } from "styled-components";
+import PlayerTimer from "../PlayerTimer";
 
 const PlayerInfo = styled.div`
   width: ${({ width = "100%" }) => width};
@@ -106,9 +107,18 @@ const MatchPlayer = ({
   hide,
   showNotificationBar,
   isMyTurn,
+  clock,
+  side,
+  fetchSetGameData,
 }) => {
   function getNotification() {
     if (isMyTurn) return "Your turn to play";
+  }
+
+  function onExpire() {
+    setTimeout(() => {
+      if (fetchSetGameData) fetchSetGameData();
+    }, [1500]);
   }
 
   function displayHandPieces(handPieces, turn) {
@@ -166,7 +176,9 @@ const MatchPlayer = ({
             style={{ width: "35px", marginRight: "10px" }}
             alt=""
           />
+          {side && `(${side}) `}
           {name}
+          <PlayerTimer clock={clock} onExpire={onExpire} />
         </div>
         <div className="hand">
           {displayHandPieces(hands[playerColorTurn], playerColorTurn)}

@@ -153,6 +153,8 @@ const Board = ({
   currentTurnPlayer,
   isMyTurn,
   isGameRunning,
+  clocks = {},
+  fetchSetGameData,
 }) => {
   const { skin, displayPieces, changeSkin, boardConfig } = useSkinState();
   const { squaresColor, pieceViewBox } = boardConfig;
@@ -233,8 +235,6 @@ const Board = ({
 
   const orderedByRows = getBoardOrderedByRows(board);
 
-  console.log({ opponentPlayer });
-
   return (
     <MatchDisplay>
       <MatchPlayer
@@ -248,6 +248,9 @@ const Board = ({
         width={width}
         viewBox={pieceViewBox.hand}
         hide={!opponentPlayer}
+        clock={clocks.opponentPlayer}
+        side={currentPlayerSide === "SENTE" ? "GOTE" : "SENTE"}
+        fetchSetGameData={fetchSetGameData}
       />
       <ShogiBoard
         width={width}
@@ -357,6 +360,9 @@ const Board = ({
         viewBox={pieceViewBox.hand}
         isMyTurn={isMyTurn}
         showNotificationBar={isGameRunning}
+        clock={clocks.currentPlayer}
+        side={currentPlayerSide}
+        fetchSetGameData={fetchSetGameData}
       />
     </MatchDisplay>
   );

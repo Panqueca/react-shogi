@@ -3,19 +3,19 @@ import skin_2 from "../../@shogi_pieces/skin_2_red_kanji_bold";
 
 const skins = { skin_1, skin_2 };
 
-export const getPieceComponentsByTheme = skinTheme => {
+export const getPieceComponentsByTheme = (skinTheme) => {
   return skins[skinTheme];
 };
 
-export const getBoardConfigByTheme = skinTheme => {
+export const getBoardConfigByTheme = (skinTheme) => {
   if (skinTheme === "skin_2")
     return {
       squaresColor: "#cba84b",
-      pieceViewBox: "0 0 50 50"
+      pieceViewBox: { hand: "0 0 50 50", board: "-2 0 60 60" },
     };
 
   return {
     squaresColor: "#f4c64e",
-    pieceViewBox: "0 0 32 32"
+    pieceViewBox: { hand: "0 0 32 32", board: "-2 0 40 40" },
   };
 };

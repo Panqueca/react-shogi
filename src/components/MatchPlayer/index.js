@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Badge } from "react-bootstrap";
 import { Settings, Flag, MessageCircle } from "react-feather";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const PlayerInfo = styled.div`
   width: ${({ width = "100%" }) => width};
@@ -11,12 +11,11 @@ const PlayerInfo = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0px;
   transition: 0.3s;
   opacity: ${({ hide }) => (hide ? "0" : "1")};
 
   .title {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
   }
 
@@ -64,8 +63,37 @@ const ActionButton = styled.button`
   }
 `;
 
+const blink = keyframes`
+0% {
+  opacity: 0.6;
+}
+25% {
+  opacity: 0.7;
+}
+50% {
+  opacity: 1;
+}
+75% {
+  opacity: 0.7;
+}
+100% {
+  opacity: 0.6;
+}
+`;
+
+const Notification = styled.div`
+  width: ${({ width }) => width};
+  margin: 0 auto;
+  height: 25px;
+  line-height: 25px;
+  text-align: left;
+  font-weight: bold;
+  animation: ${blink} 1s infinite;
+`;
+
 const MatchPlayer = ({
   name,
+  gravatar = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y",
   showSettings = true,
   toggleSettings,
   width,
@@ -76,7 +104,13 @@ const MatchPlayer = ({
   callSurrender,
   viewBox,
   hide,
+  showNotificationBar,
+  isMyTurn,
 }) => {
+  function getNotification() {
+    if (isMyTurn) return "Your turn to play";
+  }
+
   function displayHandPieces(handPieces, turn) {
     if (Array.isArray(handPieces)) {
       const groupByKind = [];
@@ -121,32 +155,37 @@ const MatchPlayer = ({
   }
 
   return (
-    <PlayerInfo width={width} hide={hide}>
-      <div className="title">
-        <img
-          src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y"
-          style={{ width: "35px", marginRight: "10px" }}
-          alt=""
-        />
-        {name}
-      </div>
-      <div className="hand">
-        {displayHandPieces(hands[playerColorTurn], playerColorTurn)}
-      </div>
-      {showSettings && (
-        <div className="config">
-          <ActionButton disabled>
-            <MessageCircle />
-          </ActionButton>
-          <ActionButton onClick={callSurrender}>
-            <Flag />
-          </ActionButton>
-          <ActionButton onClick={toggleSettings}>
-            <Settings />
-          </ActionButton>
-        </div>
+    <Fragment>
+      {showNotificationBar && (
+        <Notification width={width}>{getNotification()}</Notification>
       )}
-    </PlayerInfo>
+      <PlayerInfo width={width} hide={hide}>
+        <div className="title">
+          <img
+            src={gravatar}
+            style={{ width: "35px", marginRight: "10px" }}
+            alt=""
+          />
+          {name}
+        </div>
+        <div className="hand">
+          {displayHandPieces(hands[playerColorTurn], playerColorTurn)}
+        </div>
+        {showSettings && (
+          <div className="config">
+            <ActionButton disabled>
+              <MessageCircle />
+            </ActionButton>
+            <ActionButton onClick={callSurrender}>
+              <Flag />
+            </ActionButton>
+            <ActionButton onClick={toggleSettings}>
+              <Settings />
+            </ActionButton>
+          </div>
+        )}
+      </PlayerInfo>
+    </Fragment>
   );
 };
 

@@ -8,7 +8,11 @@ import MatchPlayer from "../MatchPlayer";
 import { useSkinState } from "../../store/skin/state";
 
 const MatchDisplay = styled.div`
+  width: 100%;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const blinkTile = keyframes`
@@ -68,8 +72,7 @@ const BoardSquare = styled.div`
 const ShogiBoard = styled.div`
   position: relative;
   display: flex;
-  margin: 0 auto;
-  padding: 15px;
+  margin: 0;
   flex-direction: row-reverse;
   flex-wrap: wrap;
   width: ${({ width = "100%" }) => width};
@@ -148,6 +151,8 @@ const Board = ({
   currentPlayer,
   opponentPlayer,
   currentTurnPlayer,
+  isMyTurn,
+  isGameRunning,
 }) => {
   const { skin, displayPieces, changeSkin, boardConfig } = useSkinState();
   const { squaresColor, pieceViewBox } = boardConfig;
@@ -231,14 +236,14 @@ const Board = ({
   return (
     <MatchDisplay>
       <MatchPlayer
-        name={opponentPlayer && opponentPlayer.name}
+        name={opponentPlayer && opponentPlayer.sub}
         hands={hands}
         displayPieces={displayPieces}
         showSettings={false}
         playerColorTurn={currentPlayerSide === "SENTE" ? 1 : 0}
         selectHandPiece={selectHandPiece}
         width={width}
-        viewBox={pieceViewBox}
+        viewBox={pieceViewBox.hand}
         hide={!opponentPlayer}
       />
       <ShogiBoard
@@ -323,6 +328,7 @@ const Board = ({
                           ? color === 1
                           : color === 0
                       }
+                      svgProps={{ viewBox: pieceViewBox.board }}
                     />
                     {settings.showSquareNumbers && (
                       <div className="square-number">{squareNumber}</div>
@@ -337,6 +343,7 @@ const Board = ({
       </ShogiBoard>
       <MatchPlayer
         name={currentPlayer && currentPlayer.name}
+        gravatar={currentPlayer && currentPlayer.gravatar}
         hands={hands}
         displayPieces={displayPieces}
         playerColorTurn={currentPlayerSide === "SENTE" ? 0 : 1}
@@ -344,7 +351,9 @@ const Board = ({
         selectHandPiece={selectHandPiece}
         callSurrender={callSurrender}
         width={width}
-        viewBox={pieceViewBox}
+        viewBox={pieceViewBox.hand}
+        isMyTurn={isMyTurn}
+        showNotificationBar={isGameRunning}
       />
     </MatchDisplay>
   );

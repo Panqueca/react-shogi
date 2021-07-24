@@ -114,6 +114,23 @@ const LiveMatch = () => {
     return turn === 0 ? "SENTE" : "GOTE";
   }
 
+  function getClientPlayerSide() {
+    if (gameData.status !== "STARTED") return "SENTE";
+    if (player1.sub === user.sub) return "SENTE";
+    if (player2.sub === user.sub) return "GOTE";
+    return null;
+  }
+
+  function getOpponent() {
+    if (player1 && player1.sub === user.sub) return player2;
+    if (player2 && player2.sub === user.sub) return player1;
+    return null;
+  }
+
+  function checkIsMyTurn() {
+    return getPlayerTurnSide() === getClientPlayerSide();
+  }
+
   function resetDialog() {
     setDialog(defaultDialog);
   }
@@ -253,8 +270,16 @@ const LiveMatch = () => {
   const size = `${vh * 0.8 - 150}px`;
 
   useEffect(() => {
+    if (gameData.status === "STARTED") {
+      const dialogInfo = getDialogInfoByNotificationSlug(
+        checkIsMyTurn() ? "YOUR_TURN" : "OPPONENT_TURN"
+      );
+      if (dialogInfo.type) callEffect({ ...dialogInfo });
+    }
+  }, [gameData.status]);
+
+  useEffect(() => {
     io.on("GAME_FOUND", ({ _id }) => {
-      console.log("GAME_FOUND");
       if (GAME_ID === _id) {
         const dialogInfo = getDialogInfoByNotificationSlug("GAME_FOUND");
         if (dialogInfo.type) callEffect({ ...dialogInfo });
@@ -280,33 +305,14 @@ const LiveMatch = () => {
     });
   }, []);
 
-  function getClientPlayerSide() {
-    if (gameData.status !== "STARTED") return null;
-    if (player1.sub === user.sub) return "SENTE";
-    if (player2.sub === user.sub) return "GOTE";
-    return null;
-  }
-
-  function getOpponent() {
-    if (player1 && player1.sub === user.sub) return player2;
-    if (player2 && player2.sub === user.sub) return player1;
-    return null;
-  }
-
   const currentPlayerSide = getClientPlayerSide();
   const opponentPlayer = getOpponent();
   const lastMove = getLastMove();
+  const isMyTurn = checkIsMyTurn();
 
   return (
     <MatchDisplay>
       {displayDialog()}
-      {gameData.status === "STARTED" && (
-        <WaitDialog width={size}>
-          {`Turn: ${
-            gameData.turn === 0 ? "SENTE" : "GOTE"
-          }, Client: ${currentPlayerSide}`}
-        </WaitDialog>
-      )}
       {gameData.status === "SEARCHING" && (
         <WaitDialog width={size}>
           ...You are waiting for an opponent
@@ -337,6 +343,8 @@ const LiveMatch = () => {
           currentPlayerSide={currentPlayerSide}
           currentTurnPlayer={getPlayerTurnSide()}
           opponentPlayer={opponentPlayer}
+          isMyTurn={isMyTurn}
+          isGameRunning={gameData.status === "STARTED"}
         />
       )}
     </MatchDisplay>

@@ -39,7 +39,7 @@ const WaitDialog = styled.div`
 const defaultSfen =
   "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1";
 
-const io = socketClient("http://localhost:6060", {
+const io = socketClient(process.env.REACT_APP_SERVER_URL, {
   reconnectionDelay: 1000,
   reconnection: true,
   reconnectionAttempts: 10,

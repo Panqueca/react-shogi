@@ -13,6 +13,8 @@ import "./app.css";
 const App = () => {
   const { isLoading } = useAuth0();
 
+  console.log("Shogi Battles");
+
   if (isLoading) {
     return <Loading />;
   }

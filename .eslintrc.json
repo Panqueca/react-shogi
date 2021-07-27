@@ -1,7 +1,8 @@
 {
   "parser": "@babel/eslint-parser",
   "env": {
-    "browser": true
+    "browser": true,
+    "node": true
   },
   "extends": [
     "eslint:recommended",
@@ -19,6 +20,9 @@
     "ecmaFeatures": {
       "modules": true,
       "jsx": true
+    },
+    "babelOptions": {
+      "configFile": "./.babelrc"
     }
   },
   "plugins": ["prettier", "react"],

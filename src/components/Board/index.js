@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled, { keyframes, css } from "styled-components";
-import { ToggleLeft, ToggleRight } from "react-feather";
+import {
+  ToggleLeft,
+  ToggleRight,
+  Settings,
+  Flag,
+  MessageCircle,
+} from "react-feather";
 import { getSquareByXYBoard } from "../../utils/board/display";
 import { checkIsPossibleMove } from "../../utils/pieces/filter";
 import MatchPlayer from "../MatchPlayer";
@@ -87,7 +93,15 @@ const ShogiBoard = styled.div`
     position: absolute;
     top: 0px;
     right: 0px;
-    z-index: 1000;
+    z-index: 100;
+  }
+
+  .config {
+    position: absolute;
+    top: 0px;
+    right: -41px;
+    display: flex;
+    flex-direction: column;
   }
 `;
 
@@ -101,7 +115,7 @@ const EffectDialog = styled.div`
   margin: auto auto;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 101;
   top: 0;
   bottom: 0;
 `;
@@ -116,9 +130,9 @@ const SettingsMenu = styled.div`
   height: 200px;
   background-color: #fff;
   position: absolute;
-  bottom: 0;
+  top: 0;
   right: 0;
-  z-index: 10000;
+  z-index: 101;
   padding: 15px;
   border: 1px solid #000;
 
@@ -132,6 +146,19 @@ const SettingsMenu = styled.div`
       display: flex;
       justify-content: space-between;
     }
+  }
+`;
+
+const ActionButton = styled.button`
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin: 0 auto;
+  &:hover {
+    background-color: #000;
+    color: #fff;
   }
 `;
 
@@ -242,7 +269,6 @@ const Board = ({
         picture={opponentPlayer && opponentPlayer.picture}
         hands={hands}
         displayPieces={displayPieces}
-        showSettings={false}
         playerColorTurn={currentPlayerSide === "SENTE" ? 1 : 0}
         selectHandPiece={selectHandPiece}
         width={width}
@@ -258,6 +284,17 @@ const Board = ({
         squaresColor={squaresColor}
         showOverlay={settings.open}
       >
+        <div className="config">
+          <ActionButton onClick={toggleSettings}>
+            <Settings />
+          </ActionButton>
+          <ActionButton onClick={callSurrender}>
+            <Flag />
+          </ActionButton>
+          <ActionButton disabled>
+            <MessageCircle />
+          </ActionButton>
+        </div>
         <div className="overlay" onClick={closeDialogs}></div>
         <EffectDialog open={effectDialog.open}>
           {effectDialog.display}
@@ -353,9 +390,7 @@ const Board = ({
         hands={hands}
         displayPieces={displayPieces}
         playerColorTurn={currentPlayerSide === "SENTE" ? 0 : 1}
-        toggleSettings={toggleSettings}
         selectHandPiece={selectHandPiece}
-        callSurrender={callSurrender}
         width={width}
         viewBox={pieceViewBox.hand}
         isMyTurn={isMyTurn}

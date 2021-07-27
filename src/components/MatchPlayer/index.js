@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import { Badge } from "react-bootstrap";
-import { Settings, Flag, MessageCircle } from "react-feather";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import PlayerTimer from "../PlayerTimer";
 
 const PlayerInfo = styled.div`
@@ -15,9 +14,17 @@ const PlayerInfo = styled.div`
   transition: 0.3s;
   opacity: ${({ hide }) => (hide ? "0" : "1")};
 
-  .title {
-    font-size: 14px;
-    font-weight: bold;
+  .player-box {
+    display: flex;
+    gap: 15px;
+    height: 50px;
+    align-items: center;
+
+    .title {
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 50px;
+    }
   }
 
   .hand {
@@ -51,58 +58,27 @@ const PlayerInfo = styled.div`
   }
 `;
 
-const ActionButton = styled.button`
-  width: 40px;
-  height: 40px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  margin: 0 auto;
-  &:hover {
-    background-color: #000;
-    color: #fff;
-  }
-`;
-
-const blink = keyframes`
-0% {
-  opacity: 0.6;
-}
-25% {
-  opacity: 0.7;
-}
-50% {
-  opacity: 1;
-}
-75% {
-  opacity: 0.7;
-}
-100% {
-  opacity: 0.6;
-}
-`;
-
 const Notification = styled.div`
   width: ${({ width }) => width};
   margin: 0 auto;
   height: 25px;
   line-height: 25px;
-  text-align: left;
+  text-align: center;
   font-weight: bold;
-  animation: ${blink} 1s infinite;
+  color: #999;
+  font-size: 14px;
+  line-height: 25px;
 `;
 
 const MatchPlayer = ({
   name,
   picture = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y",
-  showSettings = true,
-  toggleSettings,
   width,
   playerColorTurn,
   displayPieces,
   hands,
   selectHandPiece,
-  callSurrender,
+
   viewBox,
   hide,
   showNotificationBar,
@@ -170,32 +146,25 @@ const MatchPlayer = ({
         <Notification width={width}>{getNotification()}</Notification>
       )}
       <PlayerInfo width={width} hide={hide}>
-        <div className="title">
-          <img
-            src={picture}
-            style={{ width: "35px", marginRight: "10px" }}
-            alt=""
-          />
-          {side && `(${side}) `}
-          {name}
-          <PlayerTimer clock={clock} onExpire={onExpire} />
-        </div>
-        <div className="hand">
-          {displayHandPieces(hands[playerColorTurn], playerColorTurn)}
-        </div>
-        {showSettings && (
-          <div className="config">
-            <ActionButton disabled>
-              <MessageCircle />
-            </ActionButton>
-            <ActionButton onClick={callSurrender}>
-              <Flag />
-            </ActionButton>
-            <ActionButton onClick={toggleSettings}>
-              <Settings />
-            </ActionButton>
+        <div className="player-box">
+          <div className="title">
+            <img
+              src={picture}
+              style={{
+                width: "35px",
+                marginRight: "10px",
+                borderRadius: "50%",
+              }}
+              alt=""
+            />
+            {side && `(${side}) `}
+            {name}
           </div>
-        )}
+          <div className="hand">
+            {displayHandPieces(hands[playerColorTurn], playerColorTurn)}
+          </div>
+        </div>
+        <PlayerTimer clock={clock} onExpire={onExpire} />
       </PlayerInfo>
     </Fragment>
   );

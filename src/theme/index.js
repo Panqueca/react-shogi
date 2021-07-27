@@ -1,4 +1,3 @@
-import { transparentize } from "polished";
 import React, { useMemo } from "react";
 import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
@@ -45,9 +44,9 @@ export function colors(darkMode) {
     text5: darkMode ? "#2C2F36" : "#EDEEF2",
 
     // backgrounds / greys
-    bg0: darkMode ? "#191B1F" : "#FFFFFF",
-    bg1: darkMode ? "#212429" : "#F1F1F1",
-    bg2: darkMode ? "#2C2F36" : "#F7F8FA",
+    bg0: darkMode ? "#111111" : "#FFFFFF",
+    bg1: darkMode ? "#222222" : "#F1F1F1",
+    bg2: darkMode ? "#333333" : "#F7F8FA",
     bg3: darkMode ? "#40444F" : "#EDEEF2",
     bg4: darkMode ? "#565A69" : "#CED0D9",
     bg5: darkMode ? "#6C7284" : "#888D9B",
@@ -58,9 +57,9 @@ export function colors(darkMode) {
     advancedBG: darkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.6)",
 
     //primary colors
-    primary1: darkMode ? "#2172E5" : "#2F80ED",
-    primary2: darkMode ? "#3680E7" : "#FF8CC3",
-    primary3: darkMode ? "#4D8FEA" : "#FF99C9",
+    primary1: darkMode ? "#212121" : "#212121",
+    primary2: darkMode ? "#333333" : "#333333",
+    primary3: darkMode ? "#555555" : "#555555",
     primary4: darkMode ? "#376bad70" : "#F6DDE8",
     primary5: darkMode ? "#153d6f70" : "#3772FF",
 
@@ -253,12 +252,5 @@ html {
 body {
   font-family: 'Otomanopee One', sans-serif;
   min-height: 100vh;
-  background-position: 0 -30vh;
-  background-repeat: no-repeat;
-  background-image: ${({ theme }) =>
-    `radial-gradient(50% 50% at 50% 50%, ${transparentize(
-      0.8,
-      theme.primary1,
-    )} 0%, ${transparentize(1, theme.bg1)} 100%)`};
 }
 `;

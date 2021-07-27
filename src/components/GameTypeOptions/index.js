@@ -7,7 +7,7 @@ const ButtonGroup = styled.div`
   padding: 15px;
 `;
 
-const Button = styled.button`
+const StyledLink = styled(Link)`
   padding: 5px 10px;
   color: #000;
   font-weight: bold;
@@ -21,18 +21,18 @@ const Button = styled.button`
 const GameTypeOptions = ({ closeModal = () => {} }) => {
   return (
     <ButtonGroup>
-      <Link to="/wait-game/BULLET_1" onClick={closeModal}>
-        <Button>1min</Button>
-      </Link>
-      <Link to="/wait-game/BLITZ_3" onClick={closeModal}>
-        <Button>3min</Button>
-      </Link>
-      <Link to="/wait-game/BLITZ_10" onClick={closeModal}>
-        <Button>10min</Button>
-      </Link>
-      <Link to="/wait-game/RAPID_15" onClick={closeModal}>
-        <Button>15min</Button>
-      </Link>
+      <StyledLink to="/wait-game/BULLET_1" onClick={closeModal}>
+        1min
+      </StyledLink>
+      <StyledLink to="/wait-game/BLITZ_3" onClick={closeModal}>
+        3min
+      </StyledLink>
+      <StyledLink to="/wait-game/BLITZ_10" onClick={closeModal}>
+        10min
+      </StyledLink>
+      <StyledLink to="/wait-game/RAPID_15" onClick={closeModal}>
+        15min
+      </StyledLink>
     </ButtonGroup>
   );
 };

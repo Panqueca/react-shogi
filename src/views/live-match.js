@@ -5,12 +5,13 @@ import styled from "styled-components";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import socketClient from "socket.io-client";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Board from "../components/Board";
 import { useWindowSize } from "../utils/hooks/window";
 import { useShogiEngine } from "../utils/game/hooks";
 import { getDialogInfoByNotificationSlug } from "../utils/game/messages";
 import ElapsedTime from "../components/ElapsedTime";
+import { useDialogState } from "../store/dialogs/state";
 
 const defaultDialog = {
   open: false,
@@ -21,20 +22,17 @@ const defaultDialog = {
   cancelText: "",
 };
 
-const MatchDisplay = styled.div``;
+const MatchDisplay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const WaitDialog = styled.div`
-  position: absolute;
   width: ${({ width }) => width};
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.9);
   font-size: 22px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  z-index: 100;
-  height: 100px;
-  top: 125px;
   border: 2px solid #000;
 `;
 
@@ -76,9 +74,9 @@ const LiveMatch = () => {
     },
   });
 
-  const history = useHistory();
   const { id: GAME_ID } = useParams();
   const { getAccessTokenSilently, user } = useAuth0();
+  const { openNewGame } = useDialogState();
 
   const { player1, player2 } = gameData;
 
@@ -108,8 +106,9 @@ const LiveMatch = () => {
   }
 
   function getClientSideByGame(game) {
-    const { player1, player2 } = game;
+    const { player1, player2, status } = game;
 
+    if (status === "SEARCHING") return "SENTE";
     if (player1 && player1.sub === user.sub) return "SENTE";
     if (player2 && player2.sub === user.sub) return "GOTE";
     return null;
@@ -374,7 +373,7 @@ const LiveMatch = () => {
       {gameData.status === "FINISHED" && (
         <WaitDialog width={size}>
           Match Finished! {gameData.winner} won.{" "}
-          <Button onClick={() => history.push("/wait-game")}>New Game</Button>
+          <Button onClick={openNewGame}>New Game</Button>
         </WaitDialog>
       )}
       {gameData.status !== "LOADING" && gameMatch && (

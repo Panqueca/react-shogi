@@ -1,7 +1,5 @@
 import { createState, useState } from "@hookstate/core";
-import { close, open } from "./actions";
-
-export const WAIT_GAME = "WAIT_GAME";
+import { close, open, openNewGameDialog } from "./actions";
 
 const dialogState = createState({
   dialogList: [],
@@ -19,6 +17,9 @@ export function useDialogState() {
     },
     openPopup(slug, render, params = {}) {
       open(state, { slug, render, params });
+    },
+    openNewGame() {
+      openNewGameDialog(state, { onClose: (slug) => close(state, { slug }) });
     },
   };
 }

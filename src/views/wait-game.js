@@ -29,7 +29,7 @@ const WaitGame = () => {
     async function wait() {
       const headers = await getAuthHeader();
       const { data: waitResponse } = await axios.post(
-        "http://localhost:6060/games/wait",
+        `${process.env.REACT_APP_SERVER_URL}/games/wait`,
         { user, gameType: GAME_TYPE },
         headers,
       );

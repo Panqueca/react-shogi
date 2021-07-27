@@ -151,7 +151,7 @@ const LiveMatch = () => {
   async function fetchSetGameData() {
     const header = await getAuthHeader();
     const { data: response } = await axios.get(
-      `http://localhost:6060/games/find?_id=${GAME_ID}`,
+      `${process.env.REACT_APP_SERVER_URL}/games/find?_id=${GAME_ID}`,
       header,
     );
     const { game, senteRemainingSeconds, goteRemainingSeconds } = response;
@@ -236,7 +236,7 @@ const LiveMatch = () => {
       const header = await getAuthHeader();
 
       await axios.post(
-        "http://localhost:6060/games/saveMove",
+        `${process.env.REACT_APP_SERVER_URL}/games/saveMove`,
         {
           _id: GAME_ID,
           sfen,
@@ -272,7 +272,7 @@ const LiveMatch = () => {
 
         const header = await getAuthHeader();
         await axios.post(
-          "http://localhost:6060/games/resign",
+          `${process.env.REACT_APP_SERVER_URL}/games/resign`,
           {
             _id: GAME_ID,
           },

@@ -20,9 +20,6 @@
     "ecmaFeatures": {
       "modules": true,
       "jsx": true
-    },
-    "babelOptions": {
-      "configFile": "./.babelrc"
     }
   },
   "plugins": ["prettier", "react"],

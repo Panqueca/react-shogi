@@ -82,6 +82,12 @@ export function useShogiEngine({
     const { dropPiece } = moveAction;
     const { kind: dropKind, turn: dropTurn } = dropPiece || {};
 
+    if (isKingInCheck(tempShogi, dropTurn)) {
+      resetMoveData();
+      listenNotification("KingInCheck");
+      return;
+    }
+
     tempShogi.drop(squareX, squareY, dropKind, dropTurn);
     updateGameMatch(tempShogi, { squareX, squareY, kind: "drop" });
   }

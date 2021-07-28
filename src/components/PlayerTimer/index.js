@@ -6,7 +6,7 @@ import styled from "styled-components";
 const Clock = styled.div`
   background-color: ${({ isRunning }) => (isRunning ? "#111" : "#999")};
   color: #fff;
-  font-size: 16px;
+  font-size: 1rem;
   letter-spacing: 3px;
   width: 70px;
   text-align: center;

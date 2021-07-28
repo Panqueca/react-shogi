@@ -316,8 +316,7 @@ const LiveMatch = () => {
     );
   }
 
-  const { vh } = useWindowSize();
-  const size = `${vh * 0.8 - 150}px`;
+  const { boardSize } = useWindowSize();
 
   useEffect(() => {
     if (gameData.status === "STARTED") {
@@ -364,14 +363,14 @@ const LiveMatch = () => {
     <MatchDisplay>
       {displayDialog()}
       {gameData.status === "SEARCHING" && (
-        <WaitDialog width={size}>
+        <WaitDialog width={boardSize}>
           ...You are waiting for an opponent
           <br />
           <ElapsedTime />
         </WaitDialog>
       )}
       {gameData.status === "FINISHED" && (
-        <WaitDialog width={size}>
+        <WaitDialog width={boardSize}>
           Match Finished! {gameData.winner} won.{" "}
           <Button onClick={openNewGame}>New Game</Button>
         </WaitDialog>
@@ -385,8 +384,8 @@ const LiveMatch = () => {
           selectHandPiece={selectHandPiece}
           targetTile={targetTile}
           lastMove={lastMove}
-          width={size}
-          height={size}
+          width={boardSize}
+          height={boardSize}
           effectDialog={effectDialog}
           callSurrender={callSurrender}
           currentPlayer={user}

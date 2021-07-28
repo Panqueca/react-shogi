@@ -13,8 +13,6 @@ import "./app.css";
 const App = () => {
   const { isLoading } = useAuth0();
 
-  console.log("Shogi Battles");
-
   if (isLoading) {
     return <Loading />;
   }
@@ -23,15 +21,13 @@ const App = () => {
     <div id="app" className="d-flex flex-column h-100">
       <NavBar />
       <DialogProvider />
-      <div className="container flex-grow-1">
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <ProtectedRoute path="/profile" component={Profile} />
-          <ProtectedRoute path="/wait-game/:type" component={WaitGame} />
-          <ProtectedRoute path="/live-match/:id" component={LiveMatch} />
-          <ProtectedRoute path="/external-api" component={ExternalApi} />
-        </Switch>
-      </div>
+      <Switch>
+        <Route path="/" exact component={Home} />
+        <ProtectedRoute path="/profile" component={Profile} />
+        <ProtectedRoute path="/wait-game/:type" component={WaitGame} />
+        <ProtectedRoute path="/live-match/:id" component={LiveMatch} />
+        <ProtectedRoute path="/external-api" component={ExternalApi} />
+      </Switch>
       <Footer />
     </div>
   );

@@ -6,7 +6,6 @@ import PlayerTimer from "../PlayerTimer";
 const PlayerInfo = styled.div`
   width: ${({ width = "100%" }) => width};
   height: 50px;
-  overflow: hidden;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -21,25 +20,29 @@ const PlayerInfo = styled.div`
     align-items: center;
 
     .title {
-      font-size: 14px;
+      font-size: 0.5rem;
       font-weight: bold;
       line-height: 50px;
+      white-space: nowrap;
     }
   }
 
   .hand {
-    height: 50px;
-    width: auto;
+    max-width: 12rem;
     display: flex;
+    flex-flow: row wrap;
+    max-height: 5rem;
 
     .piece-at-hand {
-      width: 40px;
+      width: 2rem;
+      height: 2rem;
       margin: 5px;
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
       flex: 0 0 1em;
+      top: -1rem;
 
       div {
         position: relative !important;
@@ -56,6 +59,31 @@ const PlayerInfo = styled.div`
       }
     }
   }
+
+  .current-player .piece-at-hand {
+    top: 1rem;
+  }
+
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    height: auto;
+    .player-box {
+      height: auto;
+      flex-flow: row wrap;
+
+      
+      .title {
+        width: 100% !important;
+      }
+    }
+    
+    .current-player .piece-at-hand {
+      top: 0px;
+    }
+
+    .hand .piece-at-hand {
+      width: 25px;
+    }
+  `};
 `;
 
 const Notification = styled.div`
@@ -78,7 +106,6 @@ const MatchPlayer = ({
   displayPieces,
   hands,
   selectHandPiece,
-
   viewBox,
   hide,
   showNotificationBar,
@@ -86,6 +113,7 @@ const MatchPlayer = ({
   clock,
   side,
   fetchSetGameData,
+  isPlayerView,
 }) => {
   function getNotification() {
     if (isMyTurn) return "Your turn to play";
@@ -146,13 +174,13 @@ const MatchPlayer = ({
         <Notification width={width}>{getNotification()}</Notification>
       )}
       <PlayerInfo width={width} hide={hide}>
-        <div className="player-box">
+        <div className={`player-box ${isPlayerView && "current-player"}`}>
           <div className="title">
             <img
               src={picture}
               style={{
-                width: "35px",
-                marginRight: "10px",
+                width: "2rem",
+                marginRight: "5px",
                 borderRadius: "50%",
               }}
               alt=""

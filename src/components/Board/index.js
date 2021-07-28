@@ -93,13 +93,13 @@ const ShogiBoard = styled.div`
     position: absolute;
     top: 0px;
     right: 0px;
-    z-index: 100;
+    z-index: 110;
   }
 
   .config {
     position: absolute;
     top: 0px;
-    right: -41px;
+    right: -36px;
     display: flex;
     flex-direction: column;
   }
@@ -132,7 +132,7 @@ const SettingsMenu = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 101;
+  z-index: 150;
   padding: 15px;
   border: 1px solid #000;
 
@@ -150,8 +150,8 @@ const SettingsMenu = styled.div`
 `;
 
 const ActionButton = styled.button`
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -188,7 +188,7 @@ const Board = ({
 
   const [settings, setSettings] = useState({
     open: false,
-    showSquareNumbers: true,
+    showSquareNumbers: false,
   });
 
   function closeDialogs() {
@@ -398,6 +398,7 @@ const Board = ({
         clock={clocks.currentPlayer}
         side={currentPlayerSide}
         fetchSetGameData={fetchSetGameData}
+        isPlayerView
       />
     </MatchDisplay>
   );

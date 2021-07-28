@@ -6,21 +6,33 @@ export function useWindowSize() {
     height: undefined,
     vw: undefined,
     vh: undefined,
+    boardSize: undefined,
   });
 
   useEffect(() => {
     function handleResize() {
+      const newVW = Math.max(
+        document.documentElement.clientWidth || 0,
+        window.innerWidth || 0,
+      );
+
+      const newVH = Math.max(
+        document.documentElement.clientHeight || 0,
+        window.innerHeight || 0,
+      );
+
+      const orderBy = newVH > newVW ? "WIDTH" : "HEIGHT";
+      const boardView = orderBy === "WIDTH" ? newVW : newVH;
+      const minusOffsets = orderBy === "WIDTH" ? 85 : 380;
+
+      const boardSize = `${boardView - minusOffsets}px`;
+
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
-        vw: Math.max(
-          document.documentElement.clientWidth || 0,
-          window.innerWidth || 0,
-        ),
-        vh: Math.max(
-          document.documentElement.clientHeight || 0,
-          window.innerHeight || 0,
-        ),
+        vw: newVW,
+        vh: newVH,
+        boardSize,
       });
     }
     window.addEventListener("resize", handleResize);

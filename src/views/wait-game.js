@@ -9,8 +9,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const MatchDisplay = styled.div``;
 
-console.log({ env: process.env });
-
 const WaitGame = () => {
   const { gameMatch } = useShogiEngine({});
   const { getAccessTokenSilently, user } = useAuth0();
@@ -51,16 +49,15 @@ const WaitGame = () => {
     wait();
   }, []);
 
-  const { vh } = useWindowSize();
-  const size = `${vh * 0.8 - 150}px`;
+  const { boardSize } = useWindowSize();
 
   return (
     <MatchDisplay>
       <Board
         hands={gameMatch.hands}
         board={gameMatch.board}
-        width={size}
-        height={size}
+        width={boardSize}
+        height={boardSize}
         player1={null}
         player2={null}
       />

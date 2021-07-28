@@ -60,6 +60,7 @@ const WaitGame = () => {
         height={boardSize}
         player1={null}
         player2={null}
+        currentPlayerSide="SENTE"
       />
     </MatchDisplay>
   );

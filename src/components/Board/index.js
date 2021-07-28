@@ -12,6 +12,7 @@ import { getSquareByXYBoard } from "../../utils/board/display";
 import { checkIsPossibleMove } from "../../utils/pieces/filter";
 import MatchPlayer from "../MatchPlayer";
 import { useSkinState } from "../../store/skin/state";
+import Loading from "../Loading";
 
 const MatchDisplay = styled.div`
   width: 100%;
@@ -182,6 +183,7 @@ const Board = ({
   isGameRunning,
   clocks = {},
   fetchSetGameData,
+  loading,
 }) => {
   const { skin, displayPieces, changeSkin, boardConfig } = useSkinState();
   const { squaresColor, pieceViewBox } = boardConfig;
@@ -264,6 +266,7 @@ const Board = ({
 
   return (
     <MatchDisplay>
+      {loading && <Loading />}
       <MatchPlayer
         name={opponentPlayer && opponentPlayer.nickname}
         picture={opponentPlayer && opponentPlayer.picture}

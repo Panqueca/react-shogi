@@ -1,9 +1,9 @@
-import React, { Fragment } from "react";
+import React from "react";
 import GameTypeOptions from "../components/GameTypeOptions";
 import Hero from "../components/Hero";
 
 const Home = () => (
-  <Fragment>
+  <div className="container">
     <Hero />
     <hr />
     <div className="next-steps">
@@ -53,7 +53,7 @@ const Home = () => (
         </div>
       </div>
     </div>
-  </Fragment>
+  </div>
 );
 
 export default Home;

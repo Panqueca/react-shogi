@@ -108,7 +108,7 @@ const LiveMatch = () => {
   function getClientSideByGame(game) {
     const { player1, player2, status } = game;
 
-    if (status === "SEARCHING") return "SENTE";
+    if (status === "SEARCHING" || status === "LOADING") return "SENTE";
     if (player1 && player1.sub === user.sub) return "SENTE";
     if (player2 && player2.sub === user.sub) return "GOTE";
     return null;
@@ -318,13 +318,16 @@ const LiveMatch = () => {
 
   const { boardSize } = useWindowSize();
 
+  function checkCheck() {
+    const dialogInfo = getDialogInfoByNotificationSlug(
+      checkIsMyTurn() ? "YOUR_TURN" : "OPPONENT_TURN",
+    );
+
+    if (dialogInfo.type) callEffect({ ...dialogInfo });
+  }
+
   useEffect(() => {
-    if (gameData.status === "STARTED") {
-      const dialogInfo = getDialogInfoByNotificationSlug(
-        checkIsMyTurn() ? "YOUR_TURN" : "OPPONENT_TURN",
-      );
-      if (dialogInfo.type) callEffect({ ...dialogInfo });
-    }
+    if (gameData.status === "STARTED") checkCheck();
   }, [gameData.status]);
 
   useEffect(() => {
@@ -343,7 +346,10 @@ const LiveMatch = () => {
 
     io.on("GAME_UPDATE", ({ _id }) => {
       console.log("GAME_UPDATE");
-      if (GAME_ID === _id) fetchSetGameData();
+      if (GAME_ID === _id) {
+        checkCheck();
+        fetchSetGameData();
+      }
     });
 
     io.on("GAME_FINISHED", ({ _id }) => {
@@ -375,7 +381,7 @@ const LiveMatch = () => {
           <Button onClick={openNewGame}>New Game</Button>
         </WaitDialog>
       )}
-      {gameData.status !== "LOADING" && gameMatch && (
+      {gameMatch && (
         <Board
           hands={gameMatch.hands}
           board={gameMatch.board}
@@ -396,6 +402,7 @@ const LiveMatch = () => {
           isGameRunning={gameData.status === "STARTED"}
           clocks={clocks}
           fetchSetGameData={fetchSetGameData}
+          loading={gameData.status === "LOADING"}
         />
       )}
     </MatchDisplay>

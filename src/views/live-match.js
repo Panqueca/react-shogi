@@ -12,6 +12,7 @@ import { useShogiEngine } from "../utils/game/hooks";
 import { getDialogInfoByNotificationSlug } from "../utils/game/messages";
 import ElapsedTime from "../components/ElapsedTime";
 import { useDialogState } from "../store/dialogs/state";
+import { isKingInCheck } from "../utils/game/match";
 
 const defaultDialog = {
   open: false,
@@ -148,24 +149,6 @@ const LiveMatch = () => {
     setGameData(game);
   }
 
-  async function fetchSetGameData() {
-    const header = await getAuthHeader();
-    const { data: response } = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/games/find?_id=${GAME_ID}`,
-      header,
-    );
-    const { game, senteRemainingSeconds, goteRemainingSeconds } = response;
-    const { _id } = game;
-
-    if (_id) {
-      handleGameUpdate({ game, senteRemainingSeconds, goteRemainingSeconds });
-    }
-  }
-
-  useEffect(() => {
-    fetchSetGameData();
-  }, []);
-
   function getPlayerTurnSide() {
     const { turn } = gameData;
     return turn === 0 ? "SENTE" : "GOTE";
@@ -177,9 +160,40 @@ const LiveMatch = () => {
     return null;
   }
 
-  function checkIsMyTurn() {
-    return getPlayerTurnSide() === getClientPlayerSide();
+  function checkGameIsMyTurn(game) {
+    const { turn } = game;
+
+    return { isMyTurn: getClientPlayerSide() === turn, turn };
   }
+
+  function checkIsMyTurn() {
+    return checkGameIsMyTurn(gameData).isMyTurn;
+  }
+
+  function checkCheck(game) {
+    const { isMyTurn, turn } = checkGameIsMyTurn(game);
+    if (isMyTurn && isKingInCheck(game, turn))
+      callEffect(getDialogInfoByNotificationSlug("KingInCheck"));
+  }
+
+  async function fetchSetGameData() {
+    const header = await getAuthHeader();
+    const { data: response } = await axios.get(
+      `${process.env.REACT_APP_SERVER_URL}/games/find?_id=${GAME_ID}`,
+      header,
+    );
+    const { game, senteRemainingSeconds, goteRemainingSeconds } = response;
+    const { _id } = game;
+
+    if (_id) {
+      handleGameUpdate({ game, senteRemainingSeconds, goteRemainingSeconds });
+      checkCheck(game);
+    }
+  }
+
+  useEffect(() => {
+    fetchSetGameData();
+  }, []);
 
   function resetDialog() {
     setDialog(defaultDialog);
@@ -318,16 +332,13 @@ const LiveMatch = () => {
 
   const { boardSize } = useWindowSize();
 
-  function checkCheck() {
-    const dialogInfo = getDialogInfoByNotificationSlug(
-      checkIsMyTurn() ? "YOUR_TURN" : "OPPONENT_TURN",
-    );
-
-    if (dialogInfo.type) callEffect({ ...dialogInfo });
-  }
-
   useEffect(() => {
-    if (gameData.status === "STARTED") checkCheck();
+    if (gameData.status === "STARTED") {
+      const dialogInfo = getDialogInfoByNotificationSlug(
+        checkIsMyTurn() ? "YOUR_TURN" : "OPPONENT_TURN",
+      );
+      if (dialogInfo.type) callEffect({ ...dialogInfo });
+    }
   }, [gameData.status]);
 
   useEffect(() => {
@@ -346,10 +357,7 @@ const LiveMatch = () => {
 
     io.on("GAME_UPDATE", ({ _id }) => {
       console.log("GAME_UPDATE");
-      if (GAME_ID === _id) {
-        checkCheck();
-        fetchSetGameData();
-      }
+      if (GAME_ID === _id) fetchSetGameData();
     });
 
     io.on("GAME_FINISHED", ({ _id }) => {

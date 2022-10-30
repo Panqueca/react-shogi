@@ -2,7 +2,6 @@
   "name": "shogi-battles",
   "version": "1.0.0",
   "private": true,
-  "main": "public/electron.js",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",

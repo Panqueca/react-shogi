@@ -55,6 +55,8 @@ function AuthProvider({ children }) {
     // updates the login session deadline expiration
     if (authToken) saveTokenState({ authToken, user })
 
+    changeLoading({ isInitialLoading: false, isLoadingSession: false })
+
     return { authToken, error }
   }
 
@@ -82,7 +84,7 @@ function AuthProvider({ children }) {
     const sessionAuthenticated = await checkIsAuthenticated()
     if (!sessionAuthenticated) sessionLogout()
 
-    changeLoading({ isLoadingSession: false })
+    changeLoading({ isLoadingSession: false, isInitialLoading: false })
   }
 
   function areProtectedRoutesBlocked() {

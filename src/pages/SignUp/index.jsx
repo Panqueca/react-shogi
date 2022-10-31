@@ -36,7 +36,7 @@ export default function SignUp() {
       if (token) {
         toast.success('Account created')
         saveTokenState({ authToken: token, user })
-        history.push('/games')
+        history.push('/homepage')
       } else {
         hasErrors = error || defaultError
       }

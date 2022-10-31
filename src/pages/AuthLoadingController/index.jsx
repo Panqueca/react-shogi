@@ -47,7 +47,6 @@ const AuthLoadingController = () => {
       <Container>
         <h1>Loading your account...</h1>
         <Button
-          gradient
           name='Refresh'
           onClick={() => {
             window.location.reload()

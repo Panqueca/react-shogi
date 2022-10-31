@@ -77,12 +77,10 @@ export default function ModalConfirmartion(props) {
                 <Button
                   name={props.textButtonConfirm}
                   onclick={() => handleOnClickConfirm(props.onClickConfirm)}
-                  gradient
                 />
                 <Button
                   name={props.textButtonDenied}
                   onclick={() => handleOnClickDenied(props.onClickDenied)}
-                  gradient
                 />
               </ModalOptionButtonsBox>
             </ModalContentContainer>

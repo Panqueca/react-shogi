@@ -14,7 +14,7 @@ export default function Login() {
   const history = useHistory()
 
   useEffect(() => {
-    if (isAuthenticated) history.push('/games')
+    if (isAuthenticated) history.push('/homepage')
   }, [isAuthenticated])
 
   function onChange(key, value) {
@@ -53,6 +53,7 @@ export default function Login() {
       justifyContent='center'
       alignItems='center'
       flexDirection='column'
+      style={{ height: '100%' }}
     >
       <Grid item sx={{ textAlign: 'center' }}>
         <img src={Logo} alt='' />

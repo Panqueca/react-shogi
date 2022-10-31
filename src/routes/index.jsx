@@ -8,6 +8,7 @@ import Login from '@pages/Login'
 import SignUp from '@pages/SignUp'
 import Games from '@pages/Games'
 import PlayGame from '@pages/PlayGame'
+import WaitGame from '@pages/WaitGame'
 import LiveGame from '@pages/LiveGame'
 import Profile from '@pages/Profile'
 
@@ -21,7 +22,7 @@ const Routes = () => {
   }
 
   return (
-    <Grid container flexDirection='column' flexFlow='row wrap'>
+    <Grid container flexDirection='column'>
       <Grid item width='100%'>
         <ResponsiveAppBar />
       </Grid>
@@ -33,6 +34,11 @@ const Routes = () => {
           <Route path='/homepage' component={protectedRoute(Homepage)} />
           <Route path='/games' component={protectedRoute(Games)} />
           <Route path='/play' exact component={protectedRoute(PlayGame)} />
+          <Route
+            path='/wait-game/:GAME_TYPE'
+            exact
+            component={protectedRoute(WaitGame)}
+          />
           <Route path='/play/:GAME_ID' component={protectedRoute(LiveGame)} />
           <Route path='/profile' component={protectedRoute(Profile)} />
         </Switch>

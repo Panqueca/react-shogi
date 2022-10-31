@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TextField, Grid, Button, Typography } from '@mui/material'
+import { ToastContainer, toast } from 'react-toastify'
 import { isValidLogin } from '@utils/login'
+import useLoadings from '@hooks/useLoadings'
+import { useAuthState } from '@context/AuthContext'
 import Logo from '@assets/app_logo.jpg'
 
 export default function Login() {
+  const { saveLoginSession } = useAuthState()
+  const { loading, changeLoading } = useLoadings({ submit: false })
   const [form, setForm] = useState({ email: '', password: '' })
 
   function onChange(key, value) {
@@ -16,7 +21,30 @@ export default function Login() {
     })
   }
 
-  const canSubmit = isValidLogin({ ...form })
+  async function onSubmit() {
+    changeLoading({ submit: true })
+
+    let hasErrors = false
+    const defaultError = 'Unexpected error trying to login'
+
+    try {
+      const token = await saveLoginSession(form)
+
+      if (token) {
+        toast.success('Logged in')
+        saveLoginSession({ token })
+      } else {
+        hasErrors = defaultError
+      }
+    } catch (err) {
+      hasErrors = defaultError
+    }
+
+    if (hasErrors) toast.error(hasErrors)
+    changeLoading({ submit: false })
+  }
+
+  const canSubmit = isValidLogin({ ...form }) && !loading.submit
 
   return (
     <Grid
@@ -67,14 +95,16 @@ export default function Login() {
             sx={{ width: '100%' }}
             variant='contained'
             disabled={!canSubmit}
+            onClick={onSubmit}
           >
-            Login
+            {`Login${loading.submit ? '...' : ''}`}
           </Button>
           <Link to='/signup'>
             <Button sx={{ width: '100%' }}>Sign Up</Button>
           </Link>
         </Grid>
       </Grid>
+      <ToastContainer />
     </Grid>
   )
 }

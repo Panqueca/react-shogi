@@ -1,8 +1,27 @@
 import { apiNode } from '@api'
 
-export async function signAuthentication() {
+export async function createAccount({ email, password }) {
   try {
-    const { data: response } = await apiNode.post('/api/authenticate/login', {})
+    const { data: response } = await apiNode.post(
+      '/api/authenticate/create-account',
+      {
+        email,
+        password,
+      }
+    )
+
+    return { token: response?.token, error: response.message }
+  } catch (err) {
+    return { token: null }
+  }
+}
+
+export async function signAuthentication({ email, password }) {
+  try {
+    const { data: response } = await apiNode.post('/api/authenticate/login', {
+      email,
+      password,
+    })
 
     return response?.token
   } catch (err) {

@@ -22,15 +22,15 @@ function AuthProvider({ children }) {
     isLoadingSession: false,
   })
 
-  async function setAuthToken() {
-    const authToken = await signAuthentication()
+  async function setAuthToken({ email, password }) {
+    const authToken = await signAuthentication({ email, password })
     apiNode.defaults.headers.common.Authorization = `Bearer ${authToken}`
 
     return authToken
   }
 
-  async function saveLoginSession() {
-    const authToken = await setAuthToken()
+  async function saveLoginSession({ token, email, password }) {
+    const authToken = token || (await setAuthToken({ email, password }))
     // updates the login session deadline expiration
     if (authToken) {
       setAuthState((current) => {
@@ -43,6 +43,8 @@ function AuthProvider({ children }) {
     } else {
       throw Error('Unable to sign authentication token')
     }
+
+    return authToken
   }
 
   function isAuthenticated() {

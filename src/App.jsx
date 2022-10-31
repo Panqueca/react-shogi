@@ -1,4 +1,5 @@
 import React from 'react'
+import 'react-toastify/dist/ReactToastify.css'
 import { Grid } from '@mui/material'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import { ThemeProvider } from '@mui/material/styles'

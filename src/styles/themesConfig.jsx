@@ -45,6 +45,11 @@ const themesConfig = {
       },
       error: red,
     },
+    typography: {
+      allVariants: {
+        color: darkText.primary,
+      },
+    },
     status: {
       danger: 'orange',
     },

@@ -1,10 +1,16 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TextField, Grid, Button, Typography } from '@mui/material'
+import { ToastContainer, toast } from 'react-toastify'
 import { isValidLogin } from '@utils/login'
+import useLoadings from '@hooks/useLoadings'
+import { createAccount } from '@api/auth'
+import { useAuthState } from '@context/AuthContext'
 import Logo from '@assets/app_logo.jpg'
 
 export default function SignUp() {
+  const { saveLoginSession } = useAuthState()
+  const { loading, changeLoading } = useLoadings({ submit: false })
   const [form, setForm] = useState({ email: '', password: '' })
 
   function onChange(key, value) {
@@ -16,7 +22,31 @@ export default function SignUp() {
     })
   }
 
-  const canSubmit = isValidLogin({ ...form })
+  async function onSubmit() {
+    changeLoading({ submit: true })
+
+    let hasErrors = false
+    const defaultError = 'Unexpected error trying to create account'
+
+    try {
+      const { token, error } = await createAccount(form)
+
+      if (token) {
+        toast.success('Account created')
+        saveLoginSession({ token })
+      } else {
+        hasErrors = error || defaultError
+      }
+    } catch (err) {
+      console.error(err)
+      hasErrors = defaultError
+    }
+
+    if (hasErrors) toast.error(hasErrors)
+    changeLoading({ submit: false })
+  }
+
+  const canSubmit = isValidLogin({ ...form }) && !loading.submit
 
   return (
     <Grid
@@ -68,8 +98,9 @@ export default function SignUp() {
             sx={{ width: '100%' }}
             variant='contained'
             disabled={!canSubmit}
+            onClick={onSubmit}
           >
-            Create account
+            {`Create account${loading.submit ? '...' : ''}`}
           </Button>
           <Link to='/login'>
             <Button sx={{ width: '100%' }} color='secondary'>
@@ -78,6 +109,7 @@ export default function SignUp() {
           </Link>
         </Grid>
       </Grid>
+      <ToastContainer />
     </Grid>
   )
 }

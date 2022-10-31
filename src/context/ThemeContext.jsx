@@ -22,7 +22,6 @@ function ThemeProvider({ children }) {
   }
 
   const theme = createTheme(getThemeByName(themeState.theme))
-  console.log({ theme })
 
   return (
     <ThemeContext.Provider

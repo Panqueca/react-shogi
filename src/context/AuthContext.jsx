@@ -8,7 +8,10 @@ const AuthContext = createContext({})
 
 const defaultAuthState = {
   isAuthenticated: false,
-  user: {},
+  user: {
+    email: '',
+    nickname: '',
+  },
   authToken: null,
 }
 
@@ -23,29 +26,34 @@ function AuthProvider({ children }) {
   })
 
   async function setAuthToken({ email, password }) {
-    const { token: authToken, error } = await signAuthentication({
+    const {
+      token: authToken,
+      user,
+      error,
+    } = await signAuthentication({
       email,
       password,
     })
     apiNode.defaults.headers.common.Authorization = `Bearer ${authToken}`
 
-    return { authToken, error }
+    return { authToken, user, error }
   }
 
-  function saveTokenState(authToken) {
+  function saveTokenState({ authToken, user }) {
     setAuthState((current) => {
       return {
         ...current,
         isAuthenticated: true,
         authToken,
+        user,
       }
     })
   }
 
   async function saveLoginSession({ email, password }) {
-    const { authToken, error } = await setAuthToken({ email, password })
+    const { authToken, user, error } = await setAuthToken({ email, password })
     // updates the login session deadline expiration
-    if (authToken) saveTokenState(authToken)
+    if (authToken) saveTokenState({ authToken, user })
 
     return { authToken, error }
   }

@@ -31,11 +31,11 @@ export default function SignUp() {
     const defaultError = 'Unexpected error trying to create account'
 
     try {
-      const { token, error } = await createAccount(form)
+      const { token, user, error } = await createAccount(form)
 
       if (token) {
         toast.success('Account created')
-        saveTokenState(token)
+        saveTokenState({ authToken: token, user })
         history.push('/games')
       } else {
         hasErrors = error || defaultError

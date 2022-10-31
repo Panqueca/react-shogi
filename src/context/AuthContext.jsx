@@ -23,33 +23,35 @@ function AuthProvider({ children }) {
   })
 
   async function setAuthToken({ email, password }) {
-    const authToken = await signAuthentication({ email, password })
+    const { token: authToken, error } = await signAuthentication({
+      email,
+      password,
+    })
     apiNode.defaults.headers.common.Authorization = `Bearer ${authToken}`
 
-    return authToken
+    return { authToken, error }
   }
 
-  async function saveLoginSession({ token, email, password }) {
-    const authToken = token || (await setAuthToken({ email, password }))
-    // updates the login session deadline expiration
-    if (authToken) {
-      setAuthState((current) => {
-        return {
-          ...current,
-          isAuthenticated: true,
-          authToken,
-        }
-      })
-    } else {
-      throw Error('Unable to sign authentication token')
-    }
+  function saveTokenState(authToken) {
+    setAuthState((current) => {
+      return {
+        ...current,
+        isAuthenticated: true,
+        authToken,
+      }
+    })
+  }
 
-    return authToken
+  async function saveLoginSession({ email, password }) {
+    const { authToken, error } = await setAuthToken({ email, password })
+    // updates the login session deadline expiration
+    if (authToken) saveTokenState(authToken)
+
+    return { authToken, error }
   }
 
   function isAuthenticated() {
     if (!authState?.authToken) return false
-    if (!authState?.user?.id) return false
     return authState.isAuthenticated
   }
 
@@ -88,6 +90,7 @@ function AuthProvider({ children }) {
         isAuthenticated: isAuthenticated(),
         areProtectedRoutesBlocked,
         authToken: authState.authToken,
+        saveTokenState,
         handleIsSessionAuthenticated,
         ...loading,
       }}

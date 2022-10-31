@@ -12,7 +12,12 @@ export async function createAccount({ email, password }) {
 
     return { token: response?.token, error: response.message }
   } catch (err) {
-    return { token: null }
+    return {
+      token: null,
+      error:
+        err?.response?.data?.message ||
+        'Unexpected error trying to create account',
+    }
   }
 }
 
@@ -23,12 +28,13 @@ export async function signAuthentication({ email, password }) {
       password,
     })
 
-    return response?.token
+    return response
   } catch (err) {
-    console.error(err)
+    return {
+      token: null,
+      error: err?.response?.data?.message || 'Unexpected error trying to login',
+    }
   }
-
-  return null
 }
 
 export async function checkIsAuthenticated() {

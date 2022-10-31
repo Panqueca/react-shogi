@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 import { TextField, Grid, Button, Typography } from '@mui/material'
 import { ToastContainer, toast } from 'react-toastify'
 import { isValidLogin } from '@utils/login'
@@ -8,9 +8,14 @@ import { useAuthState } from '@context/AuthContext'
 import Logo from '@assets/app_logo.jpg'
 
 export default function Login() {
-  const { saveLoginSession } = useAuthState()
+  const { saveLoginSession, isAuthenticated } = useAuthState()
   const { loading, changeLoading } = useLoadings({ submit: false })
   const [form, setForm] = useState({ email: '', password: '' })
+  const history = useHistory()
+
+  useEffect(() => {
+    if (isAuthenticated) history.push('/games')
+  }, [isAuthenticated])
 
   function onChange(key, value) {
     setForm((current) => {
@@ -27,17 +32,12 @@ export default function Login() {
     let hasErrors = false
     const defaultError = 'Unexpected error trying to login'
 
-    try {
-      const token = await saveLoginSession(form)
+    const { authToken, error } = await saveLoginSession(form)
 
-      if (token) {
-        toast.success('Logged in')
-        saveLoginSession({ token })
-      } else {
-        hasErrors = defaultError
-      }
-    } catch (err) {
-      hasErrors = defaultError
+    if (authToken) {
+      toast.success('Logged in')
+    } else {
+      hasErrors = error || defaultError
     }
 
     if (hasErrors) toast.error(hasErrors)

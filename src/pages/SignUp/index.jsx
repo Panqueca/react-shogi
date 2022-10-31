@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { TextField, Grid, Button, Typography } from '@mui/material'
 import { ToastContainer, toast } from 'react-toastify'
 import { isValidLogin } from '@utils/login'
@@ -9,9 +9,11 @@ import { useAuthState } from '@context/AuthContext'
 import Logo from '@assets/app_logo.jpg'
 
 export default function SignUp() {
-  const { saveLoginSession } = useAuthState()
+  const { saveTokenState } = useAuthState()
   const { loading, changeLoading } = useLoadings({ submit: false })
   const [form, setForm] = useState({ email: '', password: '' })
+
+  const history = useHistory()
 
   function onChange(key, value) {
     setForm((current) => {
@@ -33,12 +35,12 @@ export default function SignUp() {
 
       if (token) {
         toast.success('Account created')
-        saveLoginSession({ token })
+        saveTokenState(token)
+        history.push('/games')
       } else {
         hasErrors = error || defaultError
       }
     } catch (err) {
-      console.error(err)
       hasErrors = defaultError
     }
 

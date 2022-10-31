@@ -6,7 +6,6 @@ import { ThemeProvider } from '@mui/material/styles'
 import { useThemeState } from '@context/ThemeContext'
 import Routes from './routes'
 import AuthController from './AuthController'
-import AuthLoadingController from './pages/AuthLoadingController'
 
 function App() {
   const { theme, globalStyles } = useThemeState()
@@ -14,7 +13,6 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AuthController />
-      <AuthLoadingController />
       <Grid
         container
         sx={{

@@ -7,6 +7,8 @@ const AuthController = () => {
   const {
     user,
     isAuthenticated,
+    isLoadingSession,
+    isInitialLoading,
     authToken,
     sessionLogout,
     handleIsSessionAuthenticated,
@@ -30,7 +32,13 @@ const AuthController = () => {
   }
 
   useEffect(() => {
-    if (!isAuthenticated && history.location.pathname !== '/') handleRedirect()
+    if (
+      !isAuthenticated &&
+      !isLoadingSession &&
+      !isInitialLoading &&
+      history.location.pathname !== '/'
+    )
+      handleRedirect()
   }, [isAuthenticated])
 
   useEffect(() => {

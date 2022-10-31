@@ -8,13 +8,15 @@ import Login from '@pages/Login'
 import SignUp from '@pages/SignUp'
 import Games from '@pages/Games'
 import PlayGame from '@pages/PlayGame'
+import LiveGame from '@pages/LiveGame'
 import Profile from '@pages/Profile'
 
 const Routes = () => {
-  const { areProtectedRoutesBlocked, isLoadingSession } = useAuthState()
+  const { areProtectedRoutesBlocked, isLoadingSession, isInitialLoading } =
+    useAuthState()
 
   const protectedRoute = (Component) => {
-    if (isLoadingSession) return null
+    if (isLoadingSession || isInitialLoading) return null
     if (areProtectedRoutesBlocked()) return Login
     return Component
   }
@@ -26,12 +28,13 @@ const Routes = () => {
       </Grid>
       <Grid item width='100%' style={{ minHeight: '80%' }}>
         <Switch>
-          <Route path='/' exact component={Login} />
+          <Route path='/' exact component={protectedRoute(Homepage)} />
           <Route path='/login' exact component={Login} />
           <Route path='/signup' exact component={SignUp} />
           <Route path='/homepage' component={protectedRoute(Homepage)} />
           <Route path='/games' component={protectedRoute(Games)} />
-          <Route path='/play' component={protectedRoute(PlayGame)} />
+          <Route path='/play' exact component={protectedRoute(PlayGame)} />
+          <Route path='/play/:GAME_ID' component={protectedRoute(LiveGame)} />
           <Route path='/profile' component={protectedRoute(Profile)} />
         </Switch>
       </Grid>

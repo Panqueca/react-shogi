@@ -5,7 +5,7 @@ import { socket } from '@api/websockets'
 
 const AuthController = () => {
   const {
-    userId,
+    user,
     isAuthenticated,
     authToken,
     sessionLogout,
@@ -19,13 +19,13 @@ const AuthController = () => {
 
   function handleAuthSession() {
     handleIsSessionAuthenticated()
-    socket.on(getSocketLogoutEvent(userId), (payload) => {
+    socket.on(getSocketLogoutEvent(user?.email), (payload) => {
       if (authToken === payload.token) sessionLogout()
     })
   }
 
   function handleRedirect() {
-    if (!userId) return history.push('/')
+    if (!user?.email) return history.push('/')
     return history.push('/login')
   }
 
@@ -34,11 +34,11 @@ const AuthController = () => {
   }, [isAuthenticated])
 
   useEffect(() => {
-    if (userId && isAuthenticated) {
+    if (isAuthenticated) {
       // Initial session authentication
       handleAuthSession()
     }
-  }, [userId, isAuthenticated, authToken])
+  }, [user, isAuthenticated, authToken])
 
   return null
 }

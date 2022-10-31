@@ -11,9 +11,10 @@ import PlayGame from '@pages/PlayGame'
 import Profile from '@pages/Profile'
 
 const Routes = () => {
-  const { areProtectedRoutesBlocked } = useAuthState()
+  const { areProtectedRoutesBlocked, isLoadingSession } = useAuthState()
 
   const protectedRoute = (Component) => {
+    if (isLoadingSession) return null
     if (areProtectedRoutesBlocked()) return Login
     return Component
   }

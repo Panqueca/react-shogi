@@ -1,6 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
-import { Grid, Container } from '@mui/material'
+import { Grid } from '@mui/material'
 import { useAuthState } from '@context/AuthContext'
 import ResponsiveAppBar from '@components/ResponsiveAppBar'
 import Homepage from '@pages/Homepage'

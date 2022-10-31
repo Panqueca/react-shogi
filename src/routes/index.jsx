@@ -12,11 +12,10 @@ import LiveGame from '@pages/LiveGame'
 import Profile from '@pages/Profile'
 
 const Routes = () => {
-  const { areProtectedRoutesBlocked, isLoadingSession, isInitialLoading } =
-    useAuthState()
+  const { areProtectedRoutesBlocked, isLoadingSession } = useAuthState()
 
   const protectedRoute = (Component) => {
-    if (isLoadingSession || isInitialLoading) return null
+    if (isLoadingSession) return null
     if (areProtectedRoutesBlocked()) return Login
     return Component
   }

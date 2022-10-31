@@ -21,8 +21,7 @@ function AuthProvider({ children }) {
     defaultAuthState
   )
   const { loading, changeLoading } = useLoadings({
-    isInitialLoading: true,
-    isLoadingSession: false,
+    isLoadingSession: true,
   })
 
   async function setAuthToken({ email, password }) {
@@ -55,7 +54,7 @@ function AuthProvider({ children }) {
     // updates the login session deadline expiration
     if (authToken) saveTokenState({ authToken, user })
 
-    changeLoading({ isInitialLoading: false, isLoadingSession: false })
+    changeLoading({ isLoadingSession: false })
 
     return { authToken, error }
   }
@@ -73,7 +72,7 @@ function AuthProvider({ children }) {
         authToken: null,
       }
     })
-    changeLoading({ isInitialLoading: true })
+    changeLoading({ isLoadingSession: false })
 
     if (typeof next === 'function') next()
   }
@@ -84,11 +83,11 @@ function AuthProvider({ children }) {
     const sessionAuthenticated = await checkIsAuthenticated()
     if (!sessionAuthenticated) sessionLogout()
 
-    changeLoading({ isLoadingSession: false, isInitialLoading: false })
+    changeLoading({ isLoadingSession: false })
   }
 
   function areProtectedRoutesBlocked() {
-    return loading.isInitialLoading || !isAuthenticated()
+    return loading.isLoadingSession || !isAuthenticated()
   }
 
   return (

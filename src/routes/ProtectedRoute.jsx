@@ -8,7 +8,7 @@ const ProtectedRoute = ({ path, exact, component }) => {
 
   if (isLoadingSession) return null
   if (areProtectedRoutesBlocked())
-    return <Route path='/login' exact component={Login} />
+    return <Route path={path} exact component={Login} />
 
   return <Route path={path} exact={exact} component={component} />
 }

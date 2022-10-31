@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from '@context/AuthContext'
 import { ThemeProvider } from '@context/ThemeContext'
 import { UserConfigProvider } from '@context/UserConfigContext'
+import { SkinProvider } from '@context/SkinContext'
 import App from './App'
 
 function AppProvider() {
@@ -11,7 +12,9 @@ function AppProvider() {
       <AuthProvider>
         <UserConfigProvider>
           <ThemeProvider>
-            <App />
+            <SkinProvider>
+              <App />
+            </SkinProvider>
           </ThemeProvider>
         </UserConfigProvider>
       </AuthProvider>

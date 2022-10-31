@@ -1,26 +1,28 @@
 import { useEffect } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import { Container, Typography } from '@mui/material'
+import { Container } from '@mui/material'
 import useLoadings from '@hooks/useLoadings'
+import useShogiEngine from '@hooks/useShogiEngine'
+import useWindowSize from '@hooks/useWindowSize'
 import { playGame } from '@api/games'
+import MatchBoard from '@components/MatchBoard'
 
 const WaitGame = () => {
   const { loading, changeLoading } = useLoadings({
-    game: false,
+    game: true,
   })
+  const { gameMatch } = useShogiEngine({})
   const { GAME_TYPE } = useParams()
+  const { boardSize } = useWindowSize()
   const history = useHistory()
 
   async function findGameToPlay() {
-    if (!loading.game) {
-      changeLoading({ game: true })
+    changeLoading({ game: true })
 
-      const { data: response } = await playGame(GAME_TYPE)
-      if (response.status === 'GAME_FOUND')
-        history.push(`/play/${response._id}`)
+    const { data: response } = await playGame(GAME_TYPE)
+    if (response.status === 'GAME_FOUND') history.push(`/play/${response._id}`)
 
-      changeLoading({ game: false })
-    }
+    changeLoading({ game: false })
   }
 
   useEffect(() => {
@@ -31,9 +33,15 @@ const WaitGame = () => {
     <Container>
       {loading.game && 'loading...'}
       {!loading.game && (
-        <Typography variant='subtitle1' textAlign='center'>
-          Wainting game {`${GAME_TYPE}`}
-        </Typography>
+        <MatchBoard
+          hands={gameMatch.hands}
+          board={gameMatch.board}
+          width={boardSize}
+          height={boardSize}
+          player1={null}
+          player2={null}
+          currentPlayerSide='SENTE'
+        />
       )}
     </Container>
   )

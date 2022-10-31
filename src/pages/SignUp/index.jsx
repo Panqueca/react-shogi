@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { TextField, Grid, Button, Typography } from '@mui/material'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { isValidLogin } from '@utils/login'
 import useLoadings from '@hooks/useLoadings'
 import { createAccount } from '@api/auth'
@@ -111,7 +111,6 @@ export default function SignUp() {
           </Link>
         </Grid>
       </Grid>
-      <ToastContainer />
     </Grid>
   )
 }

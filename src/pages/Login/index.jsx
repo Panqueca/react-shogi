@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { TextField, Grid, Button, Typography } from '@mui/material'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import { isValidLogin } from '@utils/login'
 import useLoadings from '@hooks/useLoadings'
 import { useAuthState } from '@context/AuthContext'
@@ -105,7 +105,6 @@ export default function Login() {
           </Link>
         </Grid>
       </Grid>
-      <ToastContainer />
     </Grid>
   )
 }

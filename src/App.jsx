@@ -1,5 +1,6 @@
 import React from 'react'
 import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from 'react-toastify'
 import { Grid } from '@mui/material'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import { ThemeProvider } from '@mui/material/styles'
@@ -13,6 +14,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <AuthController />
+      <ToastContainer />
       <Grid
         container
         sx={{

@@ -1,6 +1,7 @@
 import { apiNode } from '@api'
 
 export async function findGameById(GAME_ID) {
+  console.log({ GAME_ID })
   try {
     return await apiNode.get(`/api/games/find/${GAME_ID}`).then((res) => res)
   } catch (err) {
@@ -11,11 +12,11 @@ export async function findGameById(GAME_ID) {
   }
 }
 
-export async function playGame({ gameType }) {
+export async function playGame(GAME_TYPE) {
   try {
     return await apiNode
       .post('/api/games/play', {
-        gameType,
+        gameType: GAME_TYPE,
       })
       .then((res) => res)
   } catch (err) {

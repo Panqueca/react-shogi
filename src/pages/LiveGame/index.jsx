@@ -1,6 +1,12 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { Container, Dialog } from '@mui/material'
+import {
+  Container,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  Button,
+} from '@mui/material'
 import MatchBoard from '@components/MatchBoard'
 import useShogiEngine from '@hooks/useShogiEngine'
 import useWindowSize from '@hooks/useWindowSize'
@@ -79,7 +85,17 @@ const LiveGame = () => {
         loading={game.status === 'LOADING'}
         tileSize={tileSize}
       />
-      {dialog.open && <Dialog open={dialog.open} onClose={dialog.close} />}
+      {dialog.open && (
+        <Dialog open={dialog.open} onClose={dialog.onCancel}>
+          <DialogTitle>{dialog.title}</DialogTitle>
+          <DialogActions>
+            <Button onClick={dialog.onCancel}>{dialog.cancelText}</Button>
+            <Button onClick={dialog.onConfirm} color='success'>
+              {dialog.confirmText}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </Container>
   )
 }

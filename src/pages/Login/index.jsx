@@ -111,6 +111,12 @@ export default function Login() {
           <Link to='/signup'>
             <Button sx={{ width: '100%' }}>Sign Up</Button>
           </Link>
+
+          <Link to='/forgot-password'>
+            <Typography variant='body1' color='secondary'>
+              Forgot you password?
+            </Typography>
+          </Link>
         </Grid>
       </Grid>
     </Grid>

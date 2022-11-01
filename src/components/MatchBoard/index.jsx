@@ -174,7 +174,7 @@ const MatchBoard = ({
   }
 
   function selectTile({ square, pieceInfo }) {
-    if (currentTurnPlayer === currentPlayer?.side)
+    if (currentTurnPlayer === currentPlayer?.turn)
       handleMovePiece({ square, pieceInfo })
   }
 
@@ -199,7 +199,7 @@ const MatchBoard = ({
       .reverse()
 
     const byCols =
-      currentPlayer?.side === 1
+      currentPlayer?.turn === 1
         ? orderedBoardPositions
         : orderedBoardPositions.reverse()
 
@@ -211,7 +211,7 @@ const MatchBoard = ({
       })
     })
 
-    const byRows = currentPlayer?.side === 1 ? rows.reverse() : rows
+    const byRows = currentPlayer?.turn === 1 ? rows.reverse() : rows
     return byRows
   }
 
@@ -234,13 +234,13 @@ const MatchBoard = ({
         picture={opponentPlayer?.picture}
         hands={hands}
         displayPieces={displayPieces}
-        playerColorTurn={currentPlayer?.side === 0 ? 1 : 0}
+        playerColorTurn={currentPlayer?.turn === 0 ? 1 : 0}
         selectHandPiece={selectHandPiece}
         width={width}
         viewBox={pieceViewBox.hand}
         hide={!opponentPlayer}
         clock={clocks.opponentPlayer}
-        side={opponentPlayer.side}
+        side={opponentPlayer.turn}
         fetchSetGameData={fetchSetGameData}
       />
       <ShogiBoard
@@ -335,12 +335,12 @@ const MatchBoard = ({
                       }
                       player={color === 1 ? 2 : 1}
                       transform={
-                        currentPlayer?.side === 0
+                        currentPlayer?.turn === 0
                           ? 'rotate(0deg)'
                           : 'rotate(180deg)'
                       }
                       isOponnent={
-                        currentPlayer?.side === 0 ? color === 1 : color === 0
+                        currentPlayer?.turn === 0 ? color === 1 : color === 0
                       }
                       svgProps={{ viewBox: pieceViewBox.board }}
                     />
@@ -360,14 +360,14 @@ const MatchBoard = ({
         picture={currentPlayer && currentPlayer.picture}
         hands={hands}
         displayPieces={displayPieces}
-        playerColorTurn={currentPlayer?.side === 0 ? 0 : 1}
+        playerColorTurn={currentPlayer?.turn === 0 ? 0 : 1}
         selectHandPiece={selectHandPiece}
         width={width}
         viewBox={pieceViewBox.hand}
         isMyTurn={isMyTurn}
         showNotificationBar={isGameRunning}
         clock={clocks.currentPlayer}
-        side={currentPlayer?.side}
+        side={currentPlayer?.turn}
         fetchSetGameData={fetchSetGameData}
         isPlayerView
       />

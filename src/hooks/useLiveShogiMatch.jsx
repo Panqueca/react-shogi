@@ -4,77 +4,45 @@ import { findGameById } from '@api/games'
 import { useAuthState } from '@context/AuthContext'
 import useLoadings from '@hooks/useLoadings'
 import { getDialogInfoByNotificationSlug } from '@utils/gameMessages'
-import { defaultSfen } from '@utils/match'
-
-const initialGameState = {
-  _id: null,
-  winner: null,
-  moves: [],
-  status: 'LOADING',
-  increment: 0,
-  type: 'BLITZ_10',
-}
-
-const defaultDialog = {
-  open: false,
-  title: '',
-  onConfirm: () => {},
-  onCancel: () => {},
-  confirmText: '',
-  cancelText: '',
-}
-
-const defaultEffectDialog = {
-  open: false,
-  display: null,
-}
-
-const defaultClocks = {
-  currentPlayer: {
-    isRunning: false,
-    secondsLeft: 0,
-  },
-  opponentPlayer: {
-    isRunning: false,
-    secondsLeft: 0,
-  },
-}
+import {
+  initialGameState,
+  defaultClocks,
+  defaultDialog,
+  defaultEffectDialog,
+  getGamePlayerTurn,
+  getOpponentTurnByPlayer,
+  getMatchPlayerByTurn,
+  getLastMove,
+} from '@utils/match'
 
 function useLiveShogiMatch({ GAME_ID, resetGame }) {
-  const { user } = useAuthState()
   const [game, setGame] = useState(initialGameState)
   const [players, setPlayers] = useState([])
+  const [clocks, setClocks] = useState(defaultClocks)
   const [dialog, setDialog] = useState(defaultDialog)
   const [effectDialog, setEffectDialog] = useState(defaultEffectDialog)
-  const [clocks, setClocks] = useState(defaultClocks)
   const { loading, changeLoading } = useLoadings({
     game: true,
   })
-
-  function getGamePlayerSide(checkGame) {
-    if (['SEARCHING', 'LOADING'].includes(checkGame.status)) return 0
-    if (checkGame?.player1 === user._id) return 0
-    if (checkGame?.player2 === user._id) return 1
-    return null
-  }
-
-  function getOpponentSideByPlayer(playerSide) {
-    return playerSide === 0 ? 1 : 0
-  }
+  const { user } = useAuthState()
 
   function updateGameClocks(checkGame, secondsLeft) {
-    const playerSide = getGamePlayerSide(checkGame)
-    const opponentSide = getOpponentSideByPlayer(playerSide)
+    const playerTurn = getGamePlayerTurn(checkGame, user._id)
+    const opponentTurn = getOpponentTurnByPlayer(playerTurn)
     const gameIsActive = checkGame.status === 'STARTED'
+    const clockState = [
+      gameIsActive && checkGame.turn === 0,
+      gameIsActive && checkGame.turn === 1,
+    ]
 
     setClocks({
       currentPlayer: {
-        secondsLeft: secondsLeft[playerSide],
-        isRunning: gameIsActive && checkGame.turn === playerSide,
+        secondsLeft: secondsLeft[playerTurn],
+        isRunning: clockState[playerTurn],
       },
       opponentPlayer: {
-        secondsLeft: secondsLeft[opponentSide],
-        isRunning: gameIsActive && checkGame.turn === opponentSide,
+        secondsLeft: secondsLeft[opponentTurn],
+        isRunning: clockState[opponentTurn],
       },
     })
   }
@@ -100,32 +68,18 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     if (GAME_ID) findGameState()
   }, [GAME_ID])
 
-  function getLastMove() {
-    const { moves } = game
-    if (moves.length > 0) return moves[moves.length - 1]
-    return { sfen: defaultSfen, square: null }
-  }
-
-  function getLastSfen() {
-    return getLastMove().sfen
-  }
-
-  function getClientPlayerSide() {
-    return getGamePlayerSide(game)
-  }
-
   function getCurrentPlayer() {
-    const playerSide = getClientPlayerSide()
-    return { ...players[playerSide], side: playerSide }
+    const playerTurn = getGamePlayerTurn(game, user._id)
+    return getMatchPlayerByTurn(players, playerTurn)
   }
 
   function getOpponentPlayer() {
-    const opponentSide = getOpponentSideByPlayer(getClientPlayerSide())
-    return { ...players[opponentSide], side: opponentSide }
+    const opponentTurn = getOpponentTurnByPlayer(getCurrentPlayer().turn)
+    return getMatchPlayerByTurn(players, opponentTurn)
   }
 
   function checkIsMyTurn() {
-    return getClientPlayerSide() === game.turn
+    return getCurrentPlayer().turn === game.turn
   }
 
   function resetDialog() {
@@ -205,8 +159,6 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     changeLoading,
     listenNotification,
     saveGameMove,
-    getLastSfen,
-    getLastMove,
     effectDialog,
     callSurrender,
     getCurrentPlayer,
@@ -215,6 +167,7 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     clocks,
     findGameState,
     dialog,
+    getLastMove: () => getLastMove(game),
   }
 }
 

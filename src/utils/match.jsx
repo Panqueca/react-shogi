@@ -20,6 +20,31 @@ export const defaultSfen =
 
 export const defaultMoveAction = { from: null, dropPiece: null, moves: [] }
 
+export const defaultEffectDialog = {
+  open: false,
+  display: null,
+}
+
+export const initialGameState = {
+  _id: null,
+  winner: null,
+  moves: [],
+  status: 'LOADING',
+  increment: 0,
+  type: 'BLITZ_10',
+}
+
+export const defaultClocks = {
+  currentPlayer: {
+    isRunning: false,
+    secondsLeft: 0,
+  },
+  opponentPlayer: {
+    isRunning: false,
+    secondsLeft: 0,
+  },
+}
+
 export function eachPiece(board, callback) {
   board.forEach((col, x) => {
     col.forEach((piece, y) => {
@@ -166,4 +191,24 @@ export function canPromoteByKind(kind) {
     }[kind] || kind
 
   return promotedKind !== kind
+}
+
+export function getGamePlayerTurn(checkGame, userId) {
+  if (['SEARCHING', 'LOADING'].includes(checkGame.status)) return 0
+  if (checkGame?.player1 === userId) return 0
+  if (checkGame?.player2 === userId) return 1
+  return null
+}
+
+export function getOpponentTurnByPlayer(playerTurn) {
+  return playerTurn === 0 ? 1 : 0
+}
+
+export function getLastMove(moves = []) {
+  if (moves.length > 0) return moves[moves.length - 1]
+  return { sfen: defaultSfen, square: null }
+}
+
+export function getMatchPlayerByTurn(players, turn) {
+  return { ...players[turn], turn }
 }

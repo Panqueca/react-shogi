@@ -12,7 +12,6 @@ const LiveGame = () => {
     loading,
     listenNotification,
     saveGameMove,
-    getLastSfen,
     getLastMove,
     effectDialog,
     callSurrender,
@@ -34,7 +33,7 @@ const LiveGame = () => {
   } = useShogiEngine({
     listenNotification,
     saveGameMove,
-    sfenPosition: getLastSfen(),
+    sfenPosition: getLastMove().sfen,
   })
   const { boardSize } = useWindowSize()
 

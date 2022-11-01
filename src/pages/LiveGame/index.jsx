@@ -61,12 +61,16 @@ const LiveGame = () => {
     })
   }, [])
 
+  function onPieceMove(params) {
+    if (game.status === 'STARTED') touchTargetTile(params)
+  }
+
   return (
     <Container>
       <MatchBoard
         hands={gameMatch.hands}
         board={gameMatch.board}
-        handleMovePiece={touchTargetTile}
+        handleMovePiece={onPieceMove}
         possibleMoves={moveAction.moves}
         selectHandPiece={selectHandPiece}
         targetTile={targetTile}

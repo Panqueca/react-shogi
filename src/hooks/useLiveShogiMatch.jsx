@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { findGameById, savePlayerMove } from '@api/games'
+import { findGameById, savePlayerMove, resignGame } from '@api/games'
 import { useAuthState } from '@context/AuthContext'
 import useLoadings from '@hooks/useLoadings'
 import { getDialogInfoByNotificationSlug } from '@utils/gameMessages'
@@ -158,8 +158,13 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
       open: true,
       title: 'Are you shure you want to resign?',
       onConfirm: async () => {
-        resetDialog()
-        if (typeof resetGame === 'function') resetGame()
+        try {
+          await resignGame({ _id: game._id })
+          resetDialog()
+          if (typeof resetGame === 'function') resetGame()
+        } catch (err) {
+          console.error(err)
+        }
       },
       onCancel: resetDialog,
       confirmText: 'Resign',

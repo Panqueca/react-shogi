@@ -29,15 +29,13 @@ export async function playGame(GAME_TYPE) {
 
 export async function savePlayerMove({ _id, sfen, squareX, squareY, kind }) {
   try {
-    const { data } = await apiNode
-      .post('/api/games/save-move', {
-        _id,
-        sfen,
-        squareX,
-        squareY,
-        kind,
-      })
-      .then((res) => res)
+    const { data } = await apiNode.post('/api/games/save-move', {
+      _id,
+      sfen,
+      squareX,
+      squareY,
+      kind,
+    })
 
     return { success: data.message === 'GAME_UPDATE' }
   } catch (err) {
@@ -45,6 +43,22 @@ export async function savePlayerMove({ _id, sfen, squareX, squareY, kind }) {
       error:
         err?.response?.data?.message ||
         'Unexpected error trying to update game',
+    }
+  }
+}
+
+export async function resignGame({ _id }) {
+  try {
+    const { data } = await apiNode.post('/api/games/resign', {
+      _id,
+    })
+
+    return data
+  } catch (err) {
+    return {
+      error:
+        err?.response?.data?.message ||
+        'Unexpected error trying to resign game',
     }
   }
 }

@@ -15,9 +15,26 @@ function SkinProvider({ children }) {
   )
 
   function changeSkin(newSkin) {
-    setSkinState({
-      skin: newSkin,
-      boardConfig: getBoardConfigByTheme(newSkin),
+    setSkinState((current) => {
+      const { showSquareNumbers } = current.boardConfig
+
+      return {
+        ...current,
+        skin: newSkin,
+        boardConfig: { ...getBoardConfigByTheme(newSkin), showSquareNumbers },
+      }
+    })
+  }
+
+  function setBoardConfigByKey(key, value) {
+    setSkinState((current) => {
+      return {
+        ...current,
+        boardConfig: {
+          ...current.boardConfig,
+          [key]: value,
+        },
+      }
     })
   }
 
@@ -28,6 +45,7 @@ function SkinProvider({ children }) {
         setSkinState,
         displayPieces: getPieceComponentsByTheme(skinState.skin),
         changeSkin,
+        setBoardConfigByKey,
       }}
     >
       {children}

@@ -1,6 +1,17 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled, { keyframes, css } from 'styled-components'
+import {
+  Grid,
+  Typography,
+  FormGroup,
+  FormControlLabel,
+  Switch,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material'
 import Settings from '@mui/icons-material/Settings'
 import EmojiFlags from '@mui/icons-material/EmojiFlags'
 import Chat from '@mui/icons-material/Chat'
@@ -117,35 +128,6 @@ const EffectDialog = styled.div`
   bottom: 0;
 `
 
-const Select = styled.select`
-  font-size: 11px;
-`
-
-const SettingsMenu = styled.div`
-  display: block;
-  width: 300px;
-  height: 200px;
-  background-color: #fff;
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 150;
-  padding: 15px;
-  border: 1px solid #000;
-
-  .title {
-    font-weight: bold;
-  }
-
-  .group {
-    padding: 10px 5px;
-    .option {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
-`
-
 const ActionButton = styled.button`
   width: 35px;
   height: 35px;
@@ -182,24 +164,14 @@ const MatchBoard = ({
   fetchSetGameData,
   loading,
 }) => {
-  const { skin, displayPieces, changeSkin, boardConfig } = useSkinState()
+  const { skin, displayPieces, changeSkin, boardConfig, setBoardConfigByKey } =
+    useSkinState()
   const { squaresColor, pieceViewBox } = boardConfig
 
-  const [settings, setSettings] = useState({
-    open: false,
-    showSquareNumbers: false,
-  })
+  const [settings, setSettings] = useState(false)
 
   function closeDialogs() {
-    if (settings.open) setSettings({ ...settings, open: false })
-  }
-
-  function toggleSettings() {
-    setSettings({ ...settings, open: !settings.open })
-  }
-
-  function toggleSettingOption(option) {
-    setSettings({ ...settings, [option]: !settings[option] })
+    setSettings(false)
   }
 
   function selectTile({ square, pieceInfo }) {
@@ -245,8 +217,13 @@ const MatchBoard = ({
     return byRows
   }
 
-  const getToogle = () => {
-    return null
+  const getToogle = (fieldKey) => {
+    return (
+      <Switch
+        checked={boardConfig[fieldKey]}
+        onChange={() => setBoardConfigByKey(fieldKey, !boardConfig[fieldKey])}
+      />
+    )
   }
 
   const orderedByRows = getBoardOrderedByRows(board)
@@ -272,10 +249,10 @@ const MatchBoard = ({
         width={width}
         height={height}
         squaresColor={squaresColor}
-        showOverlay={settings.open}
+        showOverlay={settings}
       >
         <div className='config'>
-          <ActionButton onClick={toggleSettings}>
+          <ActionButton onClick={() => setSettings(!settings)}>
             <Settings />
           </ActionButton>
           <ActionButton onClick={callSurrender}>
@@ -289,29 +266,37 @@ const MatchBoard = ({
         <EffectDialog open={effectDialog.open}>
           {effectDialog.display}
         </EffectDialog>
-        {settings.open && (
-          <SettingsMenu>
-            <div className='title'>Settings</div>
-            <div className='option-group'>
-              <div className='group'>
-                <div className='option'>
-                  <div>Show Square Numbers</div>{' '}
-                  {getToogle(settings.showSquareNumbers, () =>
-                    toggleSettingOption('showSquareNumbers')
-                  )}
-                </div>
-              </div>
-              <div className='group'>
-                <div className='option'>
-                  <div>Skin Options</div>{' '}
-                  <Select onChange={updateSkin} value={skin}>
-                    <option value='skin_1'>3D Light Skin</option>
-                    <option value='skin_2'>Red Kanji Wood</option>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          </SettingsMenu>
+        {settings && (
+          <Grid
+            sx={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              backgroundColor: 'background.paper',
+              zIndex: 1000,
+              p: 3,
+            }}
+          >
+            <Typography variant='subtitle1'>Settings</Typography>
+            <FormGroup sx={{ gap: 2 }}>
+              <FormControlLabel
+                control={getToogle('showSquareNumbers')}
+                label='Show square numbers'
+              />
+              <FormControl>
+                <InputLabel id='skin-options-select'>Skins</InputLabel>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={skin}
+                  onChange={updateSkin}
+                >
+                  <MenuItem value='skin_1'>3D Light Skin</MenuItem>
+                  <MenuItem value='skin_2'>Red Kanji Wood</MenuItem>
+                </Select>
+              </FormControl>
+            </FormGroup>
+          </Grid>
         )}
         {displayPieces &&
           orderedByRows.map((rowTiles) => {
@@ -363,7 +348,7 @@ const MatchBoard = ({
                       }
                       svgProps={{ viewBox: pieceViewBox.board }}
                     />
-                    {settings.showSquareNumbers && (
+                    {boardConfig.showSquareNumbers && (
                       <div className='square-number'>{squareNumber}</div>
                     )}
                   </BoardSquare>

@@ -8,14 +8,16 @@ export const getPieceComponentsByTheme = (skinTheme) => {
 }
 
 export const getBoardConfigByTheme = (skinTheme) => {
-  if (skinTheme === 'skin_2')
-    return {
-      squaresColor: '#cba84b',
-      pieceViewBox: { hand: '2 0 50 50', board: '1 4 50 50' },
-    }
-
-  return {
+  let boardConfig = {
     squaresColor: '#f4c64e',
     pieceViewBox: { hand: '0 4 32 32', board: '1.5 3 33 33' },
+    showSquareNumbers: false,
   }
+
+  if (skinTheme === 'skin_2') {
+    boardConfig.squaresColor = '#cba84b'
+    boardConfig.pieceViewBox = { hand: '2 0 50 50', board: '1 4 50 50' }
+  }
+
+  return boardConfig
 }

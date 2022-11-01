@@ -97,7 +97,7 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <Link key={page.path} to={page.path}>
+                <Link key={page.label} to={page.path}>
                   <MenuItem onClick={handleCloseNavMenu}>
                     <Typography textAlign='center'>{page.label}</Typography>
                   </MenuItem>
@@ -108,7 +108,7 @@ function ResponsiveAppBar() {
           <Box sx={{ display: { xs: 'block', md: 'none' } }}>{getLogo()}</Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Link key={page.path} to={page.path}>
+              <Link key={page.label} to={page.path}>
                 <Button
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block' }}

@@ -35,7 +35,7 @@ const LiveGame = () => {
     saveGameMove,
     sfenPosition: getLastMove().sfen,
   })
-  const { boardSize } = useWindowSize()
+  const { boardSize, tileSize } = useWindowSize()
 
   return (
     <Container>
@@ -61,6 +61,7 @@ const LiveGame = () => {
           clocks={clocks}
           fetchSetGameData={findGameState}
           loading={game.status === 'LOADING'}
+          tileSize={tileSize}
         />
       )}
       {dialog.open && <Dialog open={dialog.open} onClose={dialog.close} />}

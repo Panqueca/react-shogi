@@ -51,8 +51,8 @@ const BoardSquare = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 10.773%;
-  height: 10.8%;
+  width: ${({ tileSize }) => tileSize};
+  height: ${({ tileSize }) => tileSize};
   border: 1px solid #6b5313;
   position: relative;
   animation: ${({ blink }) =>
@@ -75,7 +75,7 @@ const BoardSquare = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
-    font-size: 12px;
+    font-size: 10pt;
     color: #6b5313;
     font-weight: bold;
     opacity: 0.5;
@@ -150,8 +150,6 @@ const MatchBoard = ({
   selectHandPiece,
   possibleMoves,
   board,
-  width,
-  height,
   effectDialog,
   callSurrender,
   currentPlayer,
@@ -162,6 +160,9 @@ const MatchBoard = ({
   clocks = {},
   fetchSetGameData,
   loading,
+  width,
+  height,
+  tileSize,
 }) => {
   const { skin, displayPieces, changeSkin, boardConfig, setBoardConfigByKey } =
     useSkinState()
@@ -318,7 +319,11 @@ const MatchBoard = ({
                   lastMove.squareY === squareY
 
                 return (
-                  <BoardSquare key={squareNumber} blink={isPreviousMove}>
+                  <BoardSquare
+                    key={squareNumber}
+                    blink={isPreviousMove}
+                    tileSize={tileSize}
+                  >
                     <PieceSelection
                       y={squareX}
                       x={squareY}

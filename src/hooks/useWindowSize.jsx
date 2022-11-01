@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react'
 
-function useWindowSize() {
+const TILES = 9
+
+function useWindowSize(params) {
   const [windowSize, setWindowSize] = useState({
     width: undefined,
     height: undefined,
     vw: undefined,
     vh: undefined,
     boardSize: undefined,
+    windowSize: undefined,
   })
+
+  const { offsetWidth = 100, offsetHeight = 200 } = params || {}
 
   useEffect(() => {
     function handleResize() {
@@ -21,18 +26,17 @@ function useWindowSize() {
         window.innerHeight || 0
       )
 
-      const orderBy = newVH > newVW ? 'WIDTH' : 'HEIGHT'
-      const boardView = orderBy === 'WIDTH' ? newVW : newVH
-      const minusOffsets = orderBy === 'WIDTH' ? 85 : 380
-
-      const boardSize = `${boardView - minusOffsets}px`
+      const newTotalVH = newVH - offsetHeight
+      const newTotalVW = newVW - offsetWidth
+      const boardSize = newTotalVH <= newTotalVW ? newTotalVH : newTotalVW
 
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
         vw: newVW,
         vh: newVH,
-        boardSize,
+        boardSize: `${boardSize}px`,
+        tileSize: `${boardSize / TILES - 2}px`,
       })
     }
     window.addEventListener('resize', handleResize)

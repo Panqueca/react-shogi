@@ -5,7 +5,6 @@ import { getPieceComponentsByTheme, getBoardConfigByTheme } from '@utils/skins'
 const SkinContext = createContext({})
 const defaultSkinState = {
   skin: 'skin_1',
-  displayPieces: getPieceComponentsByTheme('skin_1'),
   boardConfig: getBoardConfigByTheme(),
 }
 
@@ -15,10 +14,22 @@ function SkinProvider({ children }) {
     defaultSkinState
   )
 
-  function changeSkin() {}
+  function changeSkin(newSkin) {
+    setSkinState({
+      skin: newSkin,
+      boardConfig: getBoardConfigByTheme(newSkin),
+    })
+  }
 
   return (
-    <SkinContext.Provider value={{ ...skinState, setSkinState, changeSkin }}>
+    <SkinContext.Provider
+      value={{
+        ...skinState,
+        setSkinState,
+        displayPieces: getPieceComponentsByTheme(skinState.skin),
+        changeSkin,
+      }}
+    >
       {children}
     </SkinContext.Provider>
   )

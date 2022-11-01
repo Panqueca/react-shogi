@@ -40,8 +40,8 @@ const BoardSquare = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 11.111%;
-  height: 11.111%;
+  width: 10.773%;
+  height: 10.8%;
   border: 1px solid #6b5313;
   position: relative;
   animation: ${({ blink }) =>
@@ -153,6 +153,7 @@ const ActionButton = styled.button`
   border: none;
   cursor: pointer;
   margin: 0 auto;
+  color: #fff;
   &:hover {
     background-color: #000;
     color: #fff;

@@ -16,8 +16,8 @@ const LiveGame = () => {
     getLastMove,
     effectDialog,
     callSurrender,
-    getClientPlayerSide,
-    getOpponent,
+    getCurrentPlayer,
+    getOpponentPlayer,
     checkIsMyTurn,
     clocks,
     findGameState,
@@ -54,10 +54,9 @@ const LiveGame = () => {
           height={boardSize}
           effectDialog={effectDialog}
           callSurrender={callSurrender}
-          currentPlayer={'user'}
-          currentPlayerSide={getClientPlayerSide()}
           currentTurnPlayer={game.turn}
-          opponentPlayer={getOpponent()}
+          currentPlayer={getCurrentPlayer()}
+          opponentPlayer={getOpponentPlayer()}
           isMyTurn={checkIsMyTurn()}
           isGameRunning={game.status === 'STARTED'}
           clocks={clocks}

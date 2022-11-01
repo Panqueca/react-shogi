@@ -29,25 +29,55 @@ const defaultEffectDialog = {
   display: null,
 }
 
+const defaultClocks = {
+  currentPlayer: {
+    isRunning: false,
+    secondsLeft: 0,
+  },
+  opponentPlayer: {
+    isRunning: false,
+    secondsLeft: 0,
+  },
+}
+
 function useLiveShogiMatch({ GAME_ID, resetGame }) {
   const { user } = useAuthState()
   const [game, setGame] = useState(initialGameState)
+  const [players, setPlayers] = useState([])
   const [dialog, setDialog] = useState(defaultDialog)
   const [effectDialog, setEffectDialog] = useState(defaultEffectDialog)
-  const [clocks] = useState({
-    player1: {
-      isRunning: false,
-      expireSeconds: null,
-    },
-    player2: {
-      isRunning: false,
-      expireSeconds: null,
-    },
-  })
+  const [clocks, setClocks] = useState(defaultClocks)
   const { loading, changeLoading } = useLoadings({
     game: true,
   })
-  const { player1, player2 } = game
+
+  function getGamePlayerSide(checkGame) {
+    if (['SEARCHING', 'LOADING'].includes(checkGame.status)) return 0
+    if (checkGame?.player1 === user._id) return 0
+    if (checkGame?.player2 === user._id) return 1
+    return null
+  }
+
+  function getOpponentSideByPlayer(playerSide) {
+    return playerSide === 0 ? 1 : 0
+  }
+
+  function updateGameClocks(checkGame, secondsLeft) {
+    const playerSide = getGamePlayerSide(checkGame)
+    const opponentSide = getOpponentSideByPlayer(playerSide)
+    const gameIsActive = checkGame.status === 'STARTED'
+
+    setClocks({
+      currentPlayer: {
+        secondsLeft: secondsLeft[playerSide],
+        isRunning: gameIsActive && checkGame.turn === playerSide,
+      },
+      opponentPlayer: {
+        secondsLeft: secondsLeft[opponentSide],
+        isRunning: gameIsActive && checkGame.turn === opponentSide,
+      },
+    })
+  }
 
   async function findGameState() {
     changeLoading({ game: true })
@@ -55,6 +85,8 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
 
     if (response?.game?._id) {
       setGame(response.game)
+      setPlayers(response.players)
+      updateGameClocks(response.game, response.secondsLeft)
     } else {
       toast.error(
         response?.message || 'Unexpected error while searching for game'
@@ -79,16 +111,17 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
   }
 
   function getClientPlayerSide() {
-    if (['SEARCHING', 'LOADING'].includes(game.status)) return 0
-    if (game?.player1 === user._id) return 0
-    if (game?.player2 === user._id) return 1
-    return null
+    return getGamePlayerSide(game)
   }
 
-  function getOpponent() {
-    if (game?.player1 === user._id) return player2
-    if (game?.player2 === user._id) return player1
-    return null
+  function getCurrentPlayer() {
+    const playerSide = getClientPlayerSide()
+    return { ...players[playerSide], side: playerSide }
+  }
+
+  function getOpponentPlayer() {
+    const opponentSide = getOpponentSideByPlayer(getClientPlayerSide())
+    return { ...players[opponentSide], side: opponentSide }
   }
 
   function checkIsMyTurn() {
@@ -176,8 +209,8 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     getLastMove,
     effectDialog,
     callSurrender,
-    getClientPlayerSide,
-    getOpponent,
+    getCurrentPlayer,
+    getOpponentPlayer,
     checkIsMyTurn,
     clocks,
     findGameState,

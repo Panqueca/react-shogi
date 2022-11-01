@@ -154,7 +154,6 @@ const MatchBoard = ({
   height,
   effectDialog,
   callSurrender,
-  currentPlayerSide,
   currentPlayer,
   opponentPlayer,
   currentTurnPlayer,
@@ -175,7 +174,7 @@ const MatchBoard = ({
   }
 
   function selectTile({ square, pieceInfo }) {
-    if (currentTurnPlayer === currentPlayerSide)
+    if (currentTurnPlayer === currentPlayer?.side)
       handleMovePiece({ square, pieceInfo })
   }
 
@@ -200,7 +199,7 @@ const MatchBoard = ({
       .reverse()
 
     const byCols =
-      currentPlayerSide === 1
+      currentPlayer?.side === 1
         ? orderedBoardPositions
         : orderedBoardPositions.reverse()
 
@@ -212,7 +211,7 @@ const MatchBoard = ({
       })
     })
 
-    const byRows = currentPlayerSide === 1 ? rows.reverse() : rows
+    const byRows = currentPlayer?.side === 1 ? rows.reverse() : rows
     return byRows
   }
 
@@ -231,17 +230,17 @@ const MatchBoard = ({
     <MatchDisplay>
       {loading && <Loading />}
       <MatchPlayer
-        name={opponentPlayer && opponentPlayer.nickname}
-        picture={opponentPlayer && opponentPlayer.picture}
+        name={opponentPlayer?.nickname}
+        picture={opponentPlayer?.picture}
         hands={hands}
         displayPieces={displayPieces}
-        playerColorTurn={currentPlayerSide === 0 ? 1 : 0}
+        playerColorTurn={currentPlayer?.side === 0 ? 1 : 0}
         selectHandPiece={selectHandPiece}
         width={width}
         viewBox={pieceViewBox.hand}
         hide={!opponentPlayer}
         clock={clocks.opponentPlayer}
-        side={currentPlayerSide === 0 ? 'GOTE' : 'SENTE'}
+        side={opponentPlayer.side}
         fetchSetGameData={fetchSetGameData}
       />
       <ShogiBoard
@@ -336,12 +335,12 @@ const MatchBoard = ({
                       }
                       player={color === 1 ? 2 : 1}
                       transform={
-                        currentPlayerSide === 0
+                        currentPlayer?.side === 0
                           ? 'rotate(0deg)'
                           : 'rotate(180deg)'
                       }
                       isOponnent={
-                        currentPlayerSide === 0 ? color === 1 : color === 0
+                        currentPlayer?.side === 0 ? color === 1 : color === 0
                       }
                       svgProps={{ viewBox: pieceViewBox.board }}
                     />
@@ -361,14 +360,14 @@ const MatchBoard = ({
         picture={currentPlayer && currentPlayer.picture}
         hands={hands}
         displayPieces={displayPieces}
-        playerColorTurn={currentPlayerSide === 0 ? 0 : 1}
+        playerColorTurn={currentPlayer?.side === 0 ? 0 : 1}
         selectHandPiece={selectHandPiece}
         width={width}
         viewBox={pieceViewBox.hand}
         isMyTurn={isMyTurn}
         showNotificationBar={isGameRunning}
         clock={clocks.currentPlayer}
-        side={currentPlayerSide}
+        side={currentPlayer?.side}
         fetchSetGameData={fetchSetGameData}
         isPlayerView
       />

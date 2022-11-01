@@ -20,7 +20,7 @@ const WaitGame = () => {
     changeLoading({ game: true })
 
     const { data: response } = await playGame(GAME_TYPE)
-    if (response.status === 'GAME_FOUND') history.push(`/play/${response._id}`)
+    if (response?._id) history.push(`/play/${response._id}`)
 
     changeLoading({ game: false })
   }

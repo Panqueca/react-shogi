@@ -25,30 +25,36 @@ export default function SignUp() {
   }
 
   async function onSubmit() {
-    changeLoading({ submit: true })
+    if (isValidLogin(form)) {
+      changeLoading({ submit: true })
 
-    let hasErrors = false
-    const defaultError = 'Unexpected error trying to create account'
+      let hasErrors = false
+      const defaultError = 'Unexpected error trying to create account'
 
-    try {
-      const { token, user, error } = await createAccount(form)
+      try {
+        const { token, user, error } = await createAccount(form)
 
-      if (token) {
-        toast.success('Account created')
-        saveTokenState({ authToken: token, user })
-        history.push('/homepage')
-      } else {
-        hasErrors = error || defaultError
+        if (token) {
+          toast.success('Account created')
+          saveTokenState({ authToken: token, user })
+          history.push('/homepage')
+        } else {
+          hasErrors = error || defaultError
+        }
+      } catch (err) {
+        hasErrors = defaultError
       }
-    } catch (err) {
-      hasErrors = defaultError
-    }
 
-    if (hasErrors) toast.error(hasErrors)
-    changeLoading({ submit: false })
+      if (hasErrors) toast.error(hasErrors)
+      changeLoading({ submit: false })
+    }
   }
 
-  const canSubmit = isValidLogin({ ...form }) && !loading.submit
+  function enterKeyPressed(e) {
+    if (e.keyCode == 13) onSubmit()
+  }
+
+  const canSubmit = isValidLogin(form) && !loading.submit
 
   return (
     <Grid
@@ -87,6 +93,7 @@ export default function SignUp() {
             variant='outlined'
             value={form.email}
             onChange={(e) => onChange('email', e.target.value)}
+            onKeyDown={enterKeyPressed}
           />
           <TextField
             id='login-password'
@@ -95,6 +102,7 @@ export default function SignUp() {
             type='password'
             value={form.password}
             onChange={(e) => onChange('password', e.target.value)}
+            onKeyDown={enterKeyPressed}
           />
           <Button
             sx={{ width: '100%' }}

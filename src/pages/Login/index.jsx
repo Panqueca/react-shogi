@@ -27,21 +27,27 @@ export default function Login() {
   }
 
   async function onSubmit() {
-    changeLoading({ submit: true })
+    if (isValidLogin({ ...form })) {
+      changeLoading({ submit: true })
 
-    let hasErrors = false
-    const defaultError = 'Unexpected error trying to login'
+      let hasErrors = false
+      const defaultError = 'Unexpected error trying to login'
 
-    const { authToken, error } = await saveLoginSession(form)
+      const { authToken, error } = await saveLoginSession(form)
 
-    if (authToken) {
-      toast.success('Logged in')
-    } else {
-      hasErrors = error || defaultError
+      if (authToken) {
+        toast.success('Logged in')
+      } else {
+        hasErrors = error || defaultError
+      }
+
+      if (hasErrors) toast.error(hasErrors)
+      changeLoading({ submit: false })
     }
+  }
 
-    if (hasErrors) toast.error(hasErrors)
-    changeLoading({ submit: false })
+  function enterKeyPressed(e) {
+    if (e.keyCode == 13) onSubmit()
   }
 
   const canSubmit = isValidLogin({ ...form }) && !loading.submit
@@ -83,6 +89,7 @@ export default function Login() {
             variant='outlined'
             value={form.email}
             onChange={(e) => onChange('email', e.target.value)}
+            onKeyDown={enterKeyPressed}
           />
           <TextField
             id='login-password'
@@ -91,6 +98,7 @@ export default function Login() {
             variant='outlined'
             value={form.password}
             onChange={(e) => onChange('password', e.target.value)}
+            onKeyDown={enterKeyPressed}
           />
           <Button
             sx={{ width: '100%' }}

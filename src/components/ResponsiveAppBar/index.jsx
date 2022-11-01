@@ -16,8 +16,9 @@ import { useAuthState } from '@context/AuthContext'
 import Logo from '@assets/app_logo.jpg'
 
 const pages = [
-  { label: 'Play game', path: '/play' },
-  { label: 'My profile', path: '/profile' },
+  { label: 'Play Shogi', path: '/homepage' },
+  { label: 'Exercises', path: '/homepage' },
+  { label: 'Tournaments', path: '/homepage' },
 ]
 
 function ResponsiveAppBar() {

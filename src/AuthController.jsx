@@ -28,7 +28,7 @@ const AuthController = () => {
 
   useEffect(() => {
     handleIsSessionAuthenticated()
-  }, [user, isAuthenticated, authToken])
+  }, [authToken])
 
   return null
 }

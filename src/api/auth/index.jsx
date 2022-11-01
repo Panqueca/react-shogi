@@ -10,7 +10,11 @@ export async function createAccount({ email, password }) {
       }
     )
 
-    return { token: response?.token, error: response.message }
+    return {
+      token: response.token,
+      error: response.message,
+      user: response.user,
+    }
   } catch (err) {
     return {
       token: null,

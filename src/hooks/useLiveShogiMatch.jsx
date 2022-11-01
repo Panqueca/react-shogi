@@ -57,7 +57,7 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
       setGame(response.game)
     } else {
       toast.error(
-        response.message || 'Unexpected error while searching for game'
+        response?.message || 'Unexpected error while searching for game'
       )
     }
 

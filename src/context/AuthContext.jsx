@@ -60,6 +60,7 @@ function AuthProvider({ children }) {
   }
 
   function isAuthenticated() {
+    if (!authState?.user?._id) return false
     if (!authState?.authToken) return false
     return authState.isAuthenticated
   }

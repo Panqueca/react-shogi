@@ -10,7 +10,7 @@ import Logo from '@assets/app_logo.jpg'
 export default function Login() {
   const { saveLoginSession, isAuthenticated, user } = useAuthState()
   const { loading, changeLoading } = useLoadings({ submit: false })
-  const [form, setForm] = useState({ email: user.email, password: '' })
+  const [form, setForm] = useState({ email: user?.email || '', password: '' })
   const history = useHistory()
 
   useEffect(() => {

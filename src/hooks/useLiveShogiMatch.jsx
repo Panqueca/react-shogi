@@ -47,14 +47,18 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     })
   }
 
+  function setRunningGame(game, secondsLeft) {
+    setGame(game)
+    updateGameClocks(game, secondsLeft)
+  }
+
   async function findGameState() {
     changeLoading({ game: true })
     const { data: response } = await findGameById(GAME_ID)
 
     if (response?.game?._id) {
-      setGame(response.game)
+      setRunningGame(response.game, response.secondsLeft)
       setPlayers(response.players)
-      updateGameClocks(response.game, response.secondsLeft)
     } else {
       toast.error(
         response?.message || 'Unexpected error while searching for game'
@@ -176,6 +180,7 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     checkIsMyTurn,
     clocks,
     findGameState,
+    setRunningGame,
     dialog,
     getLastMove: () => getLastMove(game.moves),
   }

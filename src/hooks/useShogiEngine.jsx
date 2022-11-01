@@ -100,7 +100,7 @@ function useShogiEngine({ listenNotification, saveGameMove, sfenPosition }) {
     const kind = promote ? 'promote' : 'move'
 
     updateGameMatch(tempShogi, {
-      sqaureX: to.sqaureX,
+      squareX: to.squareX,
       squareY: to.squareY,
       kind,
     })

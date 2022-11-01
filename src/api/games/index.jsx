@@ -26,3 +26,25 @@ export async function playGame(GAME_TYPE) {
     }
   }
 }
+
+export async function savePlayerMove({ _id, sfen, squareX, squareY, kind }) {
+  try {
+    const { data } = await apiNode
+      .post('/api/games/save-move', {
+        _id,
+        sfen,
+        squareX,
+        squareY,
+        kind,
+      })
+      .then((res) => res)
+
+    return { success: data.message === 'GAME_UPDATE' }
+  } catch (err) {
+    return {
+      error:
+        err?.response?.data?.message ||
+        'Unexpected error trying to update game',
+    }
+  }
+}

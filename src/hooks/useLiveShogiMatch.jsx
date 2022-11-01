@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { findGameById } from '@api/games'
+import { findGameById, savePlayerMove } from '@api/games'
 import { useAuthState } from '@context/AuthContext'
 import useLoadings from '@hooks/useLoadings'
 import { getDialogInfoByNotificationSlug } from '@utils/gameMessages'
@@ -138,7 +138,14 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
 
   async function saveGameMove({ sfen, squareX, squareY, kind }) {
     if (game.status === 'STARTED') {
-      console.log('Save game move', { sfen, squareX, squareY, kind })
+      const { error } = await savePlayerMove({
+        _id: game._id,
+        sfen,
+        squareX,
+        squareY,
+        kind,
+      })
+      if (error) toast.error(error)
     }
   }
 
@@ -170,7 +177,7 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     clocks,
     findGameState,
     dialog,
-    getLastMove: () => getLastMove(game),
+    getLastMove: () => getLastMove(game.moves),
   }
 }
 

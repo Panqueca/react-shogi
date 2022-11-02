@@ -8,6 +8,7 @@ const getStyles = ({ width, viewBox }) => ({
     p: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
+    height: '60px',
   },
   hand: {
     display: 'flex',
@@ -80,7 +81,7 @@ const MatchPlayer = ({
           </Typography>
         </Grid>
         <Grid item sx={styles.hand}>
-          <Grid item>{displayHandPieces(hands, turn)}</Grid>
+          <Grid container>{displayHandPieces(hands, turn)}</Grid>
           <PlayerTimer clock={clock} onExpire={fetchSetGameData} />
         </Grid>
       </Grid>

@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 
 const TILES = 9
+const DEFAULT_OFFSET = {
+  width: 100,
+  height: 220,
+}
 
 function useWindowSize(params) {
   const [windowSize, setWindowSize] = useState({
@@ -12,7 +16,10 @@ function useWindowSize(params) {
     windowSize: undefined,
   })
 
-  const { offsetWidth = 100, offsetHeight = 200 } = params || {}
+  const {
+    offsetWidth = DEFAULT_OFFSET.width,
+    offsetHeight = DEFAULT_OFFSET.height,
+  } = params || {}
 
   useEffect(() => {
     function handleResize() {

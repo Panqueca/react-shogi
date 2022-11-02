@@ -1,17 +1,12 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import {
-  Container,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  Button,
-} from '@mui/material'
+import { Container } from '@mui/material'
+import { socket } from '@api/websockets'
 import MatchBoard from '@components/MatchBoard'
 import useShogiEngine from '@hooks/useShogiEngine'
 import useWindowSize from '@hooks/useWindowSize'
 import useLiveShogiMatch from '@hooks/useLiveShogiMatch'
-import { socket } from '@api/websockets'
+import LiveGameDialogs from '@pages/LiveGame/LiveGameDialogs'
 
 const LiveGame = () => {
   const { GAME_ID } = useParams()
@@ -29,6 +24,10 @@ const LiveGame = () => {
     findGameState,
     setRunningGame,
     dialog,
+    resetDialog,
+    players,
+    confirmAbortGame,
+    loading,
   } = useLiveShogiMatch({
     GAME_ID,
   })
@@ -65,6 +64,13 @@ const LiveGame = () => {
     })
   }, [])
 
+  useEffect(() => {
+    if (game.status === 'ABORTED') listenNotification('ABORTED')
+    if (game.status === 'SEARCHING') listenNotification('SEARCHING')
+    if (!loading.game && game.status === 'GAME_FINISHED')
+      listenNotification('GAME_FINISHED')
+  }, [game?.status])
+
   function onPieceMove(params) {
     if (game.status === 'STARTED') touchTargetTile(params)
   }
@@ -90,20 +96,17 @@ const LiveGame = () => {
         isGameRunning={game.status === 'STARTED'}
         clocks={clocks}
         fetchSetGameData={findGameState}
-        loading={game.status === 'LOADING'}
+        loading={!game._id}
         tileSize={tileSize}
       />
-      {dialog.open && (
-        <Dialog open={dialog.open} onClose={dialog.onCancel}>
-          <DialogTitle>{dialog.title}</DialogTitle>
-          <DialogActions>
-            <Button onClick={dialog.onCancel}>{dialog.cancelText}</Button>
-            <Button onClick={dialog.onConfirm} color='success'>
-              {dialog.confirmText}
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
+      <LiveGameDialogs
+        dialog={dialog}
+        resetDialog={resetDialog}
+        game={game}
+        players={players}
+        confirmAbortGame={confirmAbortGame}
+        isWinner={getCurrentPlayer()._id === game.winnerId}
+      />
     </Container>
   )
 }

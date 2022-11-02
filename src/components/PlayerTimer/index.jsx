@@ -21,7 +21,7 @@ const PlayerTimer = ({ clock, onExpire = () => {} }) => {
   return (
     <Box
       sx={{
-        opacity: isRunning ? 1 : 0.5,
+        opacity: isRunning ? 1 : 0.25,
         backgroundColor: 'background.contrast.paper',
         p: 0.5,
         px: 1,

@@ -92,11 +92,13 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     setDialog(defaultDialog)
   }
 
-  function callEffect({ display, delay }) {
+  function callEffect({ display, delay, afterEffectNotification }) {
     setEffectDialog({ open: true, display })
 
     setTimeout(() => {
       setEffectDialog({ open: false, display: null })
+
+      if (afterEffectNotification) listenNotification(afterEffectNotification)
     }, delay)
   }
 
@@ -115,7 +117,18 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
       (response) => dialogActionCallback(response, params)
     )
 
-    const { type, onConfirm, onCancel } = dialogInfo
+    const {
+      type,
+      onConfirm,
+      onCancel,
+      display,
+      delay = 500,
+      afterEffectNotification,
+    } = dialogInfo
+
+    if (type === 'effect') {
+      callEffect({ display, delay, afterEffectNotification })
+    }
 
     if (type === 'dialog') {
       setDialog({
@@ -130,12 +143,8 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
           resetDialog()
         },
       })
-    }
-
-    const { display, delay = 500 } = dialogInfo
-
-    if (type === 'effect') {
-      callEffect({ display, delay })
+    } else if (type) {
+      setDialog({ ...dialogInfo })
     }
   }
 
@@ -159,6 +168,7 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
       onConfirm: async () => {
         try {
           await resignGame({ _id: game._id })
+          findGameState()
           resetDialog()
           if (typeof resetGame === 'function') resetGame()
         } catch (err) {
@@ -169,6 +179,11 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
       confirmText: 'Resign',
       cancelText: 'Cancel',
     })
+  }
+
+  async function confirmAbortGame() {
+    await resignGame({ _id: game._id })
+    findGameState()
   }
 
   return {
@@ -187,6 +202,9 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     setRunningGame,
     dialog,
     getLastMove: () => getLastMove(game.moves),
+    resetDialog,
+    players,
+    confirmAbortGame,
   }
 }
 

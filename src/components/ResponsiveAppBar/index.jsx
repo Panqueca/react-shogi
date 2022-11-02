@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem'
 import MenuIcon from '@mui/icons-material/Menu'
 import { useAuthState } from '@context/AuthContext'
 import Logo from '@assets/app_logo.jpg'
+import { getGravatar } from '@utils/users'
 
 const pages = [
   { label: 'Play Shogi', path: '/homepage' },
@@ -22,7 +23,7 @@ const pages = [
 ]
 
 function ResponsiveAppBar() {
-  const { sessionLogout, authToken } = useAuthState()
+  const { sessionLogout, authToken, user } = useAuthState()
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
 
@@ -122,7 +123,7 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title='Open settings'>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
+                  <Avatar alt={user.nickname} src={getGravatar(user.email)} />
                 </IconButton>
               </Tooltip>
               <Menu

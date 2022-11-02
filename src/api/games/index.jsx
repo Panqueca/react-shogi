@@ -14,15 +14,14 @@ export async function findGameById(GAME_ID) {
 
 export async function playGame(GAME_TYPE) {
   try {
-    return await apiNode
-      .post('/api/games/play', {
-        gameType: GAME_TYPE,
-      })
-      .then((res) => res)
+    return await apiNode.post('/api/games/play', {
+      gameType: GAME_TYPE,
+    })
   } catch (err) {
     return {
       error:
         err?.response?.data?.message || 'Unexpected error trying to play game',
+      status: err.response?.status,
     }
   }
 }
@@ -37,7 +36,7 @@ export async function savePlayerMove({ _id, sfen, squareX, squareY, kind }) {
       kind,
     })
 
-    return { success: data.message === 'GAME_UPDATE' }
+    return { success: data.success }
   } catch (err) {
     return {
       error:

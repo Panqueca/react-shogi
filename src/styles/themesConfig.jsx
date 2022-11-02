@@ -41,6 +41,7 @@ const themesConfig = {
       },
       background: {
         paper: '#1E2125',
+        lightPaper: '#323840',
         default: '#121212',
       },
       error: red,

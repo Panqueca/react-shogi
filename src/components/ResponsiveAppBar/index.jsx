@@ -57,7 +57,7 @@ function ResponsiveAppBar() {
   ]
 
   return (
-    <AppBar position='static' sx={{ py: 2 }}>
+    <AppBar position='static'>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', md: 'block' } }}>{getLogo()}</Box>

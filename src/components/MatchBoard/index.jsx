@@ -241,7 +241,7 @@ const MatchBoard = ({
         viewBox={pieceViewBox.hand}
         hide={!opponentPlayer}
         clock={clocks.opponentPlayer}
-        side={opponentPlayer.turn}
+        turn={opponentPlayer.turn}
         fetchSetGameData={fetchSetGameData}
       />
       <ShogiBoard
@@ -372,7 +372,7 @@ const MatchBoard = ({
         isMyTurn={isMyTurn}
         showNotificationBar={isGameRunning}
         clock={clocks.currentPlayer}
-        side={currentPlayer?.turn}
+        turn={currentPlayer?.turn}
         fetchSetGameData={fetchSetGameData}
         isPlayerView
       />

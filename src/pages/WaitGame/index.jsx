@@ -1,26 +1,26 @@
 import { useEffect } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { Container } from '@mui/material'
 import useLoadings from '@hooks/useLoadings'
-import useShogiEngine from '@hooks/useShogiEngine'
-import useWindowSize from '@hooks/useWindowSize'
 import { playGame } from '@api/games'
-import MatchBoard from '@components/MatchBoard'
+import { useAuthState } from '@context/AuthContext'
 
 const WaitGame = () => {
+  const { handleIsSessionAuthenticated } = useAuthState()
   const { loading, changeLoading } = useLoadings({
     game: true,
   })
-  const { gameMatch } = useShogiEngine({})
   const { GAME_TYPE } = useParams()
-  const { boardSize } = useWindowSize()
   const history = useHistory()
 
   async function findGameToPlay() {
     changeLoading({ game: true })
 
-    const { data: response } = await playGame(GAME_TYPE)
+    const { data: response, status, error } = await playGame(GAME_TYPE)
     if (response?._id) history.push(`/play/${response._id}`)
+    if (error) toast.error(error)
+    if (status === 401) handleIsSessionAuthenticated()
 
     changeLoading({ game: false })
   }
@@ -29,22 +29,7 @@ const WaitGame = () => {
     if (GAME_TYPE) findGameToPlay()
   }, [])
 
-  return (
-    <Container>
-      {loading.game && 'loading...'}
-      {!loading.game && (
-        <MatchBoard
-          hands={gameMatch.hands}
-          board={gameMatch.board}
-          width={boardSize}
-          height={boardSize}
-          player1={null}
-          player2={null}
-          currentPlayerSide='SENTE'
-        />
-      )}
-    </Container>
-  )
+  return <Container>{loading.game && 'loading...'}</Container>
 }
 
 export default WaitGame

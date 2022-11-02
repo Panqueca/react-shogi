@@ -44,20 +44,24 @@ const LiveGame = () => {
     sfenPosition: getLastMove().sfen,
   })
   const { boardSize, tileSize } = useWindowSize()
+  const currentPlayer = getCurrentPlayer()
+  const opponentPlayer = getOpponentPlayer()
 
   useEffect(() => {
     socket.on(`GAME_STARTED${GAME_ID}`, async () => {
       await findGameState()
-      console.log('started!')
+      listenNotification('GAME_STARTED')
     })
 
     socket.on(`GAME_UPDATE${GAME_ID}`, async ({ game, secondsLeft }) => {
       setRunningGame(game, secondsLeft)
     })
 
-    socket.on(`GAME_FINISHED${GAME_ID}`, async () => {
+    socket.on(`GAME_FINISHED${GAME_ID}`, async ({ winnerId }) => {
       await findGameState()
-      console.log('finished!')
+      listenNotification(
+        winnerId === currentPlayer._id ? 'YOU_WON' : 'YOU_LOST'
+      )
     })
   }, [])
 
@@ -80,8 +84,8 @@ const LiveGame = () => {
         effectDialog={effectDialog}
         callSurrender={callSurrender}
         currentTurnPlayer={game.turn}
-        currentPlayer={getCurrentPlayer()}
-        opponentPlayer={getOpponentPlayer()}
+        currentPlayer={currentPlayer}
+        opponentPlayer={opponentPlayer}
         isMyTurn={checkIsMyTurn()}
         isGameRunning={game.status === 'STARTED'}
         clocks={clocks}

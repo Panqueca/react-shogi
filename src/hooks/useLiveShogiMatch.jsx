@@ -74,10 +74,9 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
 
   function getCurrentPlayer() {
     const playerTurn = getGamePlayerTurn(game, user._id)
-    return (
-      getMatchPlayerByTurn(players, playerTurn) ||
-      getMatchPlayerByTurn([user], 0)
-    )
+
+    if (players.length === 0) return getMatchPlayerByTurn([user], 0)
+    return getMatchPlayerByTurn(players, playerTurn)
   }
 
   function getOpponentPlayer() {

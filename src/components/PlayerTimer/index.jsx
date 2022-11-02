@@ -22,14 +22,17 @@ const PlayerTimer = ({ clock, onExpire = () => {} }) => {
     <Box
       sx={{
         opacity: isRunning ? 1 : 0.5,
-        backgroundColor: 'background.lightPaper',
+        backgroundColor: 'background.contrast.paper',
         p: 0.5,
+        px: 1,
         borderRadius: 1,
       }}
     >
       <Typography
         variant='body2'
-        fontSize={16}
+        fontSize={18}
+        color='text.contrast'
+        fontWeight='500'
       >{`${minutes}:${getSeconds}`}</Typography>
     </Box>
   )

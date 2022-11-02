@@ -4,6 +4,7 @@ const darkText = {
   primary: 'rgb(255,255,255)',
   secondary: 'rgb(229, 231, 235)',
   disabled: 'rgb(156, 163, 175)',
+  contrast: 'rgb(1, 1, 1)',
 }
 
 const skyBlue = {
@@ -41,7 +42,7 @@ const themesConfig = {
       },
       background: {
         paper: '#1E2125',
-        lightPaper: '#323840',
+        contrast: { paper: '#c9d1df' },
         default: '#121212',
       },
       error: red,

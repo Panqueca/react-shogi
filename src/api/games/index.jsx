@@ -1,7 +1,6 @@
 import { apiNode } from '@api'
 
 export async function findGameById(GAME_ID) {
-  console.log({ GAME_ID })
   try {
     return await apiNode.get(`/api/games/find/${GAME_ID}`).then((res) => res)
   } catch (err) {

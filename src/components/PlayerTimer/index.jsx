@@ -16,8 +16,6 @@ const PlayerTimer = ({ clock, onExpire = () => {} }) => {
     restart(expire, isRunning)
   }, [isRunning, secondsLeft])
 
-  if (!isRunning) console.log({ minutes, clock })
-
   const getSeconds = seconds > 9 ? seconds : `0${seconds}`
 
   return (

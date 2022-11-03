@@ -18,11 +18,8 @@ const useLiveShogiWebsockets = ({
       setRunningGame(game, secondsLeft)
     })
 
-    socket.on(`GAME_FINISHED${GAME_ID}`, async ({ winnerId }) => {
+    socket.on(`GAME_FINISHED${GAME_ID}`, async () => {
       await findGameState()
-      listenNotification(
-        winnerId === currentPlayer._id ? 'YOU_WON' : 'YOU_LOST'
-      )
     })
   }, [])
 

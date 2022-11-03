@@ -19,7 +19,6 @@ const LiveGame = () => {
     callSurrender,
     getCurrentPlayer,
     getOpponentPlayer,
-    checkIsMyTurn,
     clocks,
     findGameState,
     setRunningGame,
@@ -67,6 +66,7 @@ const LiveGame = () => {
   }
 
   function handleSelectHandPiece(params) {
+    console.log({ params })
     if (game.status === 'STARTED') selectHandPiece(params)
   }
 
@@ -85,14 +85,10 @@ const LiveGame = () => {
         height={boardSize}
         effectDialog={effectDialog}
         callSurrender={callSurrender}
-        currentTurnPlayer={game.turn}
         currentPlayer={currentPlayer}
         opponentPlayer={opponentPlayer}
-        isMyTurn={checkIsMyTurn()}
-        isGameRunning={game.status === 'STARTED'}
         clocks={clocks}
         fetchSetGameData={findGameState}
-        loading={!game._id}
         tileSize={tileSize}
       />
       <LiveGameDialogs

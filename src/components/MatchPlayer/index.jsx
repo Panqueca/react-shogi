@@ -24,16 +24,16 @@ const getStyles = ({ width, viewBox }) => ({
 })
 
 const MatchPlayer = ({
-  name,
+  player,
   clock,
-  turn,
-  width = '100%',
   hands,
-  fetchSetGameData,
   displayPieces,
   selectHandPiece,
+  fetchSetGameData,
+  width = '100%',
   viewBox,
 }) => {
+  const { turn } = player || {}
   const styles = getStyles({ width, viewBox })
 
   function displayHandPieces() {
@@ -81,7 +81,7 @@ const MatchPlayer = ({
       <Grid item container sx={styles.playerDisplay}>
         <Grid item>
           <Typography variant='subtitle2'>
-            ({`${turn === 0 ? 'SENTE' : 'GOTE'}`}) {name}
+            ({`${turn === 0 ? 'SENTE' : 'GOTE'}`}) {player?.nickname}
           </Typography>
         </Grid>
         <Grid item sx={styles.hand}>

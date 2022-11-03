@@ -20,7 +20,6 @@ import { getSquareByXYBoard } from '@utils/board'
 import { checkIsPossibleMove } from '@utils/match'
 import { useSkinState } from '@context/SkinContext'
 import MatchPlayer from '@components/MatchPlayer'
-import Loading from '@components/Loading'
 
 const MatchDisplay = styled.div`
   width: 100%;
@@ -142,11 +141,8 @@ const MatchBoard = ({
   callSurrender,
   currentPlayer,
   opponentPlayer,
-  currentTurnPlayer,
-  isMyTurn,
   clocks = {},
   fetchSetGameData,
-  loading,
   width,
   height,
   tileSize,
@@ -162,7 +158,7 @@ const MatchBoard = ({
   }
 
   function selectTile({ square, pieceInfo }) {
-    if (currentTurnPlayer === currentPlayer?.turn)
+    if (game?.turn === currentPlayer?.turn)
       handleMovePiece({ square, pieceInfo })
   }
 
@@ -213,23 +209,22 @@ const MatchBoard = ({
   }
 
   const orderedByRows = getBoardOrderedByRows(board)
+  const matchPlayersProps = {
+    hands,
+    displayPieces,
+    selectHandPiece,
+    fetchSetGameData,
+    width,
+    viewBox: pieceViewBox.hand,
+  }
 
   return (
     <MatchDisplay>
-      {loading && <Loading />}
       <MatchPlayer
-        name={opponentPlayer?.nickname}
-        picture={opponentPlayer?.picture}
-        hands={hands}
-        displayPieces={displayPieces}
-        playerColorTurn={currentPlayer?.turn === 0 ? 1 : 0}
-        selectHandPiece={selectHandPiece}
-        width={width}
-        viewBox={pieceViewBox.hand}
+        player={opponentPlayer}
         hide={!opponentPlayer}
         clock={clocks.opponentPlayer}
-        turn={opponentPlayer.turn}
-        fetchSetGameData={fetchSetGameData}
+        {...matchPlayersProps}
       />
       <ShogiBoard
         width={width}
@@ -351,35 +346,22 @@ const MatchBoard = ({
           })}
       </ShogiBoard>
       <MatchPlayer
-        name={currentPlayer && currentPlayer.nickname}
-        picture={currentPlayer && currentPlayer.picture}
-        hands={hands}
-        displayPieces={displayPieces}
-        playerColorTurn={currentPlayer?.turn === 0 ? 0 : 1}
-        selectHandPiece={selectHandPiece}
-        width={width}
-        viewBox={pieceViewBox.hand}
-        isMyTurn={isMyTurn}
+        player={currentPlayer}
         clock={clocks.currentPlayer}
-        turn={currentPlayer?.turn}
-        fetchSetGameData={fetchSetGameData}
-        isPlayerView
+        hands={hands}
+        {...matchPlayersProps}
       />
     </MatchDisplay>
   )
 }
 
 MatchBoard.propTypes = {
-  allowMoves: PropTypes.bool,
-  drawLabels: PropTypes.bool,
   effectDialog: PropTypes.object,
   targetTile: PropTypes.object,
   handleMovePiece: PropTypes.func,
 }
 
 MatchBoard.defaultProps = {
-  allowMoves: true,
-  drawLabels: true,
   effectDialog: { open: false },
   targetTile: {},
   handleMovePiece: () => {},

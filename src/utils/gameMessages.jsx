@@ -43,22 +43,6 @@ export const getDialogInfoByNotificationSlug = (notificationSlug, callback) => {
       delay: 500,
     }
 
-  if (notificationSlug === 'YOU_WON')
-    return {
-      type: 'effect',
-      display: <CheckEffect text='Victory. You won!' />,
-      delay: 1500,
-      afterEffectNotification: 'GAME_FINISHED',
-    }
-
-  if (notificationSlug === 'YOU_LOST')
-    return {
-      type: 'effect',
-      display: <CheckEffect text='Game over. You lost!' />,
-      delay: 1500,
-      afterEffectNotification: 'GAME_FINISHED',
-    }
-
   if (notificationSlug === 'SEARCHING')
     return {
       open: true,

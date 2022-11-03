@@ -36,9 +36,9 @@ const themesConfig = {
         dark: skyBlue[900],
       },
       secondary: {
-        light: '#ea7de5',
-        main: '#cd70c9',
-        dark: '#a751a4',
+        light: '#8f95ef',
+        main: '#7d82d3',
+        dark: '#6d72b8',
       },
       background: {
         paper: '#1E2125',

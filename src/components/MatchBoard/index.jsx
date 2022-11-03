@@ -11,6 +11,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  IconButton,
 } from '@mui/material'
 import Settings from '@mui/icons-material/Settings'
 import EmojiFlags from '@mui/icons-material/EmojiFlags'
@@ -107,7 +108,7 @@ const ShogiBoard = styled.div`
   .config {
     position: absolute;
     top: 0px;
-    right: -36px;
+    right: -40px;
     display: flex;
     flex-direction: column;
   }
@@ -128,21 +129,8 @@ const EffectDialog = styled.div`
   bottom: 0;
 `
 
-const ActionButton = styled.button`
-  width: 35px;
-  height: 35px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  margin: 0 auto;
-  color: #fff;
-  &:hover {
-    background-color: #000;
-    color: #fff;
-  }
-`
-
 const MatchBoard = ({
+  game,
   hands,
   handleMovePiece,
   lastMove,
@@ -156,7 +144,6 @@ const MatchBoard = ({
   opponentPlayer,
   currentTurnPlayer,
   isMyTurn,
-  isGameRunning,
   clocks = {},
   fetchSetGameData,
   loading,
@@ -251,15 +238,18 @@ const MatchBoard = ({
         showOverlay={settings}
       >
         <div className='config'>
-          <ActionButton onClick={() => setSettings(!settings)}>
+          <IconButton onClick={() => setSettings(!settings)}>
             <Settings />
-          </ActionButton>
-          <ActionButton onClick={callSurrender}>
+          </IconButton>
+          <IconButton
+            onClick={callSurrender}
+            disabled={!game?.status === 'STARTED'}
+          >
             <EmojiFlags />
-          </ActionButton>
-          <ActionButton disabled>
+          </IconButton>
+          <IconButton disabled>
             <Chat />
-          </ActionButton>
+          </IconButton>
         </div>
         <div className='overlay' onClick={closeDialogs}></div>
         <EffectDialog open={effectDialog.open}>
@@ -370,7 +360,6 @@ const MatchBoard = ({
         width={width}
         viewBox={pieceViewBox.hand}
         isMyTurn={isMyTurn}
-        showNotificationBar={isGameRunning}
         clock={clocks.currentPlayer}
         turn={currentPlayer?.turn}
         fetchSetGameData={fetchSetGameData}

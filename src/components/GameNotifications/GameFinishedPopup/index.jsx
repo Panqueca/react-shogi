@@ -41,12 +41,6 @@ const GameFinishedPopup = ({
                   <Grid
                     item
                     key={player._id}
-                    sx={{
-                      backgroundColor: winner
-                        ? 'background.paper'
-                        : 'transparent',
-                      borderRadius: 2,
-                    }}
                     align='center'
                     xs={6}
                     p={1}
@@ -55,8 +49,19 @@ const GameFinishedPopup = ({
                     <Avatar
                       alt={player.nickname}
                       src={getGravatar(player.email)}
+                      sx={{
+                        bgcolor: winner ? 'success.main' : 'transparent',
+                        borderRadius: 2,
+                        width: 56,
+                        height: 56,
+                        p: 0.5,
+                      }}
+                      imgProps={{
+                        sx: { borderRadius: 1 },
+                      }}
+                      variant='rounded'
                     />
-                    <Typography variant='body2' fontWeight='500' pt={1}>
+                    <Typography fontSize={10} fontWeight='500' pt={1}>
                       {player.nickname}
                     </Typography>
                     <Typography variant='h6'>
@@ -67,6 +72,18 @@ const GameFinishedPopup = ({
               })
             : null}
         </Grid>
+        <Grid container>
+          {game.status !== 'ABORTED' && (
+            <Button
+              variant='contained'
+              color='success'
+              sx={{ color: 'text.primary' }}
+              fullWidth
+            >
+              Run Shogi Analisys
+            </Button>
+          )}
+        </Grid>
         <Grid container py={3} justifyContent='center' gap={1}>
           {players.length === 2 && (
             <Button variant='outlined' disabled>
@@ -74,11 +91,11 @@ const GameFinishedPopup = ({
             </Button>
           )}
           <Link to={`/wait-game/${game.type}`}>
-            <Button variant='contained' color='success'>
+            <Button variant='outlined' color='success'>
               {`New ${
                 getGameTypeOptions().find(({ value }) => value === game.type)
-                  ?.label || ''
-              } Game`}
+                  ?.label
+              }`}
             </Button>
           </Link>
         </Grid>

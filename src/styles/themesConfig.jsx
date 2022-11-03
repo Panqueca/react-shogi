@@ -46,6 +46,11 @@ const themesConfig = {
         default: '#121212',
       },
       error: red,
+      success: {
+        light: '#62d266',
+        main: '#4caf50',
+        dark: '#2e7d32',
+      },
     },
     typography: {
       allVariants: {

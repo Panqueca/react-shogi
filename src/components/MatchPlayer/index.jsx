@@ -59,6 +59,10 @@ const MatchPlayer = ({
                   title: `${kind}`,
                   onClick: () => selectHandPiece({ kind, turn }),
                   'data-cy': `piece-at-hand-${turn}-${kind}`,
+                  sx: {
+                    cursor: 'pointer',
+                    '&:hover': { transform: 'scale(1.1)' },
+                  },
                 }}
                 svgProps={styles.pieceSVG}
               />

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Box } from '@mui/material'
 
 const SimpleLayer = ({
   styles,
@@ -59,7 +60,7 @@ const PieceDisplay = (props) => {
   const rotate = isOponnent ? { transform: 'rotate(180deg)' } : {}
 
   return (
-    <div
+    <Box
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       onTouchEnd={onTouchEnd}
@@ -102,7 +103,7 @@ const PieceDisplay = (props) => {
       {lastAction && (
         <SimpleLayer styles={{ zIndex: 1 }} className='last-action-tile' />
       )}
-    </div>
+    </Box>
   )
 }
 

@@ -1,0 +1,32 @@
+import { useEffect } from 'react'
+import { socket } from '@api/websockets'
+
+const useLiveShogiWebsockets = ({
+  GAME_ID,
+  findGameState,
+  listenNotification,
+  setRunningGame,
+  currentPlayer,
+}) => {
+  useEffect(() => {
+    socket.on(`GAME_STARTED${GAME_ID}`, async () => {
+      await findGameState()
+      listenNotification('GAME_STARTED')
+    })
+
+    socket.on(`GAME_UPDATE${GAME_ID}`, async ({ game, secondsLeft }) => {
+      setRunningGame(game, secondsLeft)
+    })
+
+    socket.on(`GAME_FINISHED${GAME_ID}`, async ({ winnerId }) => {
+      await findGameState()
+      listenNotification(
+        winnerId === currentPlayer._id ? 'YOU_WON' : 'YOU_LOST'
+      )
+    })
+  }, [])
+
+  return null
+}
+
+export default useLiveShogiWebsockets

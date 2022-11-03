@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Container } from '@mui/material'
-import { socket } from '@api/websockets'
 import MatchBoard from '@components/MatchBoard'
 import useShogiEngine from '@hooks/useShogiEngine'
 import useWindowSize from '@hooks/useWindowSize'
 import useLiveShogiMatch from '@hooks/useLiveShogiMatch'
+import useLiveShogiWebsockets from '@hooks/useLiveShogiWebsockets'
 import LiveGameDialogs from '@pages/LiveGame/LiveGameDialogs'
 
 const LiveGame = () => {
@@ -31,6 +31,7 @@ const LiveGame = () => {
   } = useLiveShogiMatch({
     GAME_ID,
   })
+
   const {
     gameMatch,
     targetTile,
@@ -46,23 +47,13 @@ const LiveGame = () => {
   const currentPlayer = getCurrentPlayer()
   const opponentPlayer = getOpponentPlayer()
 
-  useEffect(() => {
-    socket.on(`GAME_STARTED${GAME_ID}`, async () => {
-      await findGameState()
-      listenNotification('GAME_STARTED')
-    })
-
-    socket.on(`GAME_UPDATE${GAME_ID}`, async ({ game, secondsLeft }) => {
-      setRunningGame(game, secondsLeft)
-    })
-
-    socket.on(`GAME_FINISHED${GAME_ID}`, async ({ winnerId }) => {
-      await findGameState()
-      listenNotification(
-        winnerId === currentPlayer._id ? 'YOU_WON' : 'YOU_LOST'
-      )
-    })
-  }, [])
+  useLiveShogiWebsockets({
+    GAME_ID,
+    findGameState,
+    listenNotification,
+    setRunningGame,
+    currentPlayer,
+  })
 
   useEffect(() => {
     if (game.status === 'ABORTED') listenNotification('ABORTED')
@@ -75,14 +66,19 @@ const LiveGame = () => {
     if (game.status === 'STARTED') touchTargetTile(params)
   }
 
+  function handleSelectHandPiece(params) {
+    if (game.status === 'STARTED') selectHandPiece(params)
+  }
+
   return (
     <Container>
       <MatchBoard
+        game={game}
         hands={gameMatch.hands}
         board={gameMatch.board}
         handleMovePiece={onPieceMove}
         possibleMoves={moveAction.moves}
-        selectHandPiece={selectHandPiece}
+        selectHandPiece={handleSelectHandPiece}
         targetTile={targetTile}
         lastMove={getLastMove()}
         width={boardSize}

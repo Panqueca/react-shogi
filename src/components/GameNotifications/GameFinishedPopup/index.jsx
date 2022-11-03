@@ -37,6 +37,7 @@ const GameFinishedPopup = ({
           {players.length === 2
             ? players.map((player) => {
                 const winner = player._id === game.winnerId
+
                 return (
                   <Grid
                     item
@@ -64,9 +65,11 @@ const GameFinishedPopup = ({
                     <Typography fontSize={10} fontWeight='500' pt={1}>
                       {player.nickname}
                     </Typography>
-                    <Typography variant='h6'>
-                      {`${winner ? '+' : '-'}${RATING}`}
-                    </Typography>
+                    {game.winnerId && (
+                      <Typography variant='h6'>
+                        {`${winner ? '+' : '-'}${RATING}`}
+                      </Typography>
+                    )}
                   </Grid>
                 )
               })

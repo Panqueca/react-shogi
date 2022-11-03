@@ -54,7 +54,7 @@ export const getDialogInfoByNotificationSlug = (notificationSlug, callback) => {
     return {
       open: true,
       type: 'ABORTED',
-      title: 'Find a new game...',
+      title: 'Match aborted',
     }
 
   if (notificationSlug === 'GAME_FINISHED')

@@ -161,10 +161,16 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
     }
   }
 
+  function canGameBeAborted() {
+    return game.status === 'SEARCHING' || game?.moves.length < 2
+  }
+
   function callSurrender() {
+    const canAbort = canGameBeAborted()
+
     setDialog({
       open: true,
-      title: 'Are you shure you want to resign?',
+      title: canAbort ? 'Abort match?' : 'Are you shure you want to resign?',
       onConfirm: async () => {
         try {
           await resignGame({ _id: game._id })
@@ -176,7 +182,7 @@ function useLiveShogiMatch({ GAME_ID, resetGame }) {
         }
       },
       onCancel: resetDialog,
-      confirmText: 'Resign',
+      confirmText: canAbort ? 'Abort' : 'Resign',
       cancelText: 'Cancel',
     })
   }

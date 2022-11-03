@@ -6,7 +6,6 @@ const useLiveShogiWebsockets = ({
   findGameState,
   listenNotification,
   setRunningGame,
-  currentPlayer,
 }) => {
   useEffect(() => {
     socket.on(`GAME_STARTED${GAME_ID}`, async () => {
@@ -19,6 +18,10 @@ const useLiveShogiWebsockets = ({
     })
 
     socket.on(`GAME_FINISHED${GAME_ID}`, async () => {
+      await findGameState()
+    })
+
+    socket.on(`GAME_ABORTED${GAME_ID}`, async () => {
       await findGameState()
     })
   }, [])

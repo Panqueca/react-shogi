@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -26,6 +26,7 @@ function ResponsiveAppBar() {
   const { sessionLogout, authToken, user } = useAuthState()
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
+  const history = useHistory()
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -51,7 +52,7 @@ function ResponsiveAppBar() {
   }
 
   const settings = [
-    { label: 'Profile' },
+    { label: 'Profile', onClick: () => history.push('/profile') },
     { label: 'Account' },
     { label: 'Dashboard' },
     { label: 'Logout', onClick: sessionLogout },

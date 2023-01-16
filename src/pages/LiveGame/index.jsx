@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { Container } from '@mui/material'
+import { Container, Backdrop, CircularProgress } from '@mui/material'
 import MatchBoard from '@components/MatchBoard'
 import useShogiEngine from '@hooks/useShogiEngine'
 import useWindowSize from '@hooks/useWindowSize'
@@ -46,12 +46,13 @@ const LiveGame = () => {
   const currentPlayer = getCurrentPlayer()
   const opponentPlayer = getOpponentPlayer()
 
-  useLiveShogiWebsockets({
+  const { isConnected } = useLiveShogiWebsockets({
     GAME_ID,
     findGameState,
     listenNotification,
     setRunningGame,
     currentPlayer,
+    onReconnect: findGameState,
   })
 
   useEffect(() => {
@@ -72,6 +73,9 @@ const LiveGame = () => {
 
   return (
     <Container>
+      <Backdrop open={isConnected}>
+        <CircularProgress />
+      </Backdrop>
       <MatchBoard
         game={game}
         hands={gameMatch.hands}

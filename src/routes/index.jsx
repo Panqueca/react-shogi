@@ -22,7 +22,8 @@ const Routes = () => {
         <Switch>
           <ProtectedRoute path='/' exact component={Homepage} />
           <Route path='/login' component={Login} />
-          <Route path='/signup' component={SignUp} />
+          <Route path='/signup' exact component={SignUp} />
+          <Route path='/signup/:EMAIL' component={SignUp} />
           <ProtectedRoute path='/homepage' component={Homepage} />
           <ProtectedRoute path='/games' component={Games} />
           <ProtectedRoute path='/wait-game/:GAME_TYPE' component={WaitGame} />

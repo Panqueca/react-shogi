@@ -52,3 +52,23 @@ export async function checkIsAuthenticated() {
     return false
   }
 }
+
+export async function checkHaveAccount({ email }) {
+  try {
+    const { data: response } = await apiNode.post(
+      '/api/authenticate/have-account',
+      {
+        email,
+      }
+    )
+
+    return { hasAccount: response }
+  } catch (err) {
+    return {
+      hasAccount: false,
+      error:
+        err?.response?.data?.message ||
+        'Unexpected error trying to check email address',
+    }
+  }
+}

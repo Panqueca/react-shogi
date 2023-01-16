@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import { TextField, Grid, Button, Typography } from '@mui/material'
 import { toast } from 'react-toastify'
 import { isValidLogin } from '@utils/login'
@@ -11,7 +11,8 @@ import Logo from '@assets/app_logo.jpg'
 export default function SignUp() {
   const { saveTokenState } = useAuthState()
   const { loading, changeLoading } = useLoadings({ submit: false })
-  const [form, setForm] = useState({ email: '', password: '' })
+  const { EMAIL } = useParams()
+  const [form, setForm] = useState({ email: EMAIL || '', password: '' })
 
   const history = useHistory()
 
@@ -94,6 +95,7 @@ export default function SignUp() {
             value={form.email}
             onChange={(e) => onChange('email', e.target.value)}
             onKeyDown={enterKeyPressed}
+            autoFocus
           />
           <TextField
             id='login-password'
@@ -103,6 +105,7 @@ export default function SignUp() {
             value={form.password}
             onChange={(e) => onChange('password', e.target.value)}
             onKeyDown={enterKeyPressed}
+            autoFocus={EMAIL?.length > 0}
           />
           <Button
             sx={{ width: '100%' }}

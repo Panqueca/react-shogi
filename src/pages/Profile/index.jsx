@@ -8,8 +8,20 @@ import {
   Paper,
   Typography,
 } from '@mui/material'
+import { useQuery } from 'react-query'
+import { useAuthState } from '@context/AuthContext'
+import { findUserGames } from '@api/games'
 
 const Games = () => {
+  const { user } = useAuthState()
+  const { _id } = user
+
+  const { isLoading, error, data } = useQuery(['playerGames', _id], () =>
+    findUserGames({ _id })
+  )
+
+  console.log({ _id, isLoading, error, data })
+
   return (
     <Container fixed>
       <Grid container spacing={2} height='100vh' alignItems='stretch'>

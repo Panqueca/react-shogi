@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { socket } from '@api/websockets'
 
 const useLiveShogiWebsockets = ({
@@ -6,8 +6,24 @@ const useLiveShogiWebsockets = ({
   findGameState,
   listenNotification,
   setRunningGame,
+  onReconnect,
 }) => {
+  const [isConnected, setIsConnected] = useState(false)
+
   useEffect(() => {
+    socket.on('connect', () => {
+      setIsConnected(true)
+    })
+
+    socket.on('reconnect', () => {
+      setIsConnected(true)
+      if (typeof onReconnect === 'function') onReconnect()
+    })
+
+    socket.on('disconnect', () => {
+      setIsConnected(false)
+    })
+
     socket.on(`GAME_STARTED${GAME_ID}`, async () => {
       await findGameState()
       listenNotification('GAME_STARTED')
@@ -26,7 +42,7 @@ const useLiveShogiWebsockets = ({
     })
   }, [])
 
-  return null
+  return { isConnected }
 }
 
 export default useLiveShogiWebsockets

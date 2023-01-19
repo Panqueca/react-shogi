@@ -10,17 +10,20 @@ import {
 } from '@mui/material'
 import { useQuery } from 'react-query'
 import { useAuthState } from '@context/AuthContext'
-import { findUserGames } from '@api/games'
+import { findUserGames } from '@api/player'
+import GamesHistoryTable from '@components/GamesHistoryTable'
 
 const Games = () => {
   const { user } = useAuthState()
   const { _id } = user
 
-  const { isLoading, error, data } = useQuery(['playerGames', _id], () =>
-    findUserGames({ _id })
-  )
+  const {
+    isLoading,
+    error,
+    data: games,
+  } = useQuery(['playerGames', _id], () => findUserGames({ _id }))
 
-  console.log({ _id, isLoading, error, data })
+  console.log({ _id, isLoading, error, games })
 
   return (
     <Container fixed>
@@ -87,6 +90,7 @@ const Games = () => {
         </Grid>
         <Grid item xs={12} lg={8}>
           <Typography variant='h6'>Games</Typography>
+          <GamesHistoryTable games={games} />
         </Grid>
       </Grid>
     </Container>

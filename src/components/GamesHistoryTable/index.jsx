@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Collapse,
+  Grid,
   IconButton,
   Paper,
   Table,
@@ -56,12 +57,14 @@ function Row(props) {
               <Typography variant='h6' gutterBottom component='div'>
                 Actions
               </Typography>
-              <Button variant='contained' color='success'>
-                Game Analysis
-              </Button>
-              <Button variant='contained' endIcon={<ShareIcon />}>
-                Share
-              </Button>
+              <Grid item display='flex' alignItems='center' gap={1}>
+                <Button variant='contained' color='success'>
+                  Game Analysis
+                </Button>
+                <Button variant='contained' endIcon={<ShareIcon />}>
+                  Share
+                </Button>
+              </Grid>
             </Box>
           </Collapse>
         </TableCell>

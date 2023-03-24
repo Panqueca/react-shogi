@@ -13,7 +13,6 @@ const AuthController = () => {
   const history = useHistory()
 
   function handleRedirect() {
-    if (!user?.email) return history.push('/')
     return history.push('/login')
   }
 
@@ -21,7 +20,7 @@ const AuthController = () => {
     if (
       !isAuthenticated &&
       !isLoadingSession &&
-      history.location.pathname !== '/'
+      history.location.pathname !== '/login'
     )
       handleRedirect()
   }, [isLoadingSession, isAuthenticated])

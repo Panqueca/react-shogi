@@ -54,12 +54,12 @@ export default function Login() {
       const { authToken, error } = await saveLoginSession(form)
 
       if (authToken) {
-        toast.success('Logged in')
+        toast.success('Logged in', { toastId: 'login-success-message' })
       } else {
         hasErrors = error || defaultError
       }
 
-      if (hasErrors) toast.error(hasErrors)
+      if (hasErrors) toast.error(hasErrors, { toastId: 'login-error-message' })
       changeLoading({ submit: false })
     }
   }
@@ -110,7 +110,7 @@ export default function Login() {
           lg={2}
         >
           <TextField
-            id='login-email'
+            data-cy='login-email-input'
             label='Email'
             variant='outlined'
             value={form.email}
@@ -120,7 +120,7 @@ export default function Login() {
           />
           {userHasAccount && (
             <TextField
-              id='login-password'
+              data-cy='login-password-input'
               label='Password'
               type='password'
               variant='outlined'
@@ -136,6 +136,7 @@ export default function Login() {
               variant='contained'
               disabled={!validateEmail(form.email)}
               onClick={onCheckAccount}
+              data-cy='login-continue-btn'
             >
               {`Continue${loading.submit ? '...' : ''}`}
             </Button>
@@ -145,6 +146,7 @@ export default function Login() {
               sx={{ width: '100%' }}
               variant='contained'
               onClick={onCreateAccount}
+              data-cy='login-create-btn'
             >
               Create your account here
             </Button>
@@ -155,6 +157,7 @@ export default function Login() {
               variant='contained'
               disabled={!canSubmit}
               onClick={onSubmit}
+              data-cy='login-submit-btn'
             >
               {`Login${loading.submit ? '...' : ''}`}
             </Button>
@@ -165,7 +168,7 @@ export default function Login() {
 
           <Link to='/forgot-password'>
             <Typography variant='body1' color='secondary'>
-              Forgot you password?
+              Forgot your password?
             </Typography>
           </Link>
         </Grid>

@@ -89,7 +89,7 @@ export default function SignUp() {
           lg={2}
         >
           <TextField
-            id='login-email'
+            data-cy='signup-email-input'
             label='Email'
             variant='outlined'
             value={form.email}
@@ -98,7 +98,7 @@ export default function SignUp() {
             autoFocus
           />
           <TextField
-            id='login-password'
+            data-cy='signup-password-input'
             label='Password'
             variant='outlined'
             type='password'
@@ -108,6 +108,7 @@ export default function SignUp() {
             autoFocus={EMAIL?.length > 0}
           />
           <Button
+            data-cy='signup-submit-btn'
             sx={{ width: '100%' }}
             variant='contained'
             disabled={!canSubmit}

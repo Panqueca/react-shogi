@@ -68,6 +68,7 @@ export default function Login() {
           returnKeyType="next"
           value={form.email}
           onChangeText={(value) => updateForm('email', value)}
+          testID="login-email-input"
         />
       </View>
       <View style={{ alignSelf: 'stretch' }}>
@@ -76,6 +77,8 @@ export default function Login() {
           secureTextEntry={!showPassword}
           returnKeyType="go"
           value={form.password}
+          onChangeText={(value) => updateForm('password', value)}
+          testID="login-password-input"
           right={
             <TextInput.Icon
               onPress={() => setShowPassword(!showPassword)}

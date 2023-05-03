@@ -4,7 +4,7 @@
     "slug": "shogi-battles",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/icon-shogi-battles.ico",
+    "icon": "./src/assets/icon-shogi-battles.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/splash.png",
@@ -17,12 +17,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.ico",
+        "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#1e1b16"
       }
     },
     "web": {
-      "favicon": "./src/assets/favicon.ico"
+      "favicon": "./src/assets/favicon.jpg"
     }
   }
 }

@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Shogi Battles",
+    "slug": "shogi-battles",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icon-shogi-battles.ico",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./src/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1e1b16"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-icon.ico",
+        "backgroundColor": "#1e1b16"
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/favicon.ico"
+    }
+  }
+}

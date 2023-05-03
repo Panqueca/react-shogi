@@ -1,0 +1,25 @@
+{
+  "screen": {
+    "create_account": {
+      "title": "Create account",
+      "create_account_btn": "Create your account"
+    },
+    "home": {
+      "play": "Play",
+      "config": "Config",
+      "hi": "Hi",
+      "last_games": "Last games",
+      "quick_access": "Quick access",
+      "learn": "Learn",
+      "title": "Home"
+    },
+    "login": {
+      "create_account": "Create an account",
+      "email": "Email",
+      "forgot_password": "Forgot your password?",
+      "password": "Password",
+      "submit": "Log In",
+      "title": "Log In"
+    }
+  }
+}

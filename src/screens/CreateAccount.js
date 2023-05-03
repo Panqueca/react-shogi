@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
-import { TextInput, Button } from 'react-native-paper'
+import { Button } from 'react-native-paper'
 import Logo from '@components/Logo'
 import PageContainer from '@components/Container/PageContainer'
+import NativePaperInput from '@components/NativePaperInput'
 
 export default function CreateAccount() {
   const [form, setForm] = useState({
@@ -21,12 +22,13 @@ export default function CreateAccount() {
   }
 
   return (
-    <PageContainer percentage={80}>
+    <PageContainer percentage={80} keyboardShouldPersistTaps="handled">
       <Logo />
       <View style={{ alignSelf: 'stretch' }}>
-        <TextInput
+        <NativePaperInput
           label={t('screen.login.email')}
           keyboardType="email-address"
+          returnKeyType="next"
           value={form.email}
           onChangeText={(value) => updateForm('email', value)}
         />

@@ -5,6 +5,7 @@ import { TextInput, Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import Logo from '@components/Logo'
 import PageContainer from '@components/Container/PageContainer'
+import NativePaperInput from '@components/NativePaperInput'
 import { apiNode } from '@api'
 import { signAuthentication } from '@api/auth'
 
@@ -61,17 +62,19 @@ export default function Login() {
     <PageContainer percentage={80}>
       <Logo />
       <View style={{ alignSelf: 'stretch' }}>
-        <TextInput
+        <NativePaperInput
           label={t('screen.login.email')}
           keyboardType="email-address"
+          returnKeyType="next"
           value={form.email}
           onChangeText={(value) => updateForm('email', value)}
         />
       </View>
       <View style={{ alignSelf: 'stretch' }}>
-        <TextInput
+        <NativePaperInput
           label={t('screen.login.password')}
           secureTextEntry={!showPassword}
+          returnKeyType="go"
           value={form.password}
           right={
             <TextInput.Icon

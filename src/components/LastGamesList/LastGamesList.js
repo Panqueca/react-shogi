@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Card, Text } from 'react-native-paper'
 import { getSpacing } from '@config/theme'
 
-export default function LastTransactionsList() {
+export default function LastGamesList() {
   const { t } = useTranslation()
 
   return (

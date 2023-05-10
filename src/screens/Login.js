@@ -1,61 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
-import { TextInput, Button } from 'react-native-paper'
+import { Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import Logo from '@components/Logo'
 import PageContainer from '@components/Container/PageContainer'
 import NativePaperInput from '@components/NativePaperInput'
-import { apiNode } from '@api'
-import { signAuthentication } from '@api/auth'
+import useAuthentication from '@hooks/useAuthentication'
 
 export default function Login() {
-  const [form, setForm] = useState({
-    email: 'gustavopereiragustavo190@gmail.com',
-    password: 'Gustavinho*123',
-  })
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation()
   const navigation = useNavigation()
+  const {
+    email,
+    password,
+    setEmail,
+    setPassword,
+    signAuthenticationHandler,
+    isLoading,
+  } = useAuthentication()
 
-  function updateForm(slug, value) {
-    setForm((current) => {
-      return {
-        ...current,
-        [slug]: value,
-      }
-    })
-  }
-
-  async function setAuthToken({ email, password }) {
-    const {
-      token: authToken,
-      user,
-      error,
-    } = await signAuthentication({
-      email,
-      password,
-    })
-    apiNode.defaults.headers.common.Authorization = `Bearer ${authToken}`
-    console.log({ authToken, user })
-
-    return { authToken, user, error }
-  }
-
-  async function handleLoginSubmit() {
-    console.log('handleLoginSubmit', { form })
-
-    setIsLoading(true)
-
-    try {
-      await setAuthToken({ email: form.email, password: form.password })
-      navigation.navigate('Home')
-    } catch (err) {
-      console.error(err)
-    }
-
-    setIsLoading(false)
+  function handleLoginSubmit() {
+    signAuthenticationHandler()
   }
 
   return (
@@ -66,25 +32,20 @@ export default function Login() {
           label={t('screen.login.email')}
           keyboardType="email-address"
           returnKeyType="next"
-          value={form.email}
-          onChangeText={(value) => updateForm('email', value)}
+          value={email}
+          onChangeText={(value) => setEmail(value)}
           testID="login-email-input"
+          disabled={false}
         />
       </View>
       <View style={{ alignSelf: 'stretch' }}>
         <NativePaperInput
           label={t('screen.login.password')}
-          secureTextEntry={!showPassword}
+          secureTextEntry
           returnKeyType="go"
-          value={form.password}
-          onChangeText={(value) => updateForm('password', value)}
+          value={password}
+          onChangeText={(value) => setPassword(value)}
           testID="login-password-input"
-          right={
-            <TextInput.Icon
-              onPress={() => setShowPassword(!showPassword)}
-              icon={showPassword ? 'eye-off' : 'eye'}
-            />
-          }
         />
       </View>
       <View style={{ alignSelf: 'stretch', gap: 10 }}>
@@ -104,6 +65,7 @@ export default function Login() {
         <Button
           mode="outlined"
           onPress={() => navigation.navigate('Create Account')}
+          testID="login-create_account-btn"
         >
           {t('screen.login.create_account')}
         </Button>

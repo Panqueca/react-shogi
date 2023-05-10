@@ -7,7 +7,7 @@ export async function createAccount({ email, password }) {
       {
         email,
         password,
-      }
+      },
     )
 
     return {
@@ -44,7 +44,7 @@ export async function signAuthentication({ email, password }) {
 export async function checkIsAuthenticated() {
   try {
     const { data: response } = await apiNode.get(
-      '/api/authenticate/is-authenticated'
+      '/api/authenticate/is-authenticated',
     )
 
     return response?.isAuthenticated
@@ -53,13 +53,13 @@ export async function checkIsAuthenticated() {
   }
 }
 
-export async function checkHaveAccount({ email }) {
+export async function checkExistingAccount({ email }) {
   try {
     const { data: response } = await apiNode.post(
       '/api/authenticate/have-account',
       {
         email,
-      }
+      },
     )
 
     return { hasAccount: response }

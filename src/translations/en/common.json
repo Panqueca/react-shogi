@@ -1,8 +1,12 @@
 {
   "screen": {
     "create_account": {
+      "already_have_account": "Already have an account?",
       "title": "Create account",
-      "create_account_btn": "Create your account"
+      "create_account_btn": "Create your account",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create"
     },
     "home": {
       "play": "Play",
@@ -15,6 +19,7 @@
     },
     "login": {
       "create_account": "Create an account",
+      "continue": "Continue",
       "email": "Email",
       "forgot_password": "Forgot your password?",
       "password": "Password",
